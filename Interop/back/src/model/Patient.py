@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Date
 
 
-from src.model.Base import Base
+from .Base import Base
 
 class Patient(Base):
     __tablename__ = 'patients'

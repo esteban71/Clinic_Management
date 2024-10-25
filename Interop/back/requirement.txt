@@ -1,5 +1,8 @@
-fastapi
-jwt
+fastapi[standard]
 psycopg2-binary
 sqlalchemy
 alembic
+pydantic
+PyJWT
+uvicorn[standard]
+watchdog

@@ -5,13 +5,15 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from jwt import PyJWKClient
 
-from .database import SessionLocal
-from .models import Patient as Patient
-from .schemas import PatientSchema as PatientSchema
+from src.database import SessionLocal
+from src.model.Patient import Patient  # Updated import
+from src.schemas import PatientSchema
+
+from sqlalchemy.orm import Session
 
 app = FastAPI()
 
-def get_db():
+async def get_db():
     db = SessionLocal()
     try:
         yield db
@@ -66,10 +68,14 @@ def get_public():
 def get_private():
     return {"message": "This endpoint is private"}
 
-@app.get("/patients/{patient_id}", response_model=PatientSchema)
-def get_patient(patient_id: int, db=Depends(get_db)):
+@app.get("/patient/{patient_id}", response_model=PatientSchema)  # Added response_model
+async def get_patient(patient_id: int, db: Session = Depends(get_db)):
     patient = db.query(Patient).filter(Patient.id == patient_id).first()
     if patient is None:
         raise HTTPException(status_code=404, detail="Patient not found")
     return patient
 
+@app.get("/patients", response_model=list[PatientSchema])  # Added response_model
+async def get_all_patients(db: Session = Depends(get_db)):
+    patients = db.query(Patient).all()
+    return patients
