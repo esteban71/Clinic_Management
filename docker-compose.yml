@@ -9,47 +9,66 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/sante_db/data
+    restart: always
+    networks:
+        - back_network
+
+  db_keycloak:
+    image: postgres:17
+    container_name: keycloak_db
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/keycloak_db/data
+    restart: always
     networks:
         - keycloak_network
-        - back_network
   back:
     build: .
     volumes:
       - ./Interop/back:/app
     depends_on:
       - db
+      - db_keycloak
     ports:
         - "8080:8080"
     environment:
       - PYTHONUNBUFFERED=1
+    restart: always
     networks:
         - keycloak_network
         - back_network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:23.0.6
+    image: quay.io/keycloak/keycloak:26.0.2
     command: start
     environment:
       KC_HOSTNAME: localhost
-      KC_HOSTNAME_PORT: 8081
-      KC_HOSTNAME_STRICT_BACKCHANNEL: false
-      KC_HTTP_ENABLED: true
-      KC_HOSTNAME_STRICT_HTTPS: false
-      KC_HEALTH_ENABLED: true
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      KC_HEALTH_ENABLED: "true"
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres/${POSTGRES_DB}
+      KC_DB_URL: jdbc:postgresql://db_keycloak/${KEYCLOAK_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - 8081:8081
+      - "8081:8080"
     restart: always
     depends_on:
       - db
+      - db_keycloak
     networks:
       - keycloak_network
+
 volumes:
   postgres_data:
 

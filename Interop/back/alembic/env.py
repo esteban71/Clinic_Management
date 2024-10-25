@@ -18,7 +18,7 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from src.model.Base import Base
-from src.model.Patient_model import Patient
+from src.model.Patient import Patient
 
 target_metadata = Base.metadata
 
