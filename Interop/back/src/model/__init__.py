@@ -1,2 +1,2 @@
-from .Patient import Patient
+from .Patient import Patient, Link, Contact, Communication
 from .Base import Base
