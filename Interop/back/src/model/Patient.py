@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, Table, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from src.model.Medecin import Medecin, Appointment
 
 
 from.Base import Base
@@ -25,6 +26,9 @@ class Patient(Base):
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
     contacts = relationship("Contact", back_populates="patient")
     communications = relationship("Communication", back_populates="patient")
+    
+    appointments = relationship("Appointment", back_populates="patient")
+    medecins = relationship("Medecin", secondary="Appointment", back_populates="patients")
 
 class Link(Base):
     __tablename__ = 'links'
