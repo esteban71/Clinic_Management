@@ -12,10 +12,11 @@ class CabinetMedical(Base):
     telecom = Column(String, nullable=True)  # contact details of the cabinet
     address = Column(String, nullable=True)  # address of the cabinet
     type = Column(String, nullable=True)  # type of the cabinet
+    secretariat_id = Column(Integer, ForeignKey('secretariat.id'), nullable=True)  # secretariat of the cabinet
 
     # Relationships
 
     medecins = relationship("Medecin", back_populates="cabinet_medical")
     patients = relationship("Patient", back_populates="cabinet_medical")
     secretariat = relationship("Secretariat", back_populates="cabinet_medical")
-    comptes_rendus_medicaux = relationship("CompteRenduMedical", back_populates="cabinet_medical")
+    dossier_medical = relationship("DossierMedical", back_populates="cabinet_medical")

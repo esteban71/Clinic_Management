@@ -10,8 +10,10 @@ class DossierMedical(Base):
     patient_id = Column(Integer, ForeignKey('patients.id'))
     date_creation = Column(Date, nullable=True)
     type_acces = Column(String, nullable=True)
+    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
 
     patient = relationship("Patient", back_populates="dossiers_medicaux")
+    cabinet_medical = relationship("CabinetMedical", back_populates="dossiers_medicaux")
 
 
 class DossierAdministratif(Base):
@@ -34,4 +36,4 @@ class CompteRenduMedical(Base):
     type = Column(String, nullable=True)
     contenu = Column(String, nullable=True)
 
-    cabinet_medical = relationship("DossierMedical", back_populates="comptes_rendus_medicaux")
+    dossier_medical = relationship("DossierMedical", back_populates="comptes_rendus_medicaux")

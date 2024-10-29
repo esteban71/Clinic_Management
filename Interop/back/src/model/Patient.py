@@ -18,13 +18,12 @@ class Patient(Base):
     birth_date = Column(Date, nullable=True)  # birth date of the patient
     address = Column(String, nullable=True)  # address of the patient
     marital_status = Column(String, nullable=True)  # marital status of the patient
-    general_practitioner = Column(String, nullable=True)  # general practitioner of the patient
     managing_organization = Column(String, nullable=True)  # managing organization of the patient
+    medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=True)  # medecin of the patient
 
     # Relationships
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
     contacts = relationship("Contact", back_populates="patient")
-    communications = relationship("Communication", back_populates="patient")
 
     cabinet_medical = relationship("CabinetMedical", back_populates="patients")
     appointments = relationship("Appointment", back_populates="patient")
@@ -56,23 +55,9 @@ class Contact(Base):
     patient_id = Column(Integer, ForeignKey('patients.id'))
     patient = relationship("Patient", back_populates="contacts", foreign_keys=[patient_id])
     relationship = Column(String, nullable=True)
-    role = Column(String, nullable=True)
     name = Column(String, nullable=True)
     additional_name = Column(String, nullable=True)
     telecom = Column(String, nullable=True)
     address = Column(String, nullable=True)
-    additional_address = Column(String, nullable=True)
     gender = Column(String, nullable=True)
     organization = Column(String, nullable=True)
-    period = Column(String, nullable=True)
-
-
-class Communication(Base):
-    __tablename__ = 'communications'
-
-    id = Column(Integer, primary_key=True)
-    patient_id = Column(Integer, ForeignKey('patients.id'))
-    language = Column(String, nullable=True)
-    preferred = Column(Boolean, nullable=True)
-
-    patient = relationship("Patient", back_populates="communications", foreign_keys=[patient_id])

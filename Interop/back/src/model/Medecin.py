@@ -15,11 +15,12 @@ class Medecin(Base):
     email = Column(String, nullable=True)  # Adresse mail
     telecom = Column(String, nullable=True)  # contact
     habilitations = Column(String, nullable=True)  # Organisation ou établissement affilié
-
-    # Relations
+    
+    
+    # Relations    
     patients = relationship("Patient", secondary="Appointment", back_populates="medecins")
-    cabinet_medical = relationship("CabinetMedical", back_populates="medecins")
     destinataires = relationship("Destinataires", back_populates="medecin")
+    secretariat = relationship("Secretariat", back_populates="medecins.id")
 
 
 class Appointment(Base):

@@ -12,6 +12,7 @@ class AlerteMedicale(Base):
     description = Column(String, nullable=True)  # description of the alert
     destinataires = Column(String, nullable=True)  # recipients of the alert
     status = Column(String, nullable=True)  # status of the alert
+    patient_id = Column(Integer, ForeignKey('patients.id'))
 
     patient = relationship("Patient", back_populates="alertes_medicales")
     destinataires = relationship("Destinataires", back_populates="alerte")
@@ -38,7 +39,7 @@ class MesuresCardiaques(Base):
     tension_arterielle = Column(String, nullable=True)
     rythme_cardiaque = Column(String, nullable=True)
     oxyometrie = Column(String, nullable=True)
-    patient_id = Column(Integer, ForeignKey('patients.id'))
+    dispositif_id = Column(Integer, ForeignKey('dispositifs_medicaux.id'))
     
     alerte = relationship("AlerteMedicale", back_populates="mesures_cardiaques")
-    patient = relationship("Patient", back_populates="mesures_cardiaques", foreign_keys=[patient_id])
+    dispositifs_medicaux = relationship("Patient", back_populates="mesures_cardiaques", foreign_keys=[dispositif_id])
