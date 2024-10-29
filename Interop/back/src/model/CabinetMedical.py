@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from src.model.Base import Base
 from src.model.Medecin import Medecin
 from src.model.Patient import Patient
+from src.model.Secretariat import Secretariat
 
 class CabinetMedical(Base):
     __tablename__ = 'cabinet_medical'
@@ -18,3 +19,4 @@ class CabinetMedical(Base):
     
     medecins = relationship("Medecin", back_populates="cabinet_medical")
     patients = relationship("Patient", back_populates="cabinet_medical")
+    secretariat = relationship("Secretariat", back_populates="cabinet_medical")
