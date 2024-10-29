@@ -4,6 +4,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from src.model.Medecin import Medecin, Appointment
 from src.model.CabinetMedical import CabinetMedical
 from src.model.Dossier import DossierMedical, DossierAdministratif
+from src.model.MedicalDevices import DispositifMedical, DonneeMedicale
 
 
 from.Base import Base
@@ -34,6 +35,8 @@ class Patient(Base):
     medecins = relationship("Medecin", secondary="Appointment", back_populates="patients")
     dossiers_medicaux = relationship("DossierMedical", back_populates="patient")
     dossiers_administratifs = relationship("DossierAdministratif", back_populates="patient")
+    dispositifs_medicaux = relationship("DispositifMedical", back_populates="patient")
+    donnees_medicales = relationship("DonneeMedicale", back_populates="patient")
 
 class Link(Base):
     __tablename__ = 'links'
