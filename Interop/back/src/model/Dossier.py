@@ -2,9 +2,10 @@ from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
 
+
 class DossierMedical(Base):
     __tablename__ = 'dossiers_medicaux'
-    
+
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'))
     date_creation = Column(Date, nullable=True)
@@ -12,9 +13,10 @@ class DossierMedical(Base):
 
     patient = relationship("Patient", back_populates="dossiers_medicaux")
 
+
 class DossierAdministratif(Base):
     __tablename__ = 'dossiers_administratifs'
-    
+
     id = Column(Integer, primary_key=True)
     patient_id = Column(Integer, ForeignKey('patients.id'))
     date_creation = Column(Date, nullable=True)
@@ -22,9 +24,10 @@ class DossierAdministratif(Base):
 
     patient = relationship("Patient", back_populates="dossiers_administratifs")
 
+
 class CompteRenduMedical(Base):
     __tablename__ = 'comptes_rendus_medicaux'
-    
+
     id = Column(Integer, primary_key=True)
     dossier_medical_id = Column(Integer, ForeignKey('dossiers_medicaux.id'))
     date = Column(Date, nullable=True)

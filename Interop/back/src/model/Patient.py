@@ -2,9 +2,8 @@ from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
+from .Base import Base
 
-
-from.Base import Base
 
 # https://hl7.org/fhir/patient.html
 
@@ -26,7 +25,7 @@ class Patient(Base):
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
     contacts = relationship("Contact", back_populates="patient")
     communications = relationship("Communication", back_populates="patient")
-    
+
     cabinet_medical = relationship("CabinetMedical", back_populates="patients")
     appointments = relationship("Appointment", back_populates="patient")
     medecins = relationship("Medecin", secondary="Appointment", back_populates="patients")
@@ -36,6 +35,7 @@ class Patient(Base):
     donnees_medicales = relationship("DonneeMedicale", back_populates="patient")
     alertes_medicales = relationship("AlerteMedicale", back_populates="patient")
     mesures_cardiaques = relationship("MesuresCardiaques", back_populates="patient")
+
 
 class Link(Base):
     __tablename__ = 'links'
