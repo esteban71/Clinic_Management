@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
+from src.model.Patient import Patient
+from src.model.CabinetMedical import CabinetMedical
 
 # https://hl7.org/fhir/practitioner.html
 
@@ -17,6 +19,7 @@ class Medecin(Base):
 
     # Relations
     patients = relationship("Patient", secondary="Appointment", back_populates="medecins")
+    cabinet_medical = relationship("CabinetMedical", back_populates="medecins")
 
 class Appointment(Base):
     __tablename__ = 'appointments'
