@@ -34,7 +34,7 @@ class Patient(Base):
     dispositifs_medicaux = relationship("DispositifMedical", back_populates="patient")
     donnees_medicales = relationship("DonneeMedicale", back_populates="patient")
     alertes_medicales = relationship("AlerteMedicale", back_populates="patient")
-    mesures_cardiaques = relationship("MesuresCardiaques", back_populates="patient")
+    mesures_cardiaques = relationship("MesuresCardiaques", back_populates="patient", foreign_keys="MesuresCardiaques.patient_id")
 
 
 class Link(Base):
