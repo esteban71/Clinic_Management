@@ -12,6 +12,7 @@ class Secretariat(Base):
     telephone = Column(String, nullable=True)  # telephone of the secretariat
     habilitations = Column(String, nullable=True)  # habilitations of the secretariat
     medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=True)  # medecin of the secretariat
+    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'), nullable=False)  # cabinet_medical of the secretariat
 
     # Relationships
     cabinet_medical = relationship("CabinetMedical", back_populates="secretariat")

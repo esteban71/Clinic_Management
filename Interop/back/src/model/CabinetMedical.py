@@ -12,7 +12,6 @@ class CabinetMedical(Base):
     telecom = Column(String, nullable=True)  # contact details of the cabinet
     address = Column(String, nullable=True)  # address of the cabinet
     type = Column(String, nullable=True)  # type of the cabinet
-    secretariat_id = Column(Integer, ForeignKey('secretariat.id'), nullable=True)  # secretariat of the cabinet
 
     # Relationships
 
