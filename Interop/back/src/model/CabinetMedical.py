@@ -18,4 +18,3 @@ class CabinetMedical(Base):
     medecins = relationship("Medecin", back_populates="cabinet_medical")
     patients = relationship("Patient", back_populates="cabinet_medical")
     secretariat = relationship("Secretariat", back_populates="cabinet_medical")
-    dossier_medical = relationship("DossierMedical", back_populates="cabinet_medical")

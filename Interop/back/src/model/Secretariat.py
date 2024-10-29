@@ -15,4 +15,5 @@ class Secretariat(Base):
     cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'), nullable=False)  # cabinet_medical of the secretariat
 
     # Relationships
+    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
     cabinet_medical = relationship("CabinetMedical", back_populates="secretariat")

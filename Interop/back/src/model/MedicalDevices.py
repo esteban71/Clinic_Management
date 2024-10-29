@@ -29,5 +29,6 @@ class DonneeMedicale(Base):
     mesures = Column(String, nullable=True)  # measures of the medical data
 
     # Relationships
+    dispositif_medical_id = Column(Integer, ForeignKey('dispositifs_medicaux.id'))
     dispositif_medical = relationship("DispositifMedical", back_populates="donnees_medicales")
-    patient = relationship("Patient", back_populates="donnees_medicales")
+    mesures_cardiaques = relationship("MesuresCardiaques", back_populates="donnee_medicale")

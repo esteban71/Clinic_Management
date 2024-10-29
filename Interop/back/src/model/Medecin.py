@@ -18,9 +18,11 @@ class Medecin(Base):
     
     
     # Relations    
-    patients = relationship("Patient", secondary="Appointment", back_populates="medecins")
+    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
+    cabinet_medical = relationship("CabinetMedical", back_populates="medecins")
+    appointments = relationship("Appointment", back_populates="medecin")
+    comptes_rendus = relationship("CompteRenduMedical", back_populates="auteur")
     destinataires = relationship("Destinataires", back_populates="medecin")
-    secretariat = relationship("Secretariat", back_populates="medecins.id")
 
 
 class Appointment(Base):

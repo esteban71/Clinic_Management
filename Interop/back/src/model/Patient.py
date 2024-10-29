@@ -25,16 +25,13 @@ class Patient(Base):
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
     contacts = relationship("Contact", back_populates="patient")
 
+    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
     cabinet_medical = relationship("CabinetMedical", back_populates="patients")
-    appointments = relationship("Appointment", back_populates="patient")
-    medecins = relationship("Medecin", secondary="Appointment", back_populates="patients")
-    dossiers_medicaux = relationship("DossierMedical", back_populates="patient")
-    dossiers_administratifs = relationship("DossierAdministratif", back_populates="patient")
+    dossier_medical = relationship("DossierMedical", back_populates="patient", uselist=False)
+    dossier_administratif = relationship("DossierAdministratif", back_populates="patient", uselist=False)
     dispositifs_medicaux = relationship("DispositifMedical", back_populates="patient")
-    donnees_medicales = relationship("DonneeMedicale", back_populates="patient")
     alertes_medicales = relationship("AlerteMedicale", back_populates="patient")
-    mesures_cardiaques = relationship("MesuresCardiaques", back_populates="patient", foreign_keys="MesuresCardiaques.patient_id")
-
+    appointments = relationship("Appointment", back_populates="patient")
 
 class Link(Base):
     __tablename__ = 'links'

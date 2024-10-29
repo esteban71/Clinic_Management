@@ -103,6 +103,12 @@ classDiagram
         +contactUrgence: Reference
     }
 
+    class Appointment {
+        +id: Identifier
+        +date: dateTime
+        +description: string
+    }
+
     CabinetMedical "1" -- "2" Cardiologue : "emploie"
     CabinetMedical "1" -- "1" Secretariat : "a"
     CabinetMedical "1" -- "0..*" Patient : "suit"
@@ -118,4 +124,6 @@ classDiagram
     Secretariat -- DossierAdministratif : "accède"
     Secretariat -- CompteRenduMedical : "accède"
     Cardiologue -- CompteRenduMedical : "rédige"
+    Cardiologue "1" -- "0..*" Appointment : "crée"
+    Patient "1" -- "0..*" Appointment : "a"
 ```
