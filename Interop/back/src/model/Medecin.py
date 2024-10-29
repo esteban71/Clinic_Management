@@ -14,7 +14,7 @@ class Medecin(Base):
     specialite = Column(String, nullable=True)  # Spécialité du médecin ici Cardiologue
     email = Column(String, nullable=True)  # Adresse mail
     telecom = Column(String, nullable=True)  # contact
-    habilitations = Column(String, nullable=True)  # Organisation ou établissement affilié
+    #habilitations = Column(String, nullable=True)  # Organisation ou établissement affilié
     
     
     # Relations    

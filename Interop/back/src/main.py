@@ -2,8 +2,22 @@ from fastapi import FastAPI, Depends
 
 from src.utils.auth import valid_access_token
 from src.app.Patient_routes import router as Patient_router
+from src.database import get_db
+from src.test.create_db import create_db , drop_all_data
+import os
 
-app = FastAPI()
+env = os.getenv("ENV", "dev")
+
+def create_app():
+    if env == "dev":
+        drop_all_data()
+        app = FastAPI()
+        create_db()
+    elif env == "prod":
+        app = FastAPI()
+    return app
+
+app = create_app()
 
 @app.get("/public")
 def get_public():
