@@ -23,7 +23,7 @@ from src.model.Dossier import DossierMedical, DossierAdministratif, CompteRenduM
 from src.model.Medecin import Medecin, Appointment
 from src.model.MedicalAlerts import AlerteMedicale, Destinataires, MesuresCardiaques
 from src.model.MedicalDevices import DispositifMedical, DonneeMedicale
-from src.model.Patient import Patient, Link, Contact, Communication
+from src.model.Patient import Patient, Link, Contact
 from src.model.Secretariat import Secretariat
 target_metadata = Base.metadata
 
