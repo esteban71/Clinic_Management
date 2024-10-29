@@ -3,8 +3,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 
-from .Base import Base
+from.Base import Base
 
+# https://hl7.org/fhir/patient.html
 
 class Patient(Base):
     __tablename__ = 'patients'
@@ -15,11 +16,8 @@ class Patient(Base):
     telecom = Column(String, nullable=True)  # contact details of the patient
     gender = Column(String, nullable=True)  # gender of the patient
     birth_date = Column(Date, nullable=True)  # birth date of the patient
-    deceased = Column(JSON, nullable=True)  # deceased status of the patient {deceased: bool, date: date}
     address = Column(String, nullable=True)  # address of the patient
     marital_status = Column(String, nullable=True)  # marital status of the patient
-    multiple_birth = Column(Boolean, nullable=True)  # multiple birth status of the patient
-    photo = Column(String, nullable=True)  # photo of the patient
     general_practitioner = Column(String, nullable=True)  # general practitioner of the patient
     managing_organization = Column(String, nullable=True)  # managing organization of the patient
 
@@ -27,7 +25,6 @@ class Patient(Base):
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
     contacts = relationship("Contact", back_populates="patient")
     communications = relationship("Communication", back_populates="patient")
-
 
 class Link(Base):
     __tablename__ = 'links'
@@ -37,7 +34,7 @@ class Link(Base):
     other = Column(Integer, ForeignKey('patients.id'), nullable=True)
     type = Column(String, nullable=True)
 
-    patient = relationship("Patient", back_populates="links")
+    patient = relationship("Patient", back_populates="links", foreign_keys=[patient_id])
     other_patient = relationship("Patient", foreign_keys=[other])
 
 
@@ -67,4 +64,4 @@ class Communication(Base):
     language = Column(String, nullable=True)
     preferred = Column(Boolean, nullable=True)
 
-    patient = relationship("Patient", back_populates="communications")
+    patient = relationship("Patient", back_populates="communications", foreign_keys=[patient_id])
