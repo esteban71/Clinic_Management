@@ -24,7 +24,7 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/keycloak_db/data
+      - keycloak_data:/var/lib/keycloak_db/data
     restart: always
     networks:
         - keycloak_network
@@ -71,6 +71,7 @@ services:
 
 volumes:
   postgres_data:
+  keycloak_data:
 
 networks:
     keycloak_network:
