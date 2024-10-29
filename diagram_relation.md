@@ -5,19 +5,20 @@
 classDiagram
     class CabinetMedical {
         +id: Identifier
+        +active: Boolean
         +nom: string
-        +adresse: Address[Paris]
         +telecom: ContactPoint[]
+        +adress: Address[Paris]
         +type: CodeableConcept[CabinetCardiologie]
     }
 
     class Cardiologue {
         +id: Identifier
         +rpps: string
-        +nom: HumanName
+        +name: HumanName
         +specialite: CodeableConcept[Cardiologue]
         +email: string
-        +telephone: string
+        +telecom: string
         +habilitations: RoleHabilitation
     }
 
@@ -31,14 +32,15 @@ classDiagram
 
     class Patient {
         +id: Identifier
-        +ins: string
-        +nom: HumanName
-        +dateNaissance: date
-        +adresse: Address
-        +telephone: string
-        +contactUrgence: Contact
-        +medecinTraitant: Reference
-        +habilitations: RoleHabilitation
+        +active : string
+        +name: HumanName
+        +telecom: ContactPoint[]
+        +gender: string
+        +birthDate: date
+        +adress: Address
+        +maritalStatus
+        +generalPractitioner: Reference
+        +managingOrganization: Reference
     }
 
     class DossierMedical {
@@ -101,18 +103,19 @@ classDiagram
         +contactUrgence: Reference
     }
 
-    CabinetMedical "1" -- "2" Cardiologue
-    CabinetMedical "1" -- "1" Secretariat
-    CabinetMedical "1" -- "0..*" Patient
-    Cardiologue "1" -- "0..*" Patient
-    Patient "1" -- "1" DossierMedical
-    Patient "1" -- "1" DossierAdministratif
-    DossierMedical "1" -- "0..*" CompteRenduMedical
-    Patient "1" -- "0..*" DispositifMedical
-    DispositifMedical "1" -- "0..*" DonneeMedicale
-    DonneeMedicale "1" -- "1" MesuresCardiaques
-    Patient "1" -- "0..*" AlerteMedicale
-    AlerteMedicale "1" -- "1" Destinataires
-    Secretariat -- DossierAdministratif : accède
-    Secretariat -- CompteRenduMedical : accède
+    CabinetMedical "1" -- "2" Cardiologue : "emploie"
+    CabinetMedical "1" -- "1" Secretariat : "a"
+    CabinetMedical "1" -- "0..*" Patient : "suit"
+    Cardiologue "1" -- "0..*" Patient : "suit"
+    Patient "1" -- "1" DossierMedical : "a"
+    Patient "1" -- "1" DossierAdministratif : "a"
+    DossierMedical "1" -- "0..*" CompteRenduMedical : "contient"
+    Patient "1" -- "0..*" DispositifMedical : "utilise"
+    DispositifMedical "1" -- "0..*" DonneeMedicale : "produit"
+    DonneeMedicale "1" -- "1" MesuresCardiaques : "contient"
+    Patient "1" -- "0..*" AlerteMedicale : "déclenche"
+    AlerteMedicale "1" -- "1" Destinataires : "envoie à"
+    Secretariat -- DossierAdministratif : "accède"
+    Secretariat -- CompteRenduMedical : "accède"
+    Cardiologue -- CompteRenduMedical : "rédige"
 ```
