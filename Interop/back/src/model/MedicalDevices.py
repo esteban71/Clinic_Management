@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, Table, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from src.model.Patient import Patient
+from src.model.Base import Base
 
 
 class DispositifMedical(Base):

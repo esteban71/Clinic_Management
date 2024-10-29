@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
-from src.model.Patient import Patient
 
 class DossierMedical(Base):
     __tablename__ = 'dossiers_medicaux'

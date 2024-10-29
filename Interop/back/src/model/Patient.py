@@ -1,10 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey, Table, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-from src.model.Medecin import Medecin, Appointment
-from src.model.CabinetMedical import CabinetMedical
-from src.model.Dossier import DossierMedical, DossierAdministratif
-from src.model.MedicalDevices import DispositifMedical, DonneeMedicale
+
 
 
 from.Base import Base

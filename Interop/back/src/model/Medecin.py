@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
-from src.model.Patient import Patient
-from src.model.CabinetMedical import CabinetMedical
 
 # https://hl7.org/fhir/practitioner.html
 

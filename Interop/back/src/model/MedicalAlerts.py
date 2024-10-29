@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
-from src.model.Patient import Patient
-from src.model.Medecin import Medecin
+
 
 class AlerteMedicale(Base):
     __tablename__ = 'alertes_medicales'
@@ -20,7 +19,8 @@ class AlerteMedicale(Base):
     
 class Destinataires(Base):
     __tablename__ = 'destinataires'
-    
+
+    id = Column(Integer, primary_key=True)
     medecin_referecence = Column(Integer, ForeignKey('medecins.id'))
     urgences = Column(Boolean, nullable=True)
     contactUrgence = Column(String, nullable=True)
@@ -31,7 +31,8 @@ class Destinataires(Base):
     
 class MesuresCardiaques(Base):
     __tablename__ = 'mesures_cardiaques'
-    
+
+    id = Column(Integer, primary_key=True)
     tension_arterielle = Column(String, nullable=True)
     rythme_cardiaque = Column(String, nullable=True)
     oxyometrie = Column(String, nullable=True)

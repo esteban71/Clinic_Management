@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
-from src.model.CabinetMedical import CabinetMedical
 
 class Secretariat(Base):
     __tablename__ = 'secretariat'

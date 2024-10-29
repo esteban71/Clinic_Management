@@ -1,10 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
-from src.model.Medecin import Medecin
-from src.model.Patient import Patient
-from src.model.Secretariat import Secretariat
-from src.model.Dossier import CompteRenduMedical
+
 
 class CabinetMedical(Base):
     __tablename__ = 'cabinet_medical'
