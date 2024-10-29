@@ -5,15 +5,7 @@ from datetime import date
 from pydantic import BaseModel, Field
 from datetime import date
 from typing import Optional, List, Dict
-
-
-class CommunicationSchema(BaseModel):
-    id: int
-    language: Optional[str] = None
-    preferred: Optional[bool] = None
-
-    class Config:
-        orm_mode = True
+from src.schemas.MedecinSchema import MedecinSchema,AppointmentSchema
 
 
 class ContactSchema(BaseModel):
@@ -49,17 +41,14 @@ class PatientSchema(BaseModel):
     telecom: Optional[str] = None
     gender: Optional[str] = None
     birth_date: Optional[date] = None
-    deceased: Optional[Dict[str, Optional[str]]] = None  # {"deceased": bool, "date": date}
     address: Optional[str] = None
     marital_status: Optional[str] = None
-    multiple_birth: Optional[bool] = None
-    photo: Optional[str] = None
-    general_practitioner: Optional[str] = None
     managing_organization: Optional[str] = None
 
     links: List[LinkSchema] = []
     contacts: List[ContactSchema] = []
-    communications: List[CommunicationSchema] = []
+    medecin: Optional[MedecinSchema] = None
+    appointments: List[AppointmentSchema] = []
 
     class Config:
         orm_mode = True

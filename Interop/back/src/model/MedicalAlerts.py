@@ -38,7 +38,6 @@ class MesuresCardiaques(Base):
     tension_arterielle = Column(String, nullable=True)
     rythme_cardiaque = Column(String, nullable=True)
     oxyometrie = Column(String, nullable=True)
-    dispositif_id = Column(Integer, ForeignKey('dispositifs_medicaux.id'))
     
     donnee_medicale_id = Column(Integer, ForeignKey('donnees_medicales.id'))
     donnee_medicale = relationship("DonneeMedicale", back_populates="mesures_cardiaques")

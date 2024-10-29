@@ -12,7 +12,7 @@ class Patient(Base):
 
     id = Column(Integer, primary_key=True)
     active = Column(Boolean, nullable=True)  # active status of the patient
-    name = Column(String)  # name of the patient
+    name = Column(String, name="name", nullable=False)  # name of the patient
     telecom = Column(String, nullable=True)  # contact details of the patient
     gender = Column(String, nullable=True)  # gender of the patient
     birth_date = Column(Date, nullable=True)  # birth date of the patient
@@ -20,6 +20,7 @@ class Patient(Base):
     marital_status = Column(String, nullable=True)  # marital status of the patient
     managing_organization = Column(String, nullable=True)  # managing organization of the patient
     medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=True)  # medecin of the patient
+    medecin = relationship("Medecin", back_populates="patients")
 
     # Relationships
     links = relationship("Link", back_populates="patient", foreign_keys="Link.patient_id")
@@ -32,6 +33,7 @@ class Patient(Base):
     dispositifs_medicaux = relationship("DispositifMedical", back_populates="patient")
     alertes_medicales = relationship("AlerteMedicale", back_populates="patient")
     appointments = relationship("Appointment", back_populates="patient")
+
 
 class Link(Base):
     __tablename__ = 'links'

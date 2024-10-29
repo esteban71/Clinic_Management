@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON, DateTime
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
 
@@ -23,15 +23,15 @@ class Medecin(Base):
     appointments = relationship("Appointment", back_populates="medecin")
     comptes_rendus = relationship("CompteRenduMedical", back_populates="auteur")
     destinataires = relationship("Destinataires", back_populates="medecin")
-
+    patients = relationship("Patient", back_populates="medecin")
 
 class Appointment(Base):
     __tablename__ = 'appointments'
 
     id = Column(Integer, primary_key=True, index=True)
-    medecin_id = Column(Integer, ForeignKey('medecins.id'))
-    patient_id = Column(Integer, ForeignKey('patients.id'))
-    date = Column(Date, nullable=False)  # Date du rendez-vous
+    medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=False)
+    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
+    date = Column(DateTime, nullable=False)  # Date du rendez-vous
     reason = Column(String, nullable=True)  # Raison du rendez-vous
 
     # Relations
