@@ -37,6 +37,8 @@ class Patient(Base):
     dossiers_administratifs = relationship("DossierAdministratif", back_populates="patient")
     dispositifs_medicaux = relationship("DispositifMedical", back_populates="patient")
     donnees_medicales = relationship("DonneeMedicale", back_populates="patient")
+    alertes_medicales = relationship("AlerteMedicale", back_populates="patient")
+    mesures_cardiaques = relationship("MesuresCardiaques", back_populates="patient")
 
 class Link(Base):
     __tablename__ = 'links'

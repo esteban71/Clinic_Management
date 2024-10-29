@@ -20,6 +20,7 @@ class Medecin(Base):
     # Relations
     patients = relationship("Patient", secondary="Appointment", back_populates="medecins")
     cabinet_medical = relationship("CabinetMedical", back_populates="medecins")
+    destinataires = relationship("Destinataires", back_populates="medecin")
 
 class Appointment(Base):
     __tablename__ = 'appointments'
