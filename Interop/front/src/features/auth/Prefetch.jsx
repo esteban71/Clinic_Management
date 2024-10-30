@@ -1,7 +1,7 @@
 import React from 'react'
-import { store } from '../../app/store'
-import { usersApiSlice } from '../users/usersApiSlice'
-import { patientsApiSlice } from '../patients/patientsApiSlice'
+import { store } from '../../app/store.jsx'
+import { usersApiSlice } from '../users/usersApiSlice.jsx'
+import { patientsApiSlice } from '../patients/patientsApiSlice.jsx'
 import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 

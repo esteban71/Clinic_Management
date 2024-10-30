@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { selectAllUsers } from '../users/usersApiSlice'
+import { selectAllUsers } from '../users/usersApiSlice.jsx'
 import NewPatientForm from './NewPatientForm'
 
 const NewPatient = () => {

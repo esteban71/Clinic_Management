@@ -1,12 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useUpdateUserMutation, useDeleteUserMutation } from './usersApiSlice'
+import { useUpdateUserMutation, useDeleteUserMutation } from './usersApiSlice.jsx'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
-import useAuth from '../../hooks/useAuth'
-import CircularLoader from '../../pageLoader/CircularLoader'
-import { ROLES } from '../../config/roles'
+import useAuth from '../../hooks/useAuth.jsx'
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
+import { Roles } from '../../config/roles.jsx'
 import { TextField } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
 
@@ -145,7 +145,7 @@ const EditUserForm = ({user}) => {
 
   let optionsTwo
   if(isManager) {
-      optionsTwo = Object.values(ROLES).map(role => {
+      optionsTwo = Object.values(Roles).map(role => {
           return (
                 <option
                     key={role}
@@ -158,7 +158,7 @@ const EditUserForm = ({user}) => {
   }
 
   if(isAdmin) {
-      optionsTwo = Object.values(ROLES).filter(val => val !== 'Manager' && val !== 'Admin').map(role => {
+      optionsTwo = Object.values(Roles).filter(val => val !== 'Manager' && val !== 'Admin').map(role => {
           return (
                 <option
                     key={role}
@@ -170,7 +170,7 @@ const EditUserForm = ({user}) => {
   }
 
   if(isReceptionist) {
-    optionsTwo = Object.values(ROLES).filter(val => val === 'Doctor').map(role => {
+    optionsTwo = Object.values(Roles).filter(val => val === 'Doctor').map(role => {
         return (
               <option
                   key={role}

@@ -7,6 +7,7 @@ from src.database import get_db
 from src.test.create_db import create_db , drop_all_data
 import os
 
+
 env = os.getenv("ENV", "dev")
 
 def create_app():
@@ -27,6 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/public")
 def get_public():
     return {"message": "This endpoint is public"}
@@ -35,7 +37,6 @@ def get_public():
 @app.get("/private", dependencies=[Depends(valid_access_token)])
 def get_private():
     return {"message": "This endpoint is private"}
-
 
 app.include_router(Patient_router, prefix="/patient")
 app.include_router(auth_router, prefix="/auth")

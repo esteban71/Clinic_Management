@@ -1,11 +1,11 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useAddNewUserMutation } from './usersApiSlice'
+import { useAddNewUserMutation } from './usersApiSlice.jsx'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
-import useAuth from '../../hooks/useAuth'
-import { ROLES } from '../../config/roles'
+import useAuth from '../../hooks/useAuth.jsx'
+import { Roles } from '../../config/roles.jsx'
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -121,7 +121,7 @@ const NewDoctorForm = () => {
       }
   }
   
-  const options = Object.values(ROLES)
+  const options = Object.values(Roles)
     .filter(val => val === 'Doctor')
     .map(role => {
       return (

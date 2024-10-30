@@ -1,11 +1,11 @@
 import React from 'react'
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useGetpatientsQuery } from './patientsApiSlice'
+import { useGetpatientsQuery } from './patientsApiSlice.jsx'
 import Patient from './Patient'
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth.jsx'
 import searchBarTwo  from '../../images/searchBarTwo.png'
-import CircularLoader from '../../pageLoader/CircularLoader'
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 import '../../css/userList.css'
 
 const PatientsList = () => {

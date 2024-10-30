@@ -1,7 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons"
-import useAuth from '../hooks/useAuth'
+import useAuth from '../hooks/useAuth.jsx'
 
 const DashFooter = () => {
 

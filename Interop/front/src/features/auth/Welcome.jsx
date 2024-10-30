@@ -9,7 +9,7 @@ import viewDoctors from '../../images/viewDoctors.png'
 import userPanel from '../../images/userPanel.png'
 import addUser from '../../images/addUser.png'
 import '../../css/dashLayout.css'
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth.jsx'
 
 const Welcome = () => {
 

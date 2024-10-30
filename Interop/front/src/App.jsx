@@ -13,10 +13,10 @@ import EditPatient from './features/patients/EditPatient'
 import NewPatient from './features/patients/NewPatient'
 import DoctorsList from './features/users/DoctorsList';
 import NewDoctorForm from './features/users/NewDoctorForm';
-import Prefetch from './features/auth/Prefetch'
-import PersistLogin from './features/auth/PersistLogin';
-import RequireAuth from './features/auth/RequireAuth';
-import { ROLES } from './config/roles'
+import Prefetch from './features/auth/Prefetch.jsx'
+import PersistLogin from './features/auth/PersistLogin.jsx';
+import RequireAuth from './features/auth/RequireAuth.jsx';
+import { Roles } from './config/roles.jsx'
 
 
 function App() {
@@ -29,7 +29,7 @@ function App() {
         
         {/* Protected routes */}
         <Route element={<PersistLogin/>}>
-          <Route element={<RequireAuth allowedRoles={[...Object.values(ROLES)]} />}>
+          <Route element={<RequireAuth allowedRoles={[...Object.values(Roles)]} />}>
             <Route element={<Prefetch />}>
               <Route path='dash' element={<DashLayout/>}>
 
@@ -38,12 +38,12 @@ function App() {
                 <Route path='patients'>
                   <Route index element={<PatientsList />} />
                   <Route path=':id' element={<EditPatient />} />
-                  <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin, ROLES.Receptionist]} />}>
+                  <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
                     <Route path='new' element={<NewPatient />} />
                   </Route>
                 </Route>
 
-                <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin, ROLES.Receptionist]} />}>
+                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
                   <Route path='users'>
                     <Route index element={<UsersList />} />
                     <Route path=':id' element={<EditUser />} />
@@ -51,7 +51,7 @@ function App() {
                   </Route>
                 </Route>
 
-                <Route element={<RequireAuth allowedRoles={[ROLES.Manager, ROLES.Admin, ROLES.Receptionist]} />}>
+                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
                   <Route path='doctors'>
                     <Route index element={<DoctorsList />} />
                     <Route path='new' element={<NewDoctorForm />} />

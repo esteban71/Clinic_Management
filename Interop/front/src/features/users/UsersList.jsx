@@ -1,8 +1,8 @@
 import React from 'react'
-import { useGetusersQuery } from './usersApiSlice'
+import { useGetusersQuery } from './usersApiSlice.jsx'
 import User from './User'
-import useAuth from '../../hooks/useAuth'
-import CircularLoader from '../../pageLoader/CircularLoader'
+import useAuth from '../../hooks/useAuth.jsx'
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 import '../../css/userList.css'
 
 const UsersList = () => {

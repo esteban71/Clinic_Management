@@ -1,11 +1,11 @@
 import React from 'react'
 import { Outlet, Link } from "react-router-dom"
 import { useEffect, useRef, useState } from 'react'
-import { useRefreshMutation } from './authApiSlice'
-import usePersist from "../../hooks/usePersist"
+import { useRefreshMutation } from './authApiSlice.jsx'
+import usePersist from "../../hooks/usePersist.jsx"
 import { useSelector } from "react-redux"
-import { selectCurrentToken } from "./authSlice"
-import CircularLoader from '../../pageLoader/CircularLoader'
+import { selectCurrentToken } from "./authSlice.jsx"
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 
 const PersistLogin = () => {
 

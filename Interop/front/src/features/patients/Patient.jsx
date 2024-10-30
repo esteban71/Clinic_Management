@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faStreetView } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { selectPatientById } from './patientsApiSlice'
+import { selectPatientById } from './patientsApiSlice.jsx'
 
 
 const Patient = ({patientID}) => {

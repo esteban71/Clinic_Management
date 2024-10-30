@@ -2,10 +2,10 @@ import React from 'react'
 import { useRef, useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { setCredentials } from './authSlice'
-import { useLoginMutation } from './authApiSlice'
-import usePersist from '../../hooks/usePersist'
-import CircularLoaderWithLabel from '../../pageLoader/CircularLoaderWithLabel'
+import { setCredentials } from './authSlice.jsx'
+import { useLoginMutation } from './authApiSlice.jsx'
+import usePersist from '../../hooks/usePersist.jsx'
+import CircularLoaderWithLabel from '../../pageLoader/CircularLoaderWithLabel.jsx'
 import '../../css/userList.css'
 
 const Login = () => {
@@ -37,7 +37,7 @@ const Login = () => {
     }
     else {
         try {
-            const { accessToken } = await login(new URLSearchParams({ username, password })).unwrap()
+            const { accessToken } = await login({ username, password }).unwrap()
             dispatch(setCredentials({ accessToken }))
             setUsername('')
             setPassword('')

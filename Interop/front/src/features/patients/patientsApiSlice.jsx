@@ -1,5 +1,5 @@
 import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from '../../app/api/apiSlice'
+import { apiSlice } from '../../app/api/apiSlice.jsx'
 
 const patientsAdapter = createEntityAdapter({})
 const initialState = patientsAdapter.getInitialState()

@@ -5,24 +5,34 @@ from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model import Patient
 from src.schemas import PatientSchema
-import httpx
 from src.utils.auth import get_access_token
-
+from keycloak import KeycloakOpenID
+import logging
 router = APIRouter()
 
-KEYCLOAK_URL = "http://localhost:8081/to/realm/protocol/openid-connect/token"
-CLIENT_ID = "your_client_id"
-CLIENT_SECRET = "your_client_secret"
-
+logger = logging.getLogger('uvicorn.error')
 from pydantic import BaseModel
+
+
+keycloak_openid = KeycloakOpenID(server_url="http://localhost:8081/",
+                                 client_id="backend",
+                                 realm_name="master",
+                                 client_secret_key="kjhk0CE0jOirTWyM89TJadN8wwFd1xkD")
+
 
 class LoginRequest(BaseModel):
     username: str
     password: str
 
 @router.post("/login")
-async def login_with_keycloak(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
-    return await get_access_token(form_data)
+async def login_with_keycloak(form_data: LoginRequest):
+    try:
+        token = await keycloak_openid.a_token(form_data.username, form_data.password)
+        logger.info(f"Token: {token}")
+        return token
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        return {"error": str(e)}
 
 
 

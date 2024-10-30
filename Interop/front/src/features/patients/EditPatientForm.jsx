@@ -1,12 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from "react"
-import { useUpdatePatientMutation,useDeletePatientMutation } from './patientsApiSlice'
+import { useUpdatePatientMutation,useDeletePatientMutation } from './patientsApiSlice.jsx'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons'
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import useAuth from '../../hooks/useAuth'
+import useAuth from '../../hooks/useAuth.jsx'
 
 const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 const MOBILENUMBER_REGEX = /^[789][0-9]{9}$/

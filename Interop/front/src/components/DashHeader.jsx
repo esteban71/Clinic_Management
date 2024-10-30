@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faRightFromBracket, faFileCirclePlus, faUserPlus, faUserDoctor, faUserCircle } from '@fortawesome/free-solid-svg-icons'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useSendLogoutMutation } from '../features/auth/authApiSlice'
-import useAuth from '../hooks/useAuth'
+import { useSendLogoutMutation } from '../features/auth/authApiSlice.jsx'
+import useAuth from '../hooks/useAuth.jsx'
 import { useState, useEffect } from 'react'
 
 const DASH_REGEX = /^\/dash(\/)?$/

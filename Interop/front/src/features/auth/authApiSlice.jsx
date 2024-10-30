@@ -1,15 +1,12 @@
 import React from 'react'
-import { apiSlice } from '../../app/api/apiSlice'
-import { logOut, setCredentials } from './authSlice'
+import { apiSlice } from '../../app/api/apiSlice.jsx'
+import { logOut, setCredentials } from './authSlice.jsx'
 
 export const authApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
         login: builder.mutation({
             query: credentials => ({
                 url: '/auth/login',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
                 method: 'POST',
                 body: { ...credentials }
             })

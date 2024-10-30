@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { selectPatientById } from './patientsApiSlice'
-import { selectAllUsers } from '../users/usersApiSlice'
+import { selectPatientById } from './patientsApiSlice.jsx'
+import { selectAllUsers } from '../users/usersApiSlice.jsx'
 import EditPatientForm from './EditPatientForm'
-import CircularLoader from '../../pageLoader/CircularLoader'
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 
 const EditPatient = () => {
 

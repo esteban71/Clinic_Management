@@ -1,9 +1,9 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { selectUserById } from './usersApiSlice'
+import { selectUserById } from './usersApiSlice.jsx'
 import EditUserForm from './EditUserForm'
-import CircularLoader from '../../pageLoader/CircularLoader'
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 
 const EditUser = () => {
 

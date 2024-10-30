@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import App from './App.jsx';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { store } from './app/store';
+import { store } from './app/store.jsx';
 import { Provider } from 'react-redux';
 import { disableReactDevTools } from '@fvilers/disable-react-devtools'
 

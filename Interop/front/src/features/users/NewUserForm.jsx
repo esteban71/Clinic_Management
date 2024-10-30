@@ -1,11 +1,11 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
-import { useAddNewUserMutation } from './usersApiSlice'
+import { useAddNewUserMutation } from './usersApiSlice.jsx'
 import { useNavigate } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
-import useAuth from '../../hooks/useAuth'
-import { ROLES } from '../../config/roles'
+import useAuth from '../../hooks/useAuth.jsx'
+import { Roles } from '../../config/roles.jsx'
 import { TextField } from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -127,7 +127,7 @@ const NewUserForm = () => {
 
   let optionsTwo
   if(isManager) {
-      optionsTwo = Object.values(ROLES).map(role => {
+      optionsTwo = Object.values(Roles).map(role => {
           return (
                 <option
                     key={role}
@@ -140,7 +140,7 @@ const NewUserForm = () => {
   }
 
   if(isAdmin) {
-      optionsTwo = Object.values(ROLES).filter(val => val !== 'Manager' && val !== 'Admin').map(role => {
+      optionsTwo = Object.values(Roles).filter(val => val !== 'Manager' && val !== 'Admin').map(role => {
           return (
                 <option
                     key={role}
@@ -152,7 +152,7 @@ const NewUserForm = () => {
   }
 
   if(isReceptionist) {
-    optionsTwo = Object.values(ROLES).filter(val => val === 'Doctor').map(role => {
+    optionsTwo = Object.values(Roles).filter(val => val === 'Doctor').map(role => {
         return (
               <option
                   key={role}

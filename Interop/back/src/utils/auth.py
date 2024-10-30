@@ -3,16 +3,30 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2AuthorizationCodeBearer
 import jwt
 from jwt import PyJWKClient
+import os
+import httpx
+import logging
+import sys
+logger = logging.getLogger('uvicorn.error')
+
 
 oauth_2_scheme = OAuth2AuthorizationCodeBearer(
-    tokenUrl="http://localhost:8081/to/realm/protocol/openid-connect/token",
-    authorizationUrl="http://localhost:8080/to/realm/protocol/openid-connect/auth",
+    tokenUrl="http://localhost:8081/to/master/protocol/openid-connect/token",
+    authorizationUrl="http://localhost:8081/to/realm/protocol/openid-connect/auth",
     refreshUrl="http://localhost:8081/to/realm/protocol/openid-connect/token",
 )
 
+CLIENT_ID, CLIENT_SECRET,KEYCLOAK_URL = os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"),os.getenv("KEYCLOAK_URL")
+
+
 async def get_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends(oauth_2_scheme)]
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
+
+    logger.info(f"Getting access token for {form_data.username}")
+    logger.info(f"CLIENT_ID: {CLIENT_ID}")
+    logger.info(f"CLIENT_SECRET: {CLIENT_SECRET}")
+    logger.info(f"KEYCLOAK_URL: {KEYCLOAK_URL}")
     payload = {
         "client_id": CLIENT_ID,
         "client_secret": CLIENT_SECRET,

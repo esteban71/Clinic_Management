@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { useAddNewPatientMutation } from './patientsApiSlice'
+import { useAddNewPatientMutation } from './patientsApiSlice.jsx'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave } from '@fortawesome/free-solid-svg-icons'
 import InputAdornment from '@mui/material/InputAdornment';
