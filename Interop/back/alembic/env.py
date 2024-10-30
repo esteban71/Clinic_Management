@@ -20,9 +20,7 @@ if config.config_file_name is not None:
 from src.model.Base import Base
 from src.model.CabinetMedical import CabinetMedical
 from src.model.Dossier import DossierMedical, DossierAdministratif, CompteRenduMedical
-from src.model.Medecin import Medecin, Appointment
-from src.model.MedicalAlerts import AlerteMedicale, Destinataires, MesuresCardiaques
-from src.model.MedicalDevices import DispositifMedical, DonneeMedicale
+from src.model.Medecin import Medecin
 from src.model.Patient import Patient, Link, Contact
 from src.model.Secretariat import Secretariat
 target_metadata = Base.metadata

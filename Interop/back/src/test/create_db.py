@@ -4,7 +4,7 @@ from src.test.create_cabinet_medical import create_cabinet_medical,add_cabinet_t
 from src.database import SessionLocal
 from sqlalchemy import text
 
-all_tables = ["appointments", "patients", "medecins", "cabinet_medical"]
+all_tables = ["patients", "medecins", "cabinet_medical"]
 
 
 def drop_all_data():

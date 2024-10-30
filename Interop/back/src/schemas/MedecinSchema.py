@@ -20,14 +20,3 @@ class MedecinSchema(BaseModel):
 
     class Config:
         orm_mode = True
-
-
-class AppointmentSchema(BaseModel):
-    id: int
-    medecin_id: int
-    patient_id: int
-    date: datetime
-    reason: Optional[str] = None
-
-    class Config:
-        orm_mode = True

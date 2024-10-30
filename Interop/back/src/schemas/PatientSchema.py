@@ -5,7 +5,7 @@ from datetime import date
 from pydantic import BaseModel, Field
 from datetime import date
 from typing import Optional, List, Dict
-from src.schemas.MedecinSchema import MedecinSchema,AppointmentSchema
+from src.schemas.MedecinSchema import MedecinSchema
 
 
 class ContactSchema(BaseModel):
@@ -48,7 +48,6 @@ class PatientSchema(BaseModel):
     links: List[LinkSchema] = []
     contacts: List[ContactSchema] = []
     medecin: Optional[MedecinSchema] = None
-    appointments: List[AppointmentSchema] = []
 
     class Config:
         orm_mode = True

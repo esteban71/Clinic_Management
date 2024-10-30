@@ -20,20 +20,5 @@ class Medecin(Base):
     # Relations    
     cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
     cabinet_medical = relationship("CabinetMedical", back_populates="medecins")
-    appointments = relationship("Appointment", back_populates="medecin")
     comptes_rendus = relationship("CompteRenduMedical", back_populates="auteur")
-    destinataires = relationship("Destinataires", back_populates="medecin")
     patients = relationship("Patient", back_populates="medecin")
-
-class Appointment(Base):
-    __tablename__ = 'appointments'
-
-    id = Column(Integer, primary_key=True, index=True)
-    medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=False)
-    patient_id = Column(Integer, ForeignKey('patients.id'), nullable=False)
-    date = Column(DateTime, nullable=False)  # Date du rendez-vous
-    reason = Column(String, nullable=True)  # Raison du rendez-vous
-
-    # Relations
-    medecin = relationship("Medecin", back_populates="appointments")
-    patient = relationship("Patient", back_populates="appointments")

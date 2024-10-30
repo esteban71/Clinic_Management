@@ -1,7 +1,8 @@
 from fastapi import FastAPI, Depends
-
+from fastapi.middleware.cors import CORSMiddleware
 from src.utils.auth import valid_access_token
 from src.app.Patient_routes import router as Patient_router
+from src.app.auth_routes import router as auth_router
 from src.database import get_db
 from src.test.create_db import create_db , drop_all_data
 import os
@@ -18,6 +19,13 @@ def create_app():
     return app
 
 app = create_app()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/public")
 def get_public():
@@ -30,4 +38,4 @@ def get_private():
 
 
 app.include_router(Patient_router, prefix="/patient")
-
+app.include_router(auth_router, prefix="/auth")

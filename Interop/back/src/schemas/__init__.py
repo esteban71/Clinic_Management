@@ -1,2 +1,2 @@
 from .PatientSchema import PatientSchema, ContactSchema, LinkSchema
-from .MedecinSchema import MedecinSchema, AppointmentSchema
+from .MedecinSchema import MedecinSchema
