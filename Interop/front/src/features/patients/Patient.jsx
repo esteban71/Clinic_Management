@@ -16,18 +16,18 @@ const Patient = ({patientID}) => {
 
     const handleEdit = () => navigate(`/dash/patients/${patientID}`)
 
-    const deceaseRecordOne = patient.deceaseRecordOne
-    const medicineRecordOne = patient.medicineRecordOne
-    const deceaseRecordTwo = patient.deceaseRecordTwo
-    const medicineRecordTwo = patient.medicineRecordTwo
-    const doctorID = patient.doctorID
+    //const deceaseRecordOne = patient.deceaseRecordOne
+    //const medicineRecordOne = patient.medicineRecordOne
+    //const deceaseRecordTwo = patient.deceaseRecordTwo
+    //const medicineRecordTwo = patient.medicineRecordTwo
+    const doctorID = patient.medecin.id
     
     return (
       <tr className="table__row">
-        <td className="table__cell">{patient.pToken}</td>
-        <td className="table__cell">{patient.patientName}</td>
+        <td className="table__cell">{patient.id}</td>
+        <td className="table__cell">{patient.name}</td>
         <td className="table__cell">{patient.address}</td>
-        <td className="table__cell">{patient.mobileNumber}</td>
+        <td className="table__cell">{patient.telecom}</td>
         <td className="table__cell">
           <button
               className="icon-button table__button"

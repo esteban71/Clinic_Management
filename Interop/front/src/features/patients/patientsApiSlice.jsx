@@ -12,11 +12,7 @@ export const patientsApiSlice = apiSlice.injectEndpoints({
                 return response.status === 200 && !result.isError
             },
             transformResponse: responseData => {
-                const loadedpatients = responseData.map(patient => {
-                    patient.id = patient._id
-                    return patient
-                })
-                return patientsAdapter.setAll(initialState, loadedpatients)
+                return patientsAdapter.setAll(initialState, responseData)
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {

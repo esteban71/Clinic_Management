@@ -50,7 +50,7 @@ const PatientsList = () => {
 
   const searchToken = () => {
     for(let i=0; i<ids?.length; i++) {
-      if(entities[ids[i]].pToken === Number(q)) {
+      if(entities[ids[i]].id === Number(q)) {
         console.log('pTokenId -> ', ids[i])
         navigate(`/dash/patients/${ids[i]}`) 
       }
