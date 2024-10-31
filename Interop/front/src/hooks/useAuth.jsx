@@ -13,7 +13,8 @@ const useAuth = () => {
     
     if(token) {
         const decoded = jwtDecode(token)
-        const { username, name, roles } = decoded.UserInfo
+        const { preferred_username, name, realm_access: { roles } } = decoded
+        const username = preferred_username
 
         isManager = roles.includes('Manager')
         isAdmin = roles.includes('Admin')
