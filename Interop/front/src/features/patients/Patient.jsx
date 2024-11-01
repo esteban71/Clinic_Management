@@ -20,7 +20,7 @@ const Patient = ({patientID}) => {
     //const medicineRecordOne = patient.medicineRecordOne
     //const deceaseRecordTwo = patient.deceaseRecordTwo
     //const medicineRecordTwo = patient.medicineRecordTwo
-    const doctorID = patient.medecin.id
+   // const doctorID = patient.medecin.id
     
     return (
       <tr className="table__row">

@@ -5,18 +5,20 @@ import { selectPatientById } from './patientsApiSlice.jsx'
 import { selectAllUsers } from '../users/usersApiSlice.jsx'
 import EditPatientForm from './EditPatientForm'
 import CircularLoader from '../../pageLoader/CircularLoader.jsx'
+import {selectAllMedecins} from "../medecin/medecinApiSlice.jsx";
 
 const EditPatient = () => {
 
   const { id } = useParams()
 
   const patient = useSelector(state => selectPatientById(state, id))
-  const users = useSelector(selectAllUsers)
+  const medecin = useSelector(selectAllMedecins)
+  // modify to send all user 
 
-  console.log('users', users)
+  console.log('users', medecin)
 
-  const content = users.length && patient ? <EditPatientForm patient={patient} users={users} /> : <CircularLoader />
-  
+  const content = medecin.length && patient ? <EditPatientForm patient={patient} medecin={medecin} /> : <CircularLoader />
+
   return content
 }
 

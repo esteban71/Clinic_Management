@@ -11,7 +11,7 @@ import useAuth from '../../hooks/useAuth.jsx'
 const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 const MOBILENUMBER_REGEX = /^[789][0-9]{9}$/
 
-const EditPatientForm = ({ patient, users }) => {
+const EditPatientForm = ({ patient, medecin }) => {
 
   const { isDoctor, username } = useAuth()
 
@@ -32,17 +32,17 @@ const EditPatientForm = ({ patient, users }) => {
 
   const navigate = useNavigate()
 
-  const [patientName, setPatientName] = useState(patient.patientName)
-  const [pID, setPID] = useState(patient.pID)
+  const [patientName, setPatientName] = useState(patient.name)
+  const [pID, setPID] = useState(patient.id)
   const [validPID, setValidPID] = useState(false)
-  const pToken = patient.pToken
+  const pToken = patient.id
   const [address, setAddress] = useState(patient.address)
-  const [mobileNumber, setMobileNumber] = useState(patient.mobileNumber)
+  const [mobileNumber, setMobileNumber] = useState(patient.telecom)
   const [validMobileNumber, setValidMobileNumber] = useState(false)
   const [iserror, setIsError] = useState(false);
   const [deceaseRecordOne, setDeceaseRecordOne] = useState(patient.deceaseRecordOne)
   const [medicineRecordOne, setMedicineRecordOne] = useState(patient.medicineRecordOne)
-  const [doctorID, setDoctorID] = useState(patient.doctorID)
+  const [doctorID, setDoctorID] = useState(patient.medecin.id)
 
   useEffect(() => {
     setValidPID(EMAIL_REGEX.test(pID))
@@ -113,26 +113,26 @@ const EditPatientForm = ({ patient, users }) => {
   }
 
   const onDeletePatientClicked = async () => {
-      await deletePatient({ pToken: patient.pToken })
+      await deletePatient({ pToken: patient.id })
       alert('Patient data deleted successfully')
   }
 
   let filteredDoctors
   if(isDoctor) {
-    filteredDoctors = users.filter(val => val.roles[0] === 'Doctor' && val.username === username)
+    filteredDoctors = medecin.filter(val => val.name === username)
   }
   else {
-    filteredDoctors = users.filter(val => val.roles[0] === 'Doctor')
+    filteredDoctors = medecin
   }
 
   const options = filteredDoctors
                   .map(user => {
                       return (
                         <option
-                          key={user.username}
-                          value={user.username}
+                          key={user.name}
+                          value={user.name}
                       
-                        > {user.username} </option>  
+                        > {user.name} </option>
                       )
                   })
 
@@ -146,7 +146,7 @@ const EditPatientForm = ({ patient, users }) => {
         <div className='form-main'>
         <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form__title-row">
-                    <h2>{patient.patientName} [ Token = {patient.pToken}]</h2>
+                    <h2>{patient.name} [ Token = {patient.id}]</h2>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
