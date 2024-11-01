@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.utils.auth import valid_access_token
 from src.app.Patient_routes import router as Patient_router
 from src.app.auth_routes import router as auth_router
+from src.app.Medecin_routes import router as Medecin_router
 from src.database import get_db
 from src.test.create_db import create_db , drop_all_data
 import os
@@ -38,5 +39,6 @@ def get_public():
 def get_private():
     return {"message": "This endpoint is private"}
 
-app.include_router(Patient_router, prefix="/patient")
+app.include_router(Patient_router, prefix="/patients")
 app.include_router(auth_router, prefix="/auth")
+app.include_router(Medecin_router, prefix="/medecins")

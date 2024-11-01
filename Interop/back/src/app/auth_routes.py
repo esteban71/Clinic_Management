@@ -88,8 +88,9 @@ async def login_with_keycloak(form_data: LoginRequest) -> Dict[str, Any]:
 
 @router.get("/refresh", response_model=LoginResponse)
 async def refresh_token(
-        refresh_token: str = Cookie(None)
+        jwt: Annotated[str | None, Cookie()] = None
 ) -> Dict[str, Any]:
+    refresh_token = jwt
     if not refresh_token:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
