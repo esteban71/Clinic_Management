@@ -14,6 +14,7 @@ class Patient(Base):
     active = Column(Boolean, nullable=True)  # active status of the patient
     name = Column(String, name="name", nullable=False)  # name of the patient
     telecom = Column(String, nullable=True)  # contact details of the patient
+    email = Column(String, nullable=True)  # email of the patient
     gender = Column(String, nullable=True)  # gender of the patient
     birth_date = Column(Date, nullable=True)  # birth date of the patient
     address = Column(String, nullable=True)  # address of the patient

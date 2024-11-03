@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Header
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2AuthorizationCodeBearer
 import jwt
 from jwt import PyJWKClient
@@ -7,8 +7,8 @@ import os
 import httpx
 import logging
 import sys
-logger = logging.getLogger('uvicorn.error')
 
+logger = logging.getLogger('uvicorn.error')
 
 oauth_2_scheme = OAuth2AuthorizationCodeBearer(
     tokenUrl="http://localhost:8081/to/master/protocol/openid-connect/token",
@@ -16,13 +16,12 @@ oauth_2_scheme = OAuth2AuthorizationCodeBearer(
     refreshUrl="http://localhost:8081/to/realm/protocol/openid-connect/token",
 )
 
-CLIENT_ID, CLIENT_SECRET,KEYCLOAK_URL = os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"),os.getenv("KEYCLOAK_URL")
+CLIENT_ID, CLIENT_SECRET, KEYCLOAK_URL = os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"), os.getenv("KEYCLOAK_URL")
 
 
 async def get_access_token(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
-
     logger.info(f"Getting access token for {form_data.username}")
     logger.info(f"CLIENT_ID: {CLIENT_ID}")
     logger.info(f"CLIENT_SECRET: {CLIENT_SECRET}")
@@ -74,12 +73,15 @@ async def valid_access_token(
         raise HTTPException(status_code=401, detail="Not authenticated")
 
 
-def has_role(role_name: str):
-    async def check_role(
-            token_data: Annotated[dict, Depends(valid_access_token)]
-    ):
-        roles = token_data["resource_access"]["api"]["roles"]
-        if role_name not in roles:
-            raise HTTPException(status_code=403, detail="Unauthorized access")
+def check_role(authorization: Annotated[str | None, Header()] = None):
+    def check_role_decorator(func):
+        async def wrapper(
+                token_data: Annotated[dict, Depends(valid_access_token)]
+        ):
+            roles = token_data["resource_access"]["api"]["roles"]
+            if authorization not in roles:
+                raise HTTPException(status_code=403, detail="Unauthorized access")
 
-    return check_role
+            return await func(token_data)
+
+        return wrapper

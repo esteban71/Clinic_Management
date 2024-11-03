@@ -39,6 +39,7 @@ class PatientSchema(BaseModel):
     active: Optional[bool] = None
     name: str
     telecom: Optional[str] = None
+    email: Optional[str] = None
     gender: Optional[str] = None
     birth_date: Optional[date] = None
     address: Optional[str] = None
@@ -52,3 +53,15 @@ class PatientSchema(BaseModel):
     class Config:
         orm_mode = True
         from_attributes = True
+
+
+class CreatePatientSchema(BaseModel):
+    id: Optional[int] = None
+    name: str
+    telecom: str
+    address: str
+    email: str
+    medecin_id: int
+
+    class Config:
+        orm_mode = True
