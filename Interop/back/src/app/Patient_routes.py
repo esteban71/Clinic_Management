@@ -23,6 +23,10 @@ async def get_all_patients(db: Session = Depends(get_db)):
 
 @router.post("", response_model=PatientSchema)
 async def create_patient(patient: CreatePatientSchema, db: Session = Depends(get_db)):
+    # check if patient exists
+    db_patient = db.query(Patient).filter(Patient.name == patient.name).first()
+    if db_patient is not None:
+        raise HTTPException(status_code=400, detail="Patient already exists")
     db_patient = Patient(
         name=patient.name,
         telecom=patient.telecom,

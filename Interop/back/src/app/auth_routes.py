@@ -1,22 +1,12 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Cookie
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from src.database import get_db
-from src.model import Patient
-from src.schemas import PatientSchema
-from src.utils.auth import get_access_token
+from fastapi import APIRouter, Cookie
+from fastapi import HTTPException, status
 from keycloak import KeycloakOpenID
 import logging
-from fastapi import FastAPI, HTTPException, status, Header
-from keycloak import KeycloakOpenID
-import httpx
-import logging
-from pydantic import BaseModel
-import asyncio
-from typing import Optional, Dict, Any
+from typing import Dict, Any
 from fastapi.responses import JSONResponse
-import jwt
+
+from src.schemas.AuthSchema import LoginRequest, LoginResponse
 
 router = APIRouter()
 
@@ -24,17 +14,6 @@ router = APIRouter()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('uvicorn.error')
 
-
-# Pydantic models
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-
-
-class LoginResponse(BaseModel):
-    access_token: str
-    refresh_token: str
-    expires_in: int
 
 
 KEYCLOAK_CONFIG = {
@@ -138,7 +117,16 @@ async def refresh_token(
 
 
 @router.post("/logout")
-async def logout() -> JSONResponse:
+async def logout(jwt: Annotated[str | None, Cookie()] = None) -> JSONResponse:
+    refresh_token = jwt
+    keycloak_openid = KeycloakOpenID(
+        server_url=KEYCLOAK_CONFIG["server_url"],
+        client_id=KEYCLOAK_CONFIG["client_id"],
+        realm_name=KEYCLOAK_CONFIG["realm_name"],
+        client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
+        timeout=10000
+    )
+    keycloak_openid.logout(refresh_token)
     response = JSONResponse(status_code=200, content={"message": "Cookie cleared"})
     response.delete_cookie("jwt", httponly=True, samesite="None", secure=True)
     return response
