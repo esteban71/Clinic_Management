@@ -26,8 +26,7 @@ const Medecin = ({medecinID}) => {
             <tr className="table__row">
                 <td className="table__cell">{medecin.id}</td>
                 <td className="table__cell">{medecin.name}</td>
-                <td className="table__cell">{medecin.address}</td>
-                <td className="table__cell">{medecin.telecom}</td>
+                <td className="table__cell">{medecin.specialite}</td>
                 <td className="table__cell">
                     <button
                         className="icon-button table__button"

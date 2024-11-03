@@ -25,11 +25,24 @@ export const medecinApiSlice = apiSlice.injectEndpoints({
                 } else return [{type: 'Medecin', id: 'LIST'}]
             }
         }),
+        addNewMedecin: builder.mutation({
+            query: initialMedecinData => ({
+                url: '/medecins',
+                method: 'POST',
+                body: {
+                    ...initialMedecinData,
+                }
+            }),
+            invalidatesTags: [
+                {type: 'Medecin', id: "LIST"}
+            ]
+        }),
     })
 })
 
 export const {
     useGetMedecinsQuery,
+    useAddNewMedecinMutation
 } = medecinApiSlice
 
 // returns the query result object

@@ -11,8 +11,8 @@ import EditUser from './features/users/EditUser'
 import NewUserForm from './features/users/NewUserForm'
 import EditPatient from './features/patients/EditPatient'
 import NewPatient from './features/patients/NewPatient'
-import DoctorsList from './features/users/DoctorsList';
-import NewDoctorForm from './features/users/NewDoctorForm';
+import DoctorsList from './features/medecin/DoctorsList.jsx';
+import NewDoctorForm from './features/medecin/NewDoctorForm.jsx';
 import Prefetch from './features/auth/Prefetch.jsx'
 import PersistLogin from './features/auth/PersistLogin.jsx';
 import RequireAuth from './features/auth/RequireAuth.jsx';

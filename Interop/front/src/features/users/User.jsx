@@ -15,12 +15,12 @@ const User = ({userId}) => {
   if(user) {
     const handleEdit = () => navigate(`/dash/users/${userId}`)
 
-    const userRolesString = user.roles.toString().replaceAll(',', ', ')
+    const userRolesString = "test"  //user.roles.toString().replaceAll(',', ', ')
 
     return (
       <tr className="table__row Patient">
         <td className="table__cell">{user.name}</td>
-        <td className="table__cell">{user.username}</td>
+        <td className="table__cell">{user.name}</td>
         <td className="table__cell">{userRolesString}</td>
         <td className="table__cell">
             <button
