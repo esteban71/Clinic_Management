@@ -2,13 +2,14 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import { selectAllUsers } from '../users/usersApiSlice.jsx'
 import NewPatientForm from './NewPatientForm'
+import {selectAllMedecins} from "../medecin/medecinApiSlice.jsx";
 
 const NewPatient = () => {
-  const users = useSelector(selectAllUsers)
+  const medecin = useSelector(selectAllMedecins)
 
-  if(!users?.length) return <p>Users not currently available</p>
+  if(!medecin?.length) return <p>Users not currently available</p>
   
-  const content = <NewPatientForm users={users} />
+  const content = <NewPatientForm medecin={medecin} />
   
   return content
 }

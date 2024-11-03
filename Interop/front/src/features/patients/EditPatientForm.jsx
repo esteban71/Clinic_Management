@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import useAuth from '../../hooks/useAuth.jsx'
 
 const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-const MOBILENUMBER_REGEX = /^[789][0-9]{9}$/
+const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
 const EditPatientForm = ({ patient, medecin }) => {
 
@@ -32,79 +32,69 @@ const EditPatientForm = ({ patient, medecin }) => {
 
   const navigate = useNavigate()
 
-  const [patientName, setPatientName] = useState(patient.name)
-  const [pID, setPID] = useState(patient.id)
-  const [validPID, setValidPID] = useState(false)
-  const pToken = patient.id
+  const [name, setName] = useState(patient.name)
+  const [email, setEmail] = useState(patient.email)
+  const [validid, setvalidid] = useState(false)
   const [address, setAddress] = useState(patient.address)
-  const [mobileNumber, setMobileNumber] = useState(patient.telecom)
-  const [validMobileNumber, setValidMobileNumber] = useState(false)
+  const [telecom, setTelecom] = useState(patient.telecom)
+  const [validtelecom, setvalidtelecom] = useState(false)
   const [iserror, setIsError] = useState(false);
-  const [deceaseRecordOne, setDeceaseRecordOne] = useState(patient.deceaseRecordOne)
-  const [medicineRecordOne, setMedicineRecordOne] = useState(patient.medicineRecordOne)
-  const [doctorID, setDoctorID] = useState(patient.medecin.id)
+  const [medecin_id, setMedecin_id] = useState(patient.medecin.id)
 
   useEffect(() => {
-    setValidPID(EMAIL_REGEX.test(pID))
-  }, [pID])
+    setvalidid(EMAIL_REGEX.test(email))
+  }, [email])
 
   useEffect(() => {
-    setValidMobileNumber(MOBILENUMBER_REGEX.test(mobileNumber))
-  }, [mobileNumber])
+    setvalidtelecom(MOBILENUMBER_REGEX.test(telecom))
+  }, [telecom])
 
 
   useEffect(() => {
 
       if (isSuccess || isDelSuccess) {
-          setPatientName('')
+          setName('')
           setAddress('')
-          setMobileNumber('')
-          setDeceaseRecordOne('')
-          setMedicineRecordOne('')
-          setDoctorID('')
+          setTelecom('')
+          setMedecin_id('')
           navigate('/dash/patients')
       }
 
   }, [isSuccess, isDelSuccess, navigate])
 
-  const onPatientNameChanged = e => setPatientName(e.target.value)
+  const onPatientNameChanged = e => setName(e.target.value)
   const onAddressChanged = e => setAddress(e.target.value)
-  const onPatientPIDChanged = e => setPID(e.target.value)
-  const onMobileNumberChanged = e => setMobileNumber(e.target.value)
-  const onDeceaseRecordOneChanged = e => setDeceaseRecordOne(e.target.value)
-  const onMedicineRecordOneChanged = e => setMedicineRecordOne(e.target.value)
+  const onPatientPIDChanged = e => setEmail(e.target.value)
+  const onMobileNumberChanged = e => setTelecom(e.target.value)
   const onDoctorIDChanged = e => {
     const values = Array.from(
         e.target.selectedOptions,
-        (option) => option.value
+        (option) => option.id
     )
-    setDoctorID(values)
+    setMedecin_id(values)
 }
 
-  const canSave = [ patientName, address, mobileNumber, deceaseRecordOne, medicineRecordOne ].every(Boolean) &&  !isLoading
+  const canSave = [ name, address, telecom].every(Boolean) &&  !isLoading
 
   const onSavePatientClicked = async (e) => {
-    if (canSave && validPID && validMobileNumber) {
+    if (canSave && validid && validtelecom) {
         await updatePatient({ 
-          id: patient.id,
-          pToken,
-          pID,
-          patientName,
-          address,
-          mobileNumber,
-          deceaseRecordOne,
-          medicineRecordOne,
-          doctorID
+          'id': patient.id,
+          'email': email,
+          'name': name,
+          'address':address,
+          'telecom': telecom,
+          'medecin_id': medecin_id
       })
       alert('Patient updated successfully')
     }
-    else if(!validMobileNumber && ! validPID) {
+    else if(!validtelecom && ! validid) {
       alert('Invalid Email ID and mobile number')
     }
-    else if(!validMobileNumber) {
+    else if(!validtelecom) {
       alert('Invalid Mobile Number')
     }
-    else if(!validPID) {
+    else if(!validid) {
       alert('Invalid Email ID')
     }
     else {
@@ -113,7 +103,7 @@ const EditPatientForm = ({ patient, medecin }) => {
   }
 
   const onDeletePatientClicked = async () => {
-      await deletePatient({ pToken: patient.id })
+      await deletePatient({ 'id': patient.id })
       alert('Patient data deleted successfully')
   }
 
@@ -131,6 +121,7 @@ const EditPatientForm = ({ patient, medecin }) => {
                         <option
                           key={user.name}
                           value={user.name}
+                          id={user.id}
                       
                         > {user.name} </option>
                       )
@@ -175,7 +166,7 @@ const EditPatientForm = ({ patient, medecin }) => {
                         type="text"
                         label="Enter Patient Name"
                         autoComplete="on"
-                        value={patientName}
+                        value={name}
                         onChange={onPatientNameChanged}
                     /></div>
 
@@ -201,7 +192,7 @@ const EditPatientForm = ({ patient, medecin }) => {
                         label="Enter Patient Mobile Number"
                         autoComplete="on"
                         error={iserror}
-                        value={mobileNumber}
+                        value={telecom}
                         onChange={onMobileNumberChanged}
                         InputProps={{
                           startAdornment: <InputAdornment position="start">
@@ -220,7 +211,7 @@ const EditPatientForm = ({ patient, medecin }) => {
                         type="text"
                         label= "Enter Email ID"
                         autoComplete="off"
-                        value={pID}
+                        value={email}
                         onChange={onPatientPIDChanged}
                     /></div>
 
@@ -232,7 +223,7 @@ const EditPatientForm = ({ patient, medecin }) => {
                             id="note-username"
                             name="username"
                             className="form__select"
-                            value={doctorID}
+                            value={medecin_id}
                             onChange={onDoctorIDChanged}
                         >
                             {options}
@@ -242,31 +233,6 @@ const EditPatientForm = ({ patient, medecin }) => {
                   </div>
                 </div>
 
-                <div className='patient-details-second-row'>
-                  <div className='patient-details-second-row--first-column'>
-                    <label className="form__label form__label--second-row" htmlFor="note-text">
-                        Decease Record:</label>
-                    <div><textarea
-                        className={`form__input form__input--text form__input--text-secondRow form__input--width`}
-                        id="note-text"
-                        name="text"
-                        value={deceaseRecordOne}
-                        onChange={onDeceaseRecordOneChanged}
-                    /></div>
-                    </div>
-
-                    <div className='patient-details-second-row--second-column'>
-                    <label className="form__label form__label--second-row" htmlFor="note-text">
-                        Recommended medications:</label>
-                    <div><textarea
-                        className={`form__input form__input--text form__input--text-secondRow form__input--width`}
-                        id="note-text"
-                        name="text"
-                        value={medicineRecordOne}
-                        onChange={onMedicineRecordOneChanged}
-                    /></div>
-                    </div>
-                </div>
         </form>
         </div>
     </>

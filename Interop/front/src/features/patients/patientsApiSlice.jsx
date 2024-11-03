@@ -48,13 +48,13 @@ export const patientsApiSlice = apiSlice.injectEndpoints({
             ]
         }),
         deletePatient: builder.mutation({
-            query: ({ pToken }) => ({
+            query: ({ id }) => ({
                 url: `/patients`,
                 method: 'DELETE',
-                body: { pToken }
+                body: { id }
             }),
             invalidatesTags: (result, error, arg) => [
-                { type: 'Patient', id: arg.pToken }
+                { type: 'Patient', id: arg.id }
             ]
         }),
         
