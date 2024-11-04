@@ -89,7 +89,7 @@ const PatientsList = () => {
       filteredIds = [...ids]
     }
     else if(isDoctor) {
-      filteredIds = ids.filter(id => entities[id].doctorID[0] === username )
+      filteredIds = ids.filter(id => entities[id].medecin.id === username )
     }
 
     const tableContent = ids?.length

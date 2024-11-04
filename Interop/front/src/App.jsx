@@ -38,12 +38,12 @@ function App() {
                 <Route path='patients'>
                   <Route index element={<PatientsList />} />
                   <Route path=':id' element={<EditPatient />} />
-                  <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
+                  <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Receptionist]} />}>
                     <Route path='new' element={<NewPatient />} />
                   </Route>
                 </Route>
 
-                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
+                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Receptionist]} />}>
                   <Route path='users'>
                     <Route index element={<UsersList />} />
                     <Route path=':id' element={<EditUser />} />
@@ -51,7 +51,7 @@ function App() {
                   </Route>
                 </Route>
 
-                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.Admin, Roles.Receptionist]} />}>
+                <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Receptionist]} />}>
                   <Route path='doctors'>
                     <Route index element={<DoctorsList />} />
                     <Route path='new' element={<NewDoctorForm />} />

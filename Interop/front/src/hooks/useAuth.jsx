@@ -17,12 +17,12 @@ const useAuth = () => {
         const username = preferred_username
 
         isManager = roles.includes('Manager')
-        isAdmin = roles.includes('Admin')
+        isAdmin = roles.includes('admin')
         isDoctor = roles.includes('Doctor')
         isReceptionist = roles.includes('Receptionist')
 
         if(isManager) status = "Manager"
-        if(isAdmin) status = "Admin"
+        if(isAdmin) status = "admin"
         if(isDoctor) status = "Doctor"
         if(isReceptionist) status = "Receptionist"
 
