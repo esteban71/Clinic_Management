@@ -1,13 +1,11 @@
 import React from 'react'
-import {useGetusersQuery} from '../users/usersApiSlice.jsx'
-import User from '../users/User.jsx'
 import useAuth from '../../hooks/useAuth.jsx'
 import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 import '../../css/userList.css'
 import {useGetMedecinsQuery} from "./medecinApiSlice.jsx";
 import Medecin from "./Medecin.jsx";
 
-const DoctorsList = () => {
+const MedecinsList = () => {
 
     const {isManager, isAdmin, isReceptionist} = useAuth()
 
@@ -73,5 +71,5 @@ const DoctorsList = () => {
 
 }
 
-export default DoctorsList
+export default MedecinsList
 

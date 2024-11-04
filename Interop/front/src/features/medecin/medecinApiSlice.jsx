@@ -1,4 +1,4 @@
-import {createSelector, createEntityAdapter} from "@reduxjs/toolkit";
+import {createEntityAdapter, createSelector} from "@reduxjs/toolkit";
 import {apiSlice} from '../../app/api/apiSlice.jsx'
 
 const medecinAdapter = createEntityAdapter({})
@@ -37,12 +37,38 @@ export const medecinApiSlice = apiSlice.injectEndpoints({
                 {type: 'Medecin', id: "LIST"}
             ]
         }),
+        updateMedecin: builder.mutation({
+            query: initialMedecinData => ({
+                url: '/medecins',
+                method: 'PATCH',
+                body: {
+                    ...initialMedecinData,
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                {type: 'Medecin', id: arg.id}
+            ]
+        }),
+        deleteMedecin: builder.mutation({
+            query: ({id}) => ({
+                url: `/medecins`,
+                method: 'DELETE',
+                body: {
+                    id
+                }
+            }),
+            invalidatesTags: (result, error, arg) => [
+                {type: 'Medecin', id: arg.id}
+            ]
+        })
     })
 })
 
 export const {
     useGetMedecinsQuery,
-    useAddNewMedecinMutation
+    useAddNewMedecinMutation,
+    useUpdateMedecinMutation,
+    useDeleteMedecinMutation
 } = medecinApiSlice
 
 // returns the query result object

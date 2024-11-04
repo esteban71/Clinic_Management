@@ -1,11 +1,15 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faRightFromBracket, faFileCirclePlus, faUserPlus, faUserDoctor, faUserCircle } from '@fortawesome/free-solid-svg-icons'
-import { useNavigate, useLocation } from 'react-router-dom'
-import { useSendLogoutMutation } from '../features/auth/authApiSlice.jsx'
+import React, {useEffect} from 'react'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {
+    faFileCirclePlus,
+    faHouse,
+    faRightFromBracket,
+    faUserCircle,
+    faUserPlus
+} from '@fortawesome/free-solid-svg-icons'
+import {useSendLogoutMutation} from '../features/auth/authApiSlice.jsx'
 import useAuth from '../hooks/useAuth.jsx'
-import { useState, useEffect } from 'react'
 
 const DASH_REGEX = /^\/dash(\/)?$/
 const PATIENTS_REGEX = /^\/dash\/patients(\/)?$/
@@ -21,7 +25,7 @@ const DashHeader = () => {
     const onGoHomeClicked = () => navigate('/dash')
     const onAddNewPatient = () => navigate('/dash/patients/new')
     const onAddNewUser = () => navigate('/dash/users/new')
-    const onAddNewDoctor = () => navigate('/dash/doctors/new')
+    const onAddNewDoctor = () => navigate('/dash/medecins/new')
 
     let goHomeButton = null
     if(pathname !== '/dash') {
@@ -63,7 +67,7 @@ const DashHeader = () => {
     }
 
     let addNewDoctor = null
-    if(pathname === '/dash/doctors') {
+    if (pathname === '/dash/medecins') {
         addNewDoctor = (
             <button
             className="dash-header__button icon-button"

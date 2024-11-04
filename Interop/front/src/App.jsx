@@ -1,5 +1,5 @@
 import './App.css';
-import { Route, Routes } from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
 import Layout from './components/Layout';
 import Public from './components/Public';
 import Login from './features/auth/Login'
@@ -11,12 +11,13 @@ import EditUser from './features/users/EditUser'
 import NewUserForm from './features/users/NewUserForm'
 import EditPatient from './features/patients/EditPatient'
 import NewPatient from './features/patients/NewPatient'
-import DoctorsList from './features/medecin/DoctorsList.jsx';
+import MedecinsList from './features/medecin/MedecinsList.jsx';
 import NewDoctorForm from './features/medecin/NewDoctorForm.jsx';
 import Prefetch from './features/auth/Prefetch.jsx'
 import PersistLogin from './features/auth/PersistLogin.jsx';
 import RequireAuth from './features/auth/RequireAuth.jsx';
-import { Roles } from './config/roles.jsx'
+import {Roles} from './config/roles.jsx'
+import EditMedecins from "./features/medecin/EditMedecins.jsx";
 
 
 function App() {
@@ -52,8 +53,9 @@ function App() {
                 </Route>
 
                 <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Receptionist]} />}>
-                  <Route path='doctors'>
-                    <Route index element={<DoctorsList />} />
+                  <Route path='medecins'>
+                    <Route index element={<MedecinsList/>}/>
+                    <Route path=':id' element={<EditMedecins/>}/>
                     <Route path='new' element={<NewDoctorForm />} />
                   </Route>
                 </Route>

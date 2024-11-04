@@ -1,39 +1,53 @@
 import React, {useEffect, useState} from 'react'
-import {useAddNewMedecinMutation} from './medecinApiSlice.jsx'
+import {useDeleteMedecinMutation, useUpdateMedecinMutation} from "./medecinApiSlice.jsx";
 import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSave} from '@fortawesome/free-solid-svg-icons'
+import {faSave, faTrashCan} from '@fortawesome/free-solid-svg-icons'
 import useAuth from '../../hooks/useAuth.jsx'
-import {Roles} from '../../config/roles.jsx'
-import TextField from '@mui/material/TextField';
+import CircularLoader from '../../pageLoader/CircularLoader.jsx'
+import {TextField} from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
+
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-const USER_REGEX = /^[A-z0-9]{3,20}$/
+const USER_REGEX = /^[A-z0-9]{3,10}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
-const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
+const MOBILENUMBER_REGEX = /^[789][0-9]{9}$/
 
-const NewDoctorForm = () => {
+const EditMedecinsForm = ({doctor}) => {
 
-    const {isManager, isAdmin, isReceptionist} = useAuth()
+    const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
-    const [addNewMedecin, {isLoading, isSuccess, isError, error}] = useAddNewMedecinMutation();
+    const [
+        updateUser, {
+            isLoading,
+            isSuccess,
+            isError,
+            error
+        }
+    ] = useUpdateMedecinMutation()
+
+    const [
+        deleteUser, {
+            isSuccess: isDelSuccess,
+            isError: isDelError,
+            error: delerror
+        }
+    ] = useDeleteMedecinMutation()
 
     const navigate = useNavigate()
 
-    const [name, setName] = useState('')
-    const [mobileNumber, setMobileNumber] = useState('')
+    const [name, setName] = useState(doctor.name)
+    const [mobileNumber, setMobileNumber] = useState(doctor.telecom)
     const [validMobileNumber, setValidMobileNumber] = useState(false)
-    const [username, setUsername] = useState('')
+    const [username, setUsername] = useState(doctor.username)
     const [validUsername, setValidUsername] = useState(false)
-    const [email, setEmail] = useState('')
-    const [validEmail, setValidEmail] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
-    const [roles, setRoles] = useState(["Employee"])
+    const [roles, setRoles] = useState(doctor.roles)
     const [iserror, setIsError] = useState(false);
     const [values, setValues] = React.useState({
         password: "",
@@ -65,24 +79,25 @@ const NewDoctorForm = () => {
     }, [values.password])
 
     useEffect(() => {
-        if (isSuccess) {
+        console.log(isSuccess)
+        if (isSuccess || isDelSuccess) {
             setName('')
             setMobileNumber('')
             setUsername('')
-            setEmail('')
             setPassword('')
             setReEnterPassword('')
             setRoles([])
             navigate('/dash/medecins')
+
         }
-    }, [isSuccess, navigate])
+    }, [isSuccess, isDelSuccess, navigate])
 
     const onNameChanged = e => setName(e.target.value)
     const onMobileNumberChanged = e => setMobileNumber(e.target.value)
     const onUsernameChanged = e => setUsername(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
     const onReEnterPassword = e => setReEnterPassword(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
+
     const onRolesChanged = e => {
         const values = Array.from(
             e.target.selectedOptions,
@@ -91,71 +106,67 @@ const NewDoctorForm = () => {
         setRoles(values)
     }
 
-    const canSave = [name, mobileNumber, username, email, values.password, roles.length].every(Boolean) && !isLoading
-
     const onSaveUserClicked = async (e) => {
-        e.preventDefault()
-        if (canSave && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword)) {
-            const result = await addNewMedecin({
-                'name': name,
-                'telecom': mobileNumber,
-                'username': username,
-                'email': email,
-                password: values.password
-            })
-            if (result.error) {
-                alert('Unable to create new Doctor! please try again...')
-            } else {
-                alert('New Doctor created successfully')
-            }
-
-        } else if (!validUsername && !validPassword && !validMobileNumber && !(values.password === reEnterPassword)) {
-            alert('All fields are invalid')
+        if (password && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
+            await updateUser({id: doctor.id, name, mobileNumber, username, password: values.password, roles})
+            alert('updated successfully')
+        } else if (validUsername && validMobileNumber && window.confirm("Press 'Ok' to update") == true) {
+            await updateUser({id: doctor.id, name, username, mobileNumber, roles})
+            alert('updated successfully')
         } else if (!validUsername) {
             alert('Invalid username')
         } else if (!validPassword) {
             alert('Invalid password')
-        } else if (!validMobileNumber) {
-            alert('Invalid mobile number')
         } else if (!(values.password === reEnterPassword)) {
             alert('Please re-enter password correctly')
+        } else if (!validMobileNumber) {
+            alert('Invalid mobile number')
         } else {
-            alert('Unable to create new Doctor! please try again...')
+            alert('Unable to update! please try again...')
         }
     }
 
-    const options = Object.values(Roles)
-        .filter(val => val === 'Doctor')
-        .map(role => {
-            return (
-                <option
-                    key={role}
-                    value={role}
+    const onDeleteUserClicked = async () => {
+        if (window.confirm("Hit 'Ok' to delete")) {
+            await deleteUser({id: doctor.id})
+        }
+    }
 
-                > {role}</option>
-            )
-        })
 
-    const errClass = isError ? "errmsg" : "offscreen"
-    const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-    const validRolesClass = !Boolean(roles.length) ? 'form__input--incomplete' : ''
+    if (isLoading) return <CircularLoader/>
 
+    let canSave
+    if (values.password) {
+        canSave = [name, mobileNumber, username, values.password, roles.length, (values.password === reEnterPassword)].every(Boolean) && !isLoading
+    } else {
+        canSave = [name, mobileNumber, username, roles.length].every(Boolean) && !isLoading
+    }
+
+    const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
+    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
     const content = (
         <>
-            <p className={errClass}>{error?.data?.message}</p>
+            <p className={errClass}>{errContent}</p>
 
-            <form className="form" onSubmit={onSaveUserClicked}>
+            <form className="form" onSubmit={e => e.preventDefault()}>
                 <div className="form__title-row">
-                    <h2>Add New Doctor</h2>
+                    <h1>Edit Form</h1>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
                             title="Save"
+                            onClick={onSaveUserClicked}
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave}/>
+                            <FontAwesomeIcon icon={faSave} fontSize='large'/>
+                        </button>
+                        <button
+                            className="icon-button"
+                            title="Delete"
+                            onClick={onDeleteUserClicked}
+                        >
+                            <FontAwesomeIcon icon={faTrashCan} fontSize='large'/>
                         </button>
                     </div>
                 </div>
@@ -165,11 +176,12 @@ const NewDoctorForm = () => {
                     id="name"
                     name="name"
                     type="text"
-                    label="Enter Doctor's name"
+                    label="Enter Name"
                     autoComplete="on"
                     value={name}
                     onChange={onNameChanged}
                 />
+
 
                 <TextField
                     required
@@ -189,27 +201,18 @@ const NewDoctorForm = () => {
                     }}
                 />
 
+
                 <TextField
                     className={`form__input`}
                     id="username"
                     name="username"
                     type="text"
-                    label=" Enter Doctor's username"
-                    autoComplete="off"
+                    label="Enter username"
+                    autoComplete="on"
                     value={username}
                     onChange={onUsernameChanged}
                 />
 
-                <TextField
-                    className={`form__input`}
-                    id="email"
-                    name="email"
-                    type="text"
-                    label=" Enter email"
-                    autoComplete="off"
-                    value={email}
-                    onChange={onEmailChanged}
-                />
 
                 <TextField
                     className={`form__input`}
@@ -231,28 +234,30 @@ const NewDoctorForm = () => {
                     }}
                 />
 
+
                 <TextField
                     className={`form__input`}
                     id="ReEnterPassword"
                     name="ReEnterPassword"
                     type="password"
-                    label=" Re-Enter password"
+                    label="Re-Enter password"
                     value={reEnterPassword}
                     onChange={onReEnterPassword}
                 />
 
                 <label className="form__label" htmlFor="roles">
-                    ASSIGNED ROLES:</label>
+                    <h3>ASSIGNED ROLES:</h3>
+                </label>
                 <select
                     id="roles"
                     name="roles"
-                    className={`form__select ${validRolesClass}`}
+                    className={`form__select`}
                     multiple={true}
                     size="3"
                     value={roles}
                     onChange={onRolesChanged}
                 >
-                    {options}
+                    {optionsTwo}
                 </select>
 
             </form>
@@ -260,8 +265,6 @@ const NewDoctorForm = () => {
     )
 
     return content
-
 }
 
-export default NewDoctorForm
-
+export default EditMedecinsForm

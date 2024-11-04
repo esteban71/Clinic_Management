@@ -1,7 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faUserDoctor, faUserGear, faUser } from '@fortawesome/free-solid-svg-icons'
+import {Link} from 'react-router-dom'
 import patients from '../../images/patients.png'
 import viewPatients from '../../images/viewPatients.png'
 import doctors from '../../images/doctors.png'
@@ -35,16 +33,16 @@ const Welcome = () => {
             </div>
         </Link> }
 
-        { (isManager || isAdmin || isReceptionist) && 
-        <Link to="/dash/doctors">
+        { (isManager || isAdmin || isReceptionist) &&
+            <Link to="/dash/medecins">
             <div className="welcome-container">
                <img src={viewDoctors} alt="image not availbale" style={{width: '5em'}} className='logo--style' />
                <p className='welcome-container--description'><strong>View All Doctors</strong></p>
             </div>
         </Link>}
 
-        { (isManager || isAdmin || isReceptionist) &&        
-        <Link to="/dash/doctors/new">
+        { (isManager || isAdmin || isReceptionist) &&
+            <Link to="/dash/medecins/new">
             <div className="welcome-container">
                <img src={doctors} alt="image not availbale" style={{width: '5em'}} className='logo--style' />
                <p className='welcome-container--description'><strong>Add New Doctor</strong></p>

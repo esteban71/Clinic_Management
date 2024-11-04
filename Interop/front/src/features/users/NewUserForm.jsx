@@ -1,12 +1,11 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { useAddNewUserMutation } from './usersApiSlice.jsx'
-import { useNavigate } from 'react-router-dom'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSave } from '@fortawesome/free-solid-svg-icons'
+import React, {useEffect, useState} from 'react'
+import {useAddNewUserMutation} from './usersApiSlice.jsx'
+import {useNavigate} from 'react-router-dom'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faSave} from '@fortawesome/free-solid-svg-icons'
 import useAuth from '../../hooks/useAuth.jsx'
-import { Roles } from '../../config/roles.jsx'
-import { TextField } from '@mui/material'
+import {Roles} from '../../config/roles.jsx'
+import {TextField} from '@mui/material'
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
@@ -77,8 +76,8 @@ const NewUserForm = () => {
           setReEnterPassword('')
           setRoles([])
 
-          if(roles[0] === 'Doctor') 
-            navigate('/dash/doctors')
+          if(roles[0] === 'Doctor')
+              navigate('/dash/medecins')
           else 
             navigate('/dash/users')     
       }
