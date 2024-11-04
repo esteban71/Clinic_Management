@@ -20,7 +20,7 @@ KEYCLOAK_CONFIG = {
     "server_url": "http://keycloak:8080/",
     "client_id": "backend",
     "realm_name": "master",
-    "client_secret_key": "kjhk0CE0jOirTWyM89TJadN8wwFd1xkD"
+    "client_secret_key": "**********"
 }
 
 

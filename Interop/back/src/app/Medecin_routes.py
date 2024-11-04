@@ -64,7 +64,7 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
 
     user_id = keycloak_admin.get_user_id(medecin.username)
 
-    role = keycloak_admin.get_realm_role("medecin")
+    role = keycloak_admin.get_realm_role("Doctor")
 
     if role and user_id:
         keycloak_admin.assign_realm_roles(user_id=user_id, roles=[role])
@@ -77,6 +77,11 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
         db.add(db_medecin)
         db.commit()
         db.refresh(db_medecin)
+        keycloak_admin.update_user(user_id, {
+            "attributes": {
+                "medecin_id": str(db_medecin.id)
+            }
+        })
         return db_medecin
     else:
         raise HTTPException(status_code=400, detail="Error creating medecin")
