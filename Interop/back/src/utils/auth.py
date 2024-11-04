@@ -1,87 +1,145 @@
 from typing import Annotated
-from fastapi import Depends, HTTPException, Header
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2AuthorizationCodeBearer
+from fastapi import Depends, HTTPException, Header, Body, Cookie
 import jwt
 from jwt import PyJWKClient
 import os
 import httpx
 import logging
 import sys
+from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, KeycloakOpenID
+from src.schemas.AuthSchema import LoginRequest, LoginResponse
 
 logger = logging.getLogger('uvicorn.error')
 
-oauth_2_scheme = OAuth2AuthorizationCodeBearer(
-    tokenUrl="http://localhost:8081/to/master/protocol/openid-connect/token",
-    authorizationUrl="http://localhost:8081/to/realm/protocol/openid-connect/auth",
-    refreshUrl="http://localhost:8081/to/realm/protocol/openid-connect/token",
-)
-
-CLIENT_ID, CLIENT_SECRET, KEYCLOAK_URL = os.getenv("CLIENT_ID"), os.getenv("CLIENT_SECRET"), os.getenv("KEYCLOAK_URL")
-
-
-async def get_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
-):
-    logger.info(f"Getting access token for {form_data.username}")
-    logger.info(f"CLIENT_ID: {CLIENT_ID}")
-    logger.info(f"CLIENT_SECRET: {CLIENT_SECRET}")
-    logger.info(f"KEYCLOAK_URL: {KEYCLOAK_URL}")
-    payload = {
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "grant_type": "password",
-        "username": form_data.username,
-        "password": form_data.password,
-    }
-
-    async with httpx.AsyncClient() as client:
-        response = await client.post(KEYCLOAK_URL, data=payload)
-
-    if response.status_code == 200:
-        token_data = response.json()
-        return {
-            "access_token": token_data["access_token"],
-            "refresh_token": token_data["refresh_token"],
-            "token_type": "bearer",
-            "expires_in": token_data["expires_in"],
-        }
-    else:
-        raise HTTPException(
-            status_code=response.status_code,
-            detail="Invalid credentials or Keycloak configuration",
-        )
+KEYCLOAK_CONFIG = {
+    "server_url": "http://keycloak:8080/",
+    "client_id": "backend",
+    "realm_name": "master",
+    "client_secret_key": "**********",
+    "username": "admin",
+    "password": "password"
+}
 
 
-async def valid_access_token(
-        access_token: Annotated[str, Depends(oauth_2_scheme)]
-):
-    url = "http://localhost:8080/to/realm/protocol/openid-connect/certs"
-    optional_custom_headers = {"User-agent": "custom-user-agent"}
-    jwks_client = PyJWKClient(url, headers=optional_custom_headers)
+def get_keycloak_openid_connection():
+    return KeycloakOpenIDConnection(
+        server_url=KEYCLOAK_CONFIG["server_url"],
+        username=KEYCLOAK_CONFIG["username"],
+        password=KEYCLOAK_CONFIG["password"],
+        client_id=KEYCLOAK_CONFIG["client_id"],
+        realm_name=KEYCLOAK_CONFIG["realm_name"],
+        client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
+        verify=True
+    )
 
+
+def get_keycloak_admin_connection(
+        connection: KeycloakOpenIDConnection = get_keycloak_openid_connection):
+    return KeycloakAdmin(connection=connection())
+
+
+async def get_keycloak_openid():
+    return KeycloakOpenID(
+        server_url=KEYCLOAK_CONFIG["server_url"],
+        client_id=KEYCLOAK_CONFIG["client_id"],
+        realm_name=KEYCLOAK_CONFIG["realm_name"],
+        client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
+        timeout=10000
+    )
+
+
+async def get_user_token(keycloak_openid: KeycloakOpenID = Depends(get_keycloak_openid),
+                         form_data: LoginRequest = Body()):
     try:
-        signing_key = jwks_client.get_signing_key_from_jwt(access_token)
-        data = jwt.decode(
-            access_token,
-            signing_key.key,
-            algorithms=["RS256"],
-            audience="api",
-            options={"verify_exp": True},
-        )
-        return data
-    except jwt.exceptions.InvalidTokenError:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+        token = keycloak_openid.token(form_data.username, form_data.password)
+        return token
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
 
-def check_role(authorization: Annotated[str | None, Header()] = None):
-    def check_role_decorator(func):
-        async def wrapper(
-                token_data: Annotated[dict, Depends(valid_access_token)]
-        ):
-            roles = token_data["resource_access"]["api"]["roles"]
-            if authorization not in roles:
-                raise HTTPException(status_code=403, detail="Unauthorized access")
+async def get_user_token_with_refresh(keycloak_openid: KeycloakOpenID = Depends(get_keycloak_openid),
+                                      jwt: Annotated[str | None, Cookie()] = None):
+    try:
+        token = keycloak_openid.refresh_token(jwt)
+        return token
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-            return await func(token_data)
+
+async def logout_user(keycloak_openid: KeycloakOpenID = Depends(get_keycloak_openid),
+                      jwt: Annotated[str | None, Cookie()] = None):
+    try:
+        keycloak_openid.logout(jwt)
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        raise HTTPException(status_code=400, detail="Error logging out")
+
+
+async def create_user(username: str, email: str, password: str, role: str,
+                      connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
+        result = connection_admin().create_user({
+            "username": username,
+            "email": email,
+            "enabled": True,
+            "credentials": [{"type": "password", "value": password}]
+        })
+        user_id = connection_admin().get_user_id(username)
+        role = connection_admin().get_realm_role(role)
+        if role and user_id:
+            connection_admin().assign_realm_roles(user_id=user_id, roles=[role])
+        else:
+            raise HTTPException(status_code=400, detail="Error creating account")
+
+        return result
+
+
+async def add_attribute_to_user(username: str, attribute: dict,
+                                connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
+    try:
+        user_id = connection_admin().get_user_id(username)
+        connection_admin().update_user(user_id, payload={"attributes": attribute})
+    except Exception as e:
+        logger.info(f"Error: {e}")
+        raise HTTPException(status_code=400, detail="Error updating account")
+
+
+async def delete_user(username: str, connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
+    user_id = connection_admin().get_user_id(username)
+    result = connection_admin().delete_user(user_id)
+    if not result:
+        raise HTTPException(status_code=400, detail="Error deleting account")
+
+
+
+def protected_route(required_roles: list):
+    def decorator(func):
+        async def wrapper(*args, **kwargs):
+            logger.info(f"Checking roles: {token}")
+            token = kwargs.get('token', None)
+            if not token:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Unauthorized"
+                )
+            try:
+                keycloak_openid = await get_keycloak_openid()
+                introspect_response = keycloak_openid.introspect(token['access_token'])
+                if not any(role in required_roles for role in
+                           introspect_response.get('realm_access', {}).get('roles', [])):
+                    raise HTTPException(
+                        status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Forbidden"
+                    )
+            except KeycloakOpenIDError as e:
+                logger.error(f"Token validation failed: {str(e)}")
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Unauthorized"
+                )
+            return await func(*args, **kwargs)
 
         return wrapper
+
+    return decorator

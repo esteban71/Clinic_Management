@@ -6,22 +6,12 @@ from src.schemas import MedecinSchema
 from src.model import Medecin
 from typing import Dict, Any, List
 from pydantic import BaseModel
-from keycloak import KeycloakAdmin
-from keycloak import KeycloakOpenIDConnection
 import logging
+from src.utils.auth import create_user,add_attribute_to_user
 
 logger = logging.getLogger('uvicorn.error')
 
 router = APIRouter()
-
-KEYCLOAK_CONFIG = {
-    "server_url": "http://keycloak:8080/",
-    "client_id": "backend",
-    "realm_name": "master",
-    "client_secret_key": "kjhk0CE0jOirTWyM89TJadN8wwFd1xkD",
-    "username": "admin",
-    "password": "password"
-}
 
 
 @router.get("", response_model=List[MedecinSchema])
@@ -44,30 +34,12 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
     db_medecin = db.query(Medecin).filter(Medecin.name == medecin.name).first()
     if db_medecin is not None:
         raise HTTPException(status_code=400, detail="Medecin already exists")
-
-    keycloak_connection = KeycloakOpenIDConnection(
-        server_url=KEYCLOAK_CONFIG["server_url"],
-        username=KEYCLOAK_CONFIG["username"],
-        password=KEYCLOAK_CONFIG["password"],
-        client_id=KEYCLOAK_CONFIG["client_id"],
-        realm_name=KEYCLOAK_CONFIG["realm_name"],
-        client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
-        verify=True
+    result = await create_user(
+        username=medecin.username,
+        email=medecin.email,
+        password=medecin.password,
+        role="Doctor",
     )
-    keycloak_admin = KeycloakAdmin(connection=keycloak_connection)
-    result = keycloak_admin.create_user({
-        "username": medecin.username,
-        "email": medecin.email,
-        "enabled": True,
-        "credentials": [{"type": "password", "value": medecin.password}]
-    })
-
-    user_id = keycloak_admin.get_user_id(medecin.username)
-
-    role = keycloak_admin.get_realm_role("Doctor")
-
-    if role and user_id:
-        keycloak_admin.assign_realm_roles(user_id=user_id, roles=[role])
     if result:
         db_medecin = Medecin(
             name=medecin.name,
@@ -77,11 +49,8 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
         db.add(db_medecin)
         db.commit()
         db.refresh(db_medecin)
-        keycloak_admin.update_user(user_id, {
-            "attributes": {
-                "medecin_id": str(db_medecin.id)
-            }
-        })
+        await add_attribute_to_user(medecin.username, {"medecin_id": db_medecin.id})
         return db_medecin
     else:
+        logger.error(f"Error creating medecin: {medecin.username}")
         raise HTTPException(status_code=400, detail="Error creating medecin")

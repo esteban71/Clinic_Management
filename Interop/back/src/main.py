@@ -1,6 +1,5 @@
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from src.utils.auth import valid_access_token
 from src.app.Patient_routes import router as Patient_router
 from src.app.auth_routes import router as auth_router
 from src.app.Medecin_routes import router as Medecin_router
@@ -29,15 +28,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/public")
-def get_public():
-    return {"message": "This endpoint is public"}
-
-
-@app.get("/private", dependencies=[Depends(valid_access_token)])
-def get_private():
-    return {"message": "This endpoint is private"}
 
 app.include_router(Patient_router, prefix="/patients")
 app.include_router(auth_router, prefix="/auth")

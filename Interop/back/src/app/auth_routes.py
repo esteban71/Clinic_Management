@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Cookie
+from fastapi import APIRouter, Cookie, Depends, Request, Body
 from fastapi import HTTPException, status
 from keycloak import KeycloakOpenID
 import logging
@@ -7,6 +7,7 @@ from typing import Dict, Any
 from fastapi.responses import JSONResponse
 
 from src.schemas.AuthSchema import LoginRequest, LoginResponse
+from src.utils.auth import get_user_token, get_user_token_with_refresh, logout_user
 
 router = APIRouter()
 
@@ -15,30 +16,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('uvicorn.error')
 
 
-
-KEYCLOAK_CONFIG = {
-    "server_url": "http://keycloak:8080/",
-    "client_id": "backend",
-    "realm_name": "master",
-    "client_secret_key": "**********"
-}
-
-
 @router.post("/login", response_model=LoginResponse)
-async def login_with_keycloak(form_data: LoginRequest) -> Dict[str, Any]:
+async def login_with_keycloak(token: Dict[str, Any] = Depends(get_user_token)) -> JSONResponse:
     try:
-        keycloak_openid = KeycloakOpenID(
-            server_url=KEYCLOAK_CONFIG["server_url"],
-            client_id=KEYCLOAK_CONFIG["client_id"],
-            realm_name=KEYCLOAK_CONFIG["realm_name"],
-            client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
-            timeout=10000
-        )
-
-        # Authenticate and get tokens from Keycloak
-        token = keycloak_openid.token(form_data.username, form_data.password)
-        logger.info(f"Login successful for user {form_data.username}")
-
         # Create response with access token and user info
         response_data = {
             "accessToken": token["access_token"]
@@ -67,30 +47,9 @@ async def login_with_keycloak(form_data: LoginRequest) -> Dict[str, Any]:
 
 @router.get("/refresh", response_model=LoginResponse)
 async def refresh_token(
-        jwt: Annotated[str | None, Cookie()] = None
+        token: Dict[str, Any] = Depends(get_user_token_with_refresh),
 ) -> Dict[str, Any]:
-    refresh_token = jwt
-    if not refresh_token:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Refresh token not provided"
-        )
-
     try:
-        # Initialize Keycloak client
-        keycloak_openid = KeycloakOpenID(
-            server_url=KEYCLOAK_CONFIG["server_url"],
-            client_id=KEYCLOAK_CONFIG["client_id"],
-            realm_name=KEYCLOAK_CONFIG["realm_name"],
-            client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
-            timeout=10000
-        )
-
-        # Use Keycloak to refresh the token
-        token = keycloak_openid.refresh_token(refresh_token)
-        logger.info("Token successfully refreshed.")
-
-        # Prepare response data
         response_data = {
             "accessToken": token["access_token"]
         }
@@ -117,16 +76,7 @@ async def refresh_token(
 
 
 @router.post("/logout")
-async def logout(jwt: Annotated[str | None, Cookie()] = None) -> JSONResponse:
-    refresh_token = jwt
-    keycloak_openid = KeycloakOpenID(
-        server_url=KEYCLOAK_CONFIG["server_url"],
-        client_id=KEYCLOAK_CONFIG["client_id"],
-        realm_name=KEYCLOAK_CONFIG["realm_name"],
-        client_secret_key=KEYCLOAK_CONFIG["client_secret_key"],
-        timeout=10000
-    )
-    keycloak_openid.logout(refresh_token)
+async def logout(logout_user: None = Depends(logout_user)) -> JSONResponse:
     response = JSONResponse(status_code=200, content={"message": "Cookie cleared"})
     response.delete_cookie("jwt", httponly=True, samesite="None", secure=True)
     return response
