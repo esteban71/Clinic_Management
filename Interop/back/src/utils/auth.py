@@ -1,13 +1,9 @@
-from typing import Annotated
-from fastapi import Depends, HTTPException, Header, Body, Cookie
-import jwt
-from jwt import PyJWKClient
-import os
-import httpx
 import logging
-import sys
+from typing import Annotated
+
+from fastapi import Depends, HTTPException, Header, Body, Cookie
 from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, KeycloakOpenID
-from src.schemas.AuthSchema import LoginRequest, LoginResponse
+from src.schemas.AuthSchema import LoginRequest
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -79,20 +75,20 @@ async def logout_user(keycloak_openid: KeycloakOpenID = Depends(get_keycloak_ope
 
 async def create_user(username: str, email: str, password: str, role: str,
                       connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
-        result = connection_admin().create_user({
-            "username": username,
-            "email": email,
-            "enabled": True,
-            "credentials": [{"type": "password", "value": password}]
-        })
-        user_id = connection_admin().get_user_id(username)
-        role = connection_admin().get_realm_role(role)
-        if role and user_id:
-            connection_admin().assign_realm_roles(user_id=user_id, roles=[role])
-        else:
-            raise HTTPException(status_code=400, detail="Error creating account")
+    result = connection_admin().create_user({
+        "username": username,
+        "email": email,
+        "enabled": True,
+        "credentials": [{"type": "password", "value": password}]
+    })
+    user_id = connection_admin().get_user_id(username)
+    role = connection_admin().get_realm_role(role)
+    if role and user_id:
+        connection_admin().assign_realm_roles(user_id=user_id, roles=[role])
+    else:
+        raise HTTPException(status_code=400, detail="Error creating account")
 
-        return result
+    return result
 
 
 async def add_attribute_to_user(username: str, attribute: dict,
@@ -112,34 +108,20 @@ async def delete_user(username: str, connection_admin: KeycloakAdmin = get_keycl
         raise HTTPException(status_code=400, detail="Error deleting account")
 
 
-
 def protected_route(required_roles: list):
-    def decorator(func):
-        async def wrapper(*args, **kwargs):
-            logger.info(f"Checking roles: {token}")
-            token = kwargs.get('token', None)
-            if not token:
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Unauthorized"
-                )
-            try:
-                keycloak_openid = await get_keycloak_openid()
-                introspect_response = keycloak_openid.introspect(token['access_token'])
-                if not any(role in required_roles for role in
-                           introspect_response.get('realm_access', {}).get('roles', [])):
-                    raise HTTPException(
-                        status_code=status.HTTP_403_FORBIDDEN,
-                        detail="Forbidden"
-                    )
-            except KeycloakOpenIDError as e:
-                logger.error(f"Token validation failed: {str(e)}")
-                raise HTTPException(
-                    status_code=status.HTTP_401_UNAUTHORIZED,
-                    detail="Unauthorized"
-                )
-            return await func(*args, **kwargs)
+    async def wrapper(authorization: Annotated[str, Header()]):
+        try:
+            token = authorization.split("Bearer ")[-1] if authorization.startswith("Bearer ") else authorization
+            keycloak_openid = await get_keycloak_openid()
+            valid = keycloak_openid.introspect(token)
+            if not valid.get("active", False):
+                raise HTTPException(status_code=401, detail="Unauthorized")
 
-        return wrapper
+            roles = valid.get("realm_access", {}).get("roles", [])
+            if not any(role in required_roles for role in roles):
+                raise HTTPException(status_code=401, detail="Forbidden: Insufficient permissions")
+            return {"token": token, "user": valid}
+        except Exception as e:
+            raise HTTPException(status_code=401, detail="Unauthorized")
 
-    return decorator
+    return wrapper

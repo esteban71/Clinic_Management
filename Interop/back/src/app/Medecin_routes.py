@@ -1,13 +1,13 @@
+import logging
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from src.database import get_db
-from src.model import Patient
-from src.schemas import MedecinSchema
 from src.model import Medecin
-from typing import Dict, Any, List
-from pydantic import BaseModel
-import logging
-from src.utils.auth import create_user,add_attribute_to_user
+from src.schemas import MedecinSchema
+from src.utils.auth import create_user, add_attribute_to_user
 
 logger = logging.getLogger('uvicorn.error')
 
