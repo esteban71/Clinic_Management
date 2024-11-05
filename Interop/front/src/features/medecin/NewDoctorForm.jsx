@@ -28,7 +28,7 @@ const NewDoctorForm = ({cabinet}) => {
     const [validUsername, setValidUsername] = useState(false)
     const [email, setEmail] = useState('')
     const [validEmail, setValidEmail] = useState(false)
-    const [cabinet_id, setCabinetId] = useState([])
+    const [cabinet_id, setCabinetId] = useState(cabinet[0].id)
     const [validCabinetId, setValidCabinetId] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')

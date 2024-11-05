@@ -14,9 +14,9 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const USER_REGEX = /^[A-z0-9]{3,10}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
-const MOBILENUMBER_REGEX = /^[789][0-9]{9}$/
+const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
-const EditMedecinsForm = ({doctor}) => {
+const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
     const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
@@ -48,6 +48,7 @@ const EditMedecinsForm = ({doctor}) => {
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [iserror, setIsError] = useState(false);
+    const [cabinet_id, setCabinetId] = useState(cabinet.id)
     const [values, setValues] = React.useState({
         password: "",
         showPassword: false,
@@ -79,13 +80,13 @@ const EditMedecinsForm = ({doctor}) => {
 
     useEffect(() => {
         console.log(isSuccess)
+        console.log(isDelSuccess)
         if (isSuccess || isDelSuccess) {
             setName('')
             setMobileNumber('')
             setUsername('')
             setPassword('')
             setReEnterPassword('')
-            setRoles([])
             navigate('/dash/medecins')
 
         }
@@ -97,21 +98,53 @@ const EditMedecinsForm = ({doctor}) => {
     const onPasswordChanged = e => setPassword(e.target.value)
     const onReEnterPassword = e => setReEnterPassword(e.target.value)
 
-    const onRolesChanged = e => {
+    const onCabinetIdChanged = e => {
         const values = Array.from(
             e.target.selectedOptions,
-            (option) => option.value
+            (option) => option.id
         )
-        setRoles(values)
+        setCabinetId(values)
     }
+
+    const cabinetOptions = Object.values(allcabinet).map(cabinet => {
+        return (
+            <option
+                key={cabinet.id}
+                value={cabinet.id}
+                id={cabinet.id}
+            > {cabinet.name}</option>
+        )
+    })
 
     const onSaveUserClicked = async (e) => {
         if (password && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
-            await updatemedecin({id: doctor.id, name, mobileNumber, username, password: values.password})
-            alert('updated successfully')
+            const result = await updatemedecin({
+                "id": doctor.id,
+                "name": name,
+                "telecom": mobileNumber,
+                "username": username,
+                password: values.password,
+                "cabinet_id": parseInt(cabinet_id)
+            })
+            if (result.error) {
+                alert('Unable to update! please try again...')
+            } else {
+                alert('updated successfully')
+            }
         } else if (validUsername && validMobileNumber && window.confirm("Press 'Ok' to update") == true) {
-            await updatemedecin({id: doctor.id, name, username, mobileNumber})
-            alert('updated successfully')
+            const result = await updatemedecin({
+                id: doctor.id,
+                "name": name,
+                "username": username,
+                "telecom": mobileNumber,
+                "cabinet_id": parseInt(cabinet_id)
+            })
+            console.log(result)
+            if (result.error) {
+                alert('Unable to update! please try again...')
+            } else {
+                alert('updated successfully')
+            }
         } else if (!validUsername) {
             alert('Invalid username')
         } else if (!validPassword) {
@@ -127,7 +160,8 @@ const EditMedecinsForm = ({doctor}) => {
 
     const onDeleteUserClicked = async () => {
         if (window.confirm("Hit 'Ok' to delete")) {
-            await deletemedecin({id: doctor.id})
+            const result = await deletemedecin({id: doctor.id})
+            console.log(result)
         }
     }
 
@@ -136,9 +170,9 @@ const EditMedecinsForm = ({doctor}) => {
 
     let canSave
     if (values.password) {
-        canSave = [name, mobileNumber, username, values.password, roles.length, (values.password === reEnterPassword)].every(Boolean) && !isLoading
+        canSave = [name, mobileNumber, username, values.password, (values.password === reEnterPassword)].every(Boolean) && !isLoading
     } else {
-        canSave = [name, mobileNumber, username, roles.length].every(Boolean) && !isLoading
+        canSave = [name, mobileNumber, username].every(Boolean) && !isLoading
     }
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
@@ -244,19 +278,18 @@ const EditMedecinsForm = ({doctor}) => {
                     onChange={onReEnterPassword}
                 />
 
-                <label className="form__label" htmlFor="roles">
-                    <h3>ASSIGNED ROLES:</h3>
-                </label>
+                <label className="form__label form__checkbox-container" htmlFor="cabinet">
+                    ASSIGNED CABINET:</label>
                 <select
-                    id="roles"
-                    name="roles"
-                    className={`form__select`}
-                    multiple={true}
-                    size="3"
-                    value={roles}
-                    onChange={onRolesChanged}
+                    id="cabinet"
+                    name="cabinet"
+                    className="form__select"
+                    value={cabinet_id}
+
+                    onChange={onCabinetIdChanged}
                 >
-                    {optionsTwo}
+
+                    {cabinetOptions}
                 </select>
 
             </form>
