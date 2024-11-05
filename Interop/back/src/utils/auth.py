@@ -99,10 +99,16 @@ async def modify_user(username: str, email: str, cabinet_id: int, role: str = No
     connection_admin().update_user(user_id, payload={"email": email})
     if password:
         connection_admin().update_user(user_id, payload={"credentials": [{"type": "password", "value": password}]})
+    role_realm = None
     if role:
         role_realm = connection_admin().get_realm_role(role)
     if role_realm and user_id:
         connection_admin().assign_realm_roles(user_id=user_id, roles=[role_realm])
+    if cabinet_id:
+        history_attributes = connection_admin().get_user(user_id)["attributes"]
+        if history_attributes.get("cabinet_id"):
+            history_attributes["cabinet_id"][0] = cabinet_id
+        connection_admin().update_user(user_id, payload={"attributes": history_attributes})
     else:
         raise HTTPException(status_code=400, detail="Error creating account")
     return True
@@ -121,8 +127,6 @@ async def add_attribute_to_user(username: str, attribute: dict,
 async def delete_user(username: str, connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
     user_id = connection_admin().get_user_id(username)
     result = connection_admin().delete_user(user_id)
-    if not result:
-        raise HTTPException(status_code=400, detail="Error deleting account")
 
 
 def protected_route(required_roles: list):
