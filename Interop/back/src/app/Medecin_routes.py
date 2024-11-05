@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from src.database import get_db
@@ -15,7 +15,8 @@ router = APIRouter()
 
 
 @router.get("", response_model=List[MedecinSchema])
-async def get_all_medecins(db: Session = Depends(get_db)):
+async def get_all_medecins(request: Request, db: Session = Depends(get_db)):
+    logger.info(f"Request: {request.state.user}")
     medecins = db.query(Medecin).all()
 
     return medecins

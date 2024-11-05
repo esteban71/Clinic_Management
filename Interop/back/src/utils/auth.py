@@ -1,7 +1,7 @@
 import logging
 from typing import Annotated
 
-from fastapi import Depends, HTTPException, Header, Body, Cookie
+from fastapi import Depends, HTTPException, Header, Body, Cookie, Request
 from keycloak import KeycloakAdmin, KeycloakOpenIDConnection, KeycloakOpenID
 from src.schemas.AuthSchema import LoginRequest
 
@@ -109,7 +109,7 @@ async def delete_user(username: str, connection_admin: KeycloakAdmin = get_keycl
 
 
 def protected_route(required_roles: list):
-    async def wrapper(authorization: Annotated[str, Header()]):
+    async def wrapper(request: Request, authorization: Annotated[str, Header()]):
         try:
             token = authorization.split("Bearer ")[-1] if authorization.startswith("Bearer ") else authorization
             keycloak_openid = await get_keycloak_openid()
@@ -120,8 +120,10 @@ def protected_route(required_roles: list):
             roles = valid.get("realm_access", {}).get("roles", [])
             if not any(role in required_roles for role in roles):
                 raise HTTPException(status_code=401, detail="Forbidden: Insufficient permissions")
+            request.state.user = keycloak_openid.decode_token(token)
             return {"token": token, "user": valid}
         except Exception as e:
+            logger.info(f"Error: {e}")
             raise HTTPException(status_code=401, detail="Unauthorized")
 
     return wrapper
