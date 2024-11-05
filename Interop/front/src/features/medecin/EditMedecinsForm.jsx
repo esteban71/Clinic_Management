@@ -21,7 +21,7 @@ const EditMedecinsForm = ({doctor}) => {
     const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
     const [
-        updateUser, {
+        updatemedecin, {
             isLoading,
             isSuccess,
             isError,
@@ -30,7 +30,7 @@ const EditMedecinsForm = ({doctor}) => {
     ] = useUpdateMedecinMutation()
 
     const [
-        deleteUser, {
+        deletemedecin, {
             isSuccess: isDelSuccess,
             isError: isDelError,
             error: delerror
@@ -47,7 +47,6 @@ const EditMedecinsForm = ({doctor}) => {
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
-    const [roles, setRoles] = useState(doctor.roles)
     const [iserror, setIsError] = useState(false);
     const [values, setValues] = React.useState({
         password: "",
@@ -108,10 +107,10 @@ const EditMedecinsForm = ({doctor}) => {
 
     const onSaveUserClicked = async (e) => {
         if (password && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
-            await updateUser({id: doctor.id, name, mobileNumber, username, password: values.password, roles})
+            await updatemedecin({id: doctor.id, name, mobileNumber, username, password: values.password})
             alert('updated successfully')
         } else if (validUsername && validMobileNumber && window.confirm("Press 'Ok' to update") == true) {
-            await updateUser({id: doctor.id, name, username, mobileNumber, roles})
+            await updatemedecin({id: doctor.id, name, username, mobileNumber})
             alert('updated successfully')
         } else if (!validUsername) {
             alert('Invalid username')
@@ -128,7 +127,7 @@ const EditMedecinsForm = ({doctor}) => {
 
     const onDeleteUserClicked = async () => {
         if (window.confirm("Hit 'Ok' to delete")) {
-            await deleteUser({id: doctor.id})
+            await deletemedecin({id: doctor.id})
         }
     }
 

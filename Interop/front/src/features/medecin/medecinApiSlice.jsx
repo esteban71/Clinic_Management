@@ -23,7 +23,8 @@ export const medecinApiSlice = apiSlice.injectEndpoints({
                         ...result.ids.map(id => ({type: 'Medecin', id}))
                     ]
                 } else return [{type: 'Medecin', id: 'LIST'}]
-            }
+            },
+            refetchOnMountOrArgChange: true,
         }),
         addNewMedecin: builder.mutation({
             query: initialMedecinData => ({

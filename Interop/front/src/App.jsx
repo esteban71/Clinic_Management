@@ -12,12 +12,12 @@ import NewUserForm from './features/users/NewUserForm'
 import EditPatient from './features/patients/EditPatient'
 import NewPatient from './features/patients/NewPatient'
 import MedecinsList from './features/medecin/MedecinsList.jsx';
-import NewDoctorForm from './features/medecin/NewDoctorForm.jsx';
 import Prefetch from './features/auth/Prefetch.jsx'
 import PersistLogin from './features/auth/PersistLogin.jsx';
 import RequireAuth from './features/auth/RequireAuth.jsx';
 import {Roles} from './config/roles.jsx'
 import EditMedecins from "./features/medecin/EditMedecins.jsx";
+import NewDoctor from "./features/medecin/NewDoctor.jsx";
 
 
 function App() {
@@ -56,7 +56,7 @@ function App() {
                   <Route path='medecins'>
                     <Route index element={<MedecinsList/>}/>
                     <Route path=':id' element={<EditMedecins/>}/>
-                    <Route path='new' element={<NewDoctorForm />} />
+                    <Route path='new' element={<NewDoctor/>}/>
                   </Route>
                 </Route>
 

@@ -1,5 +1,4 @@
-import React from 'react'
-import {useState, useEffect} from "react"
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom"
 import {useAddNewPatientMutation} from './patientsApiSlice.jsx'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -99,8 +98,8 @@ const NewPatientForm = ({medecin}) => {
     const options = medecin.map(user => {
         return (
             <option
-                key={user.name}
-                value={user.name}
+                key={user.id}
+                value={user.id}
                 id={user.id}
 
             > {user.name} </option>
