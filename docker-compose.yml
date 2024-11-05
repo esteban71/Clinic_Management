@@ -12,7 +12,7 @@ services:
       - postgres_data:/var/lib/sante_db/data
     restart: always
     networks:
-        - back_network
+      - back_network
 
   db_keycloak:
     image: postgres:17
@@ -27,7 +27,7 @@ services:
       - keycloak_data:/var/lib/keycloak_db/data
     restart: always
     networks:
-        - keycloak_network
+      - keycloak_network
   back:
     build: .
     volumes:
@@ -36,17 +36,17 @@ services:
       - db
       - db_keycloak
     ports:
-        - "8080:8080"
+      - "8080:8080"
     environment:
       - PYTHONUNBUFFERED=1
     restart: always
     networks:
-        - keycloak_network
-        - back_network
+      - keycloak_network
+      - back_network
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.2
-    command: start
+    command: [ "start", "--import-realm" ,"--verbose" ]
     environment:
       KC_HOSTNAME: localhost
       KC_HOSTNAME_PORT: 8080
@@ -62,10 +62,12 @@ services:
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "8081:8080"
-    restart: always
+    restart: unless-stopped
     depends_on:
       - db
       - db_keycloak
+    volumes:
+      - ./Interop/keycloak/realm-export.json:/opt/keycloak/data/import/realm.json:ro
     networks:
       - keycloak_network
 
@@ -74,7 +76,7 @@ volumes:
   keycloak_data:
 
 networks:
-    keycloak_network:
-        driver: bridge
-    back_network:
-        driver: bridge
+  keycloak_network:
+    driver: bridge
+  back_network:
+    driver: bridge

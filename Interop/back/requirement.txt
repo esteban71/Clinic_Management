@@ -6,3 +6,6 @@ pydantic
 PyJWT
 uvicorn[standard]
 watchdog
+faker
+numpy
+python-keycloak

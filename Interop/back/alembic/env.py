@@ -18,8 +18,11 @@ if config.config_file_name is not None:
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
 from src.model.Base import Base
-from src.model.Patient import Patient, Link, Contact, Communication
-
+from src.model.CabinetMedical import CabinetMedical
+from src.model.Dossier import DossierMedical, DossierAdministratif, CompteRenduMedical
+from src.model.Medecin import Medecin
+from src.model.Patient import Patient, Link, Contact
+from src.model.Secretariat import Secretariat
 target_metadata = Base.metadata
 
 from src.database import DATABASE_URL
