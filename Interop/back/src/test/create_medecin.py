@@ -7,13 +7,15 @@ from sqlalchemy.orm import Session
 
 def create_medecin(db: Session, nb_medecin: int):
     medecin_ids = []
-    for _ in range(nb_medecin):
+    for i in range(nb_medecin):
         medecin = Medecin(
+            id=i,
             name=fake.name(),
             rpps=fake.random_number(digits=11),
             specialite=fake.random_element(elements=("generalist", "cardiologist", "dermatologist")),
             email=fake.email(),
             telecom=fake.phone_number(),
+            username=fake.user_name(),
         )
         db.add(medecin)
         db.flush()

@@ -1,5 +1,5 @@
 import logging
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
@@ -26,10 +26,20 @@ class CreateMedecinSchema(BaseModel):
     username: str
     email: str
     password: str
+    cabinet_id: int
+
+
+class UpdateMedecinSchema(BaseModel):
+    name: str
+    telecom: str
+    email: str
+    username: str
+    password: Optional[str] = None
 
 
 @router.post("")
 async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get_db)):
+
     db_medecin = db.query(Medecin).filter(Medecin.name == medecin.name).first()
     if db_medecin is not None:
         raise HTTPException(status_code=400, detail="Medecin already exists")
@@ -44,12 +54,28 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
             name=medecin.name,
             telecom=medecin.telecom,
             email=medecin.email,
+            username=medecin.username,
+            cabinet_medical_id=medecin.cabinet_id
         )
         db.add(db_medecin)
         db.commit()
         db.refresh(db_medecin)
-        await add_attribute_to_user(medecin.username, {"medecin_id": db_medecin.id})
+        await add_attribute_to_user(medecin.username, {"cabinet_id": medecin.cabinet_id, "medecin_id": db_medecin.id})
         return db_medecin
     else:
         logger.error(f"Error creating medecin: {medecin.username}")
         raise HTTPException(status_code=400, detail="Error creating medecin")
+
+
+@router.patch("")
+def update_medecin(medecin: UpdateMedecinSchema, db: Session = Depends(get_db)):
+    db_medecin = db.query(Medecin).filter(Medecin.username == medecin.username).first()
+    if db_medecin is None:
+        raise HTTPException(status_code=404, detail="Medecin not found")
+
+    db_medecin.name = medecin.name
+    db_medecin.telecom = medecin.telecom
+    db_medecin.email = medecin.email
+    db.commit()
+    db.refresh(db_medecin)
+    return db_medecin

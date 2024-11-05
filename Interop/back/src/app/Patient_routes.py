@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException
+import logging
+from typing import Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model import Patient
-from src.schemas import PatientSchema, CreatePatientSchema
-from typing import Dict, List
-import logging
-
+from src.schemas import PatientSchema
 from src.schemas.PatientSchema import CreatePatientSchema
 
 logger = logging.getLogger('uvicorn.error')
@@ -13,9 +13,15 @@ logger = logging.getLogger('uvicorn.error')
 router = APIRouter()
 
 
-
 @router.get("", response_model=List[PatientSchema])  # Added response_model
-async def get_all_patients(db: Session = Depends(get_db)):
+async def get_all_patients(request: Request, db: Session = Depends(get_db)):
+    if request.state.user["attributes"].get("medecin_id") is not None:
+        medecin_id = int(request.state.user["attributes"]["medecin_id"][0])
+        logger.info(f"Getting patient with id {medecin_id}")
+        patients = db.query(Patient).filter(Patient.medecin_id == medecin_id).all()
+        if patients is None:
+            raise HTTPException(status_code=404, detail="Patient not found")
+        return patients
     patients = db.query(Patient).all()
 
     return patients

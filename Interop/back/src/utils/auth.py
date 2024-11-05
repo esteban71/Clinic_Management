@@ -91,6 +91,23 @@ async def create_user(username: str, email: str, password: str, role: str,
     return result
 
 
+async def modify_user(username: str, email: str, cabinet_id: int, role: str = None, password: str = None,
+                      connection_admin: KeycloakAdmin = get_keycloak_admin_connection
+
+                      ):
+    user_id = connection_admin().get_user_id(username)
+    connection_admin().update_user(user_id, payload={"email": email})
+    if password:
+        connection_admin().update_user(user_id, payload={"credentials": [{"type": "password", "value": password}]})
+    if role:
+        role_realm = connection_admin().get_realm_role(role)
+    if role_realm and user_id:
+        connection_admin().assign_realm_roles(user_id=user_id, roles=[role_realm])
+    else:
+        raise HTTPException(status_code=400, detail="Error creating account")
+    return True
+
+
 async def add_attribute_to_user(username: str, attribute: dict,
                                 connection_admin: KeycloakAdmin = get_keycloak_admin_connection):
     try:
@@ -121,6 +138,9 @@ def protected_route(required_roles: list):
             if not any(role in required_roles for role in roles):
                 raise HTTPException(status_code=401, detail="Forbidden: Insufficient permissions")
             request.state.user = keycloak_openid.decode_token(token)
+            admin = get_keycloak_admin_connection()
+            user_id = admin.get_user_id(request.state.user["preferred_username"])
+            request.state.user["attributes"] = admin.get_user(user_id)["attributes"]
             return {"token": token, "user": valid}
         except Exception as e:
             logger.info(f"Error: {e}")

@@ -1,8 +1,8 @@
+import numpy as np
 from faker import Faker
 from src.model.CabinetMedical import CabinetMedical
 from src.model.Medecin import Medecin
 from src.model.Patient import Patient
-import numpy as np
 
 fake = Faker()
 from sqlalchemy.orm import Session
@@ -10,8 +10,9 @@ from sqlalchemy.orm import Session
 
 def create_cabinet_medical(db: Session, nb_cabinet: int):
     cabinet_ids = []
-    for _ in range(nb_cabinet):
+    for i in range(nb_cabinet):
         cabinet = CabinetMedical(
+            id=i,
             name=fake.company(),
             active=True,
             telecom=fake.phone_number(),
