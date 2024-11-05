@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
 
@@ -11,6 +11,7 @@ class Medecin(Base):
     id = Column(Integer, primary_key=True, index=True)
     rpps = Column(String, nullable=True)  # référence du professionnel de santé
     name = Column(String, nullable=False)  # Nom du médecin
+    username = Column(String, nullable=True)  # Nom d'utilisateur dans keycloak
     specialite = Column(String, nullable=True)  # Spécialité du médecin ici Cardiologue
     email = Column(String, nullable=True)  # Adresse mail
     telecom = Column(String, nullable=True)  # contact

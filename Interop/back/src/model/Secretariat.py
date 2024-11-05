@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
 
@@ -8,6 +8,7 @@ class Secretariat(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)  # name of the secretariat
+    username = Column(String, nullable=True)  # Nom d'utilisateur dans keycloak
     email = Column(String, nullable=True)  # email of the secretariat
     telephone = Column(String, nullable=True)  # telephone of the secretariat
     habilitations = Column(String, nullable=True)  # habilitations of the secretariat

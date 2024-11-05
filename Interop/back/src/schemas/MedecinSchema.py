@@ -1,11 +1,6 @@
+from typing import Optional
+
 from pydantic import BaseModel
-from datetime import date,datetime
-
-
-from pydantic import BaseModel, Field
-from datetime import date
-from typing import Optional, List, Dict
-
 
 
 class MedecinSchema(BaseModel):
@@ -17,6 +12,7 @@ class MedecinSchema(BaseModel):
     telecom: Optional[str] = None
     habilitations: Optional[str] = None
     cabinet_medical_id: Optional[int] = None
+    username: Optional[str] = None
 
     class Config:
         orm_mode = True

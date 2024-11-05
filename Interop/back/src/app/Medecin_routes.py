@@ -16,9 +16,7 @@ router = APIRouter()
 
 @router.get("", response_model=List[MedecinSchema])
 async def get_all_medecins(request: Request, db: Session = Depends(get_db)):
-    logger.info(f"Request: {request.state.user}")
     medecins = db.query(Medecin).all()
-
     return medecins
 
 
