@@ -1,6 +1,6 @@
 import os
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Security
 from fastapi.middleware.cors import CORSMiddleware
 from src.app.Medecin_routes import router as Medecin_router
 from src.app.Patient_routes import router as Patient_router
@@ -29,7 +29,8 @@ app.add_middleware(
 )
 
 app.include_router(Patient_router, prefix="/patients",
-                   dependencies=[Depends(protected_route(["admin", "Doctor", "Receptionist"]))])
+                   dependencies=[Security(protected_route(["admin", "Doctor", "Receptionist"]))])
 app.include_router(auth_router, prefix="/auth")
+
 app.include_router(Medecin_router, prefix="/medecins",
-                   dependencies=[Depends(protected_route(["admin", "Receptionist"]))])
+                   dependencies=[Security(protected_route(["admin", "Receptionist"]))])
