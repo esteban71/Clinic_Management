@@ -24,7 +24,7 @@ const DashHeader = () => {
 
     const onGoHomeClicked = () => navigate('/dash')
     const onAddNewPatient = () => navigate('/dash/patients/new')
-    const onAddNewUser = () => navigate('/dash/users/new')
+    const onAddReceptionist = () => navigate('/dash/receptionists/new')
     const onAddNewDoctor = () => navigate('/dash/medecins/new')
 
     let goHomeButton = null
@@ -53,13 +53,13 @@ const DashHeader = () => {
         )
     }
 
-    let addNewUser = null
-    if(pathname === '/dash/users' && !isDoctor) {
-        addNewUser = (
+    let addNewReceptionist = null
+    if (pathname === '/dash/receptionists' && !isDoctor) {
+        addNewReceptionist = (
             <button
             className="dash-header__button icon-button"
-            title="Add New User"
-            onClick={onAddNewUser}
+            title="Add New Receptionist"
+            onClick={onAddReceptionist}
             >
                 <FontAwesomeIcon icon={faUserPlus} />
             </button>
@@ -121,7 +121,7 @@ const DashHeader = () => {
                 <nav className="dash-header__nav">
                     {/* add nav buttons later */}
                     {goHomeButton}
-                    {addNewUser}
+                    {addNewReceptionist}
                     {addNewPatient}
                     {addNewDoctor}
                     {logoutButton}

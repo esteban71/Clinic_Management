@@ -168,7 +168,7 @@ const NewPatientForm = ({medecin}) => {
                                 onChange={onMobileNumberChanged}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">
-                                        +91
+                                        +33
                                     </InputAdornment>,
                                 }}
                             /></div>

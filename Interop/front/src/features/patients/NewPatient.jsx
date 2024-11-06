@@ -1,6 +1,5 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { selectAllUsers } from '../users/usersApiSlice.jsx'
+import {useSelector} from 'react-redux'
 import NewPatientForm from './NewPatientForm'
 import {selectAllMedecins} from "../medecin/medecinApiSlice.jsx";
 

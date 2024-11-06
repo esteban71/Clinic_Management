@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useAddNewMedecinMutation} from './medecinApiSlice.jsx'
+import {useAddNewReceptionistMutation} from './ReceptionistApiSlice.jsx'
 import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSave} from '@fortawesome/free-solid-svg-icons'
@@ -14,10 +14,10 @@ const USER_REGEX = /^[A-z0-9]{3,20}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
-const NewDoctorForm = ({cabinet}) => {
+const NewReceptionistForm = ({cabinet}) => {
     const {isManager, isAdmin, isReceptionist} = useAuth()
 
-    const [addNewMedecin, {isLoading, isSuccess, isError, error}] = useAddNewMedecinMutation();
+    const [addNewReceptionist, {isLoading, isSuccess, isError, error}] = useAddNewReceptionistMutation();
 
     const navigate = useNavigate()
 
@@ -72,7 +72,7 @@ const NewDoctorForm = ({cabinet}) => {
             setPassword('')
             setReEnterPassword('')
             setCabinetId([])
-            navigate('/dash/medecins')
+            navigate('/dash/receptionists')
         }
     }, [isSuccess, navigate])
 
@@ -96,7 +96,7 @@ const NewDoctorForm = ({cabinet}) => {
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
         if (canSave && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword)) {
-            const result = await addNewMedecin({
+            const result = await addNewReceptionist({
                 'name': name,
                 'telecom': mobileNumber,
                 'username': username,
@@ -145,7 +145,7 @@ const NewDoctorForm = ({cabinet}) => {
 
             <form className="form" onSubmit={onSaveUserClicked}>
                 <div className="form__title-row">
-                    <h2>Add New Doctor</h2>
+                    <h2>Add New Receptionist</h2>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
@@ -162,7 +162,7 @@ const NewDoctorForm = ({cabinet}) => {
                     id="name"
                     name="name"
                     type="text"
-                    label="Enter Doctor's name"
+                    label="Enter Receptionist's name"
                     autoComplete="on"
                     value={name}
                     onChange={onNameChanged}
@@ -174,7 +174,7 @@ const NewDoctorForm = ({cabinet}) => {
                     id="note-title"
                     name="title"
                     type="tel"
-                    label="Enter Doctor Patient Mobile Number"
+                    label="Enter Receptionist Mobile Number"
                     autoComplete="off"
                     error={iserror}
                     value={mobileNumber}
@@ -191,7 +191,7 @@ const NewDoctorForm = ({cabinet}) => {
                     id="username"
                     name="username"
                     type="text"
-                    label=" Enter Doctor's username"
+                    label=" Enter Receptionist's username"
                     autoComplete="off"
                     value={username}
                     onChange={onUsernameChanged}
@@ -260,5 +260,5 @@ const NewDoctorForm = ({cabinet}) => {
 
 }
 
-export default NewDoctorForm
+export default NewReceptionistForm
 
