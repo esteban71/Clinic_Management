@@ -33,9 +33,10 @@ class UpdateMedecinSchema(BaseModel):
     id: int
     name: str
     telecom: str
+    newusername: str
     username: str
     cabinet_id: int
-    email: Optional[str] = None
+    email: str
     password: Optional[str] = None
 
 
@@ -74,13 +75,14 @@ async def update_medecin(medecin: UpdateMedecinSchema, db: Session = Depends(get
     if db_medecin is None:
         raise HTTPException(status_code=404, detail="Medecin not found")
     await modify_user(
+        newusername=medecin.newusername,
         username=medecin.username,
         email=medecin.email,
         cabinet_id=medecin.cabinet_id,
         password=medecin.password)
 
     db_medecin.name = medecin.name
-    db_medecin.username = medecin.username
+    db_medecin.username = medecin.newusername
     db_medecin.telecom = medecin.telecom
     db_medecin.email = medecin.email
     db_medecin.cabinet_medical_id = medecin.cabinet_id
