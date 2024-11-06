@@ -15,6 +15,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 const USER_REGEX = /^[A-z0-9]{3,10}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
+const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
 const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
@@ -42,8 +43,11 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     const [name, setName] = useState(doctor.name)
     const [mobileNumber, setMobileNumber] = useState(doctor.telecom)
     const [validMobileNumber, setValidMobileNumber] = useState(false)
+    const [newusername, setNewusername] = useState(doctor.username)
     const [username, setUsername] = useState(doctor.username)
     const [validUsername, setValidUsername] = useState(false)
+    const [email, setEmail] = useState(doctor.email)
+    const [validEmail, setValidEmail] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
@@ -67,8 +71,8 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     };
 
     useEffect(() => {
-        setValidUsername(USER_REGEX.test(username))
-    }, [username])
+        setValidUsername(USER_REGEX.test(newusername))
+    }, [newusername])
 
     useEffect(() => {
         setValidMobileNumber(MOBILENUMBER_REGEX.test(mobileNumber))
@@ -79,13 +83,19 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     }, [values.password])
 
     useEffect(() => {
+        setValidEmail(EMAIL_REGEX.test(email))
+    }, [email])
+
+    useEffect(() => {
         console.log(isSuccess)
         console.log(isDelSuccess)
         if (isSuccess || isDelSuccess) {
             setName('')
             setMobileNumber('')
-            setUsername('')
+            setNewusername('')
             setPassword('')
+            setUsername('')
+            setEmail('')
             setReEnterPassword('')
             navigate('/dash/medecins')
 
@@ -94,8 +104,11 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
     const onNameChanged = e => setName(e.target.value)
     const onMobileNumberChanged = e => setMobileNumber(e.target.value)
+    const onNewUsernameChanged = e => setNewusername(e.target.value)
     const onUsernameChanged = e => setUsername(e.target.value)
+    const onEmailChanged = e => setEmail(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
+
     const onReEnterPassword = e => setReEnterPassword(e.target.value)
 
     const onCabinetIdChanged = e => {
@@ -117,12 +130,14 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     })
 
     const onSaveUserClicked = async (e) => {
-        if (password && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
+        if (validUsername && validPassword && validMobileNumber && validEmail && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
             const result = await updatemedecin({
                 "id": doctor.id,
                 "name": name,
                 "telecom": mobileNumber,
+                "newusername": newusername,
                 "username": username,
+                "email": email,
                 password: values.password,
                 "cabinet_id": parseInt(cabinet_id)
             })
@@ -131,12 +146,14 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
             } else {
                 alert('updated successfully')
             }
-        } else if (validUsername && validMobileNumber && window.confirm("Press 'Ok' to update") == true) {
+        } else if (validUsername && validMobileNumber && validEmail && window.confirm("Press 'Ok' to update") == true) {
             const result = await updatemedecin({
                 id: doctor.id,
                 "name": name,
+                "newusername": newusername,
                 "username": username,
                 "telecom": mobileNumber,
+                "email": email,
                 "cabinet_id": parseInt(cabinet_id)
             })
             console.log(result)
@@ -146,7 +163,7 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                 alert('updated successfully')
             }
         } else if (!validUsername) {
-            alert('Invalid username')
+            alert('Invalid newusername')
         } else if (!validPassword) {
             alert('Invalid password')
         } else if (!(values.password === reEnterPassword)) {
@@ -170,9 +187,9 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
     let canSave
     if (values.password) {
-        canSave = [name, mobileNumber, username, values.password, (values.password === reEnterPassword)].every(Boolean) && !isLoading
+        canSave = [name, mobileNumber, newusername, values.password, (values.password === reEnterPassword)].every(Boolean) && !isLoading
     } else {
-        canSave = [name, mobileNumber, username].every(Boolean) && !isLoading
+        canSave = [name, mobileNumber, newusername].every(Boolean) && !isLoading
     }
 
     const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
@@ -242,8 +259,19 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     type="text"
                     label="Enter username"
                     autoComplete="on"
-                    value={username}
-                    onChange={onUsernameChanged}
+                    value={newusername}
+                    onChange={onNewUsernameChanged}
+                />
+
+                <TextField
+                    className={`form__input`}
+                    id="email"
+                    name="email"
+                    type="text"
+                    label=" Enter email"
+                    autoComplete="off"
+                    value={email}
+                    onChange={onEmailChanged}
                 />
 
 
