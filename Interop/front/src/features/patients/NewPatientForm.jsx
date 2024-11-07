@@ -45,6 +45,7 @@ const NewPatientForm = ({medecin}) => {
             setTelecom('')
             setMedecin_id('')
             navigate('/dash/patients')
+            window.location.reload()
         }
 
     }, [isSuccess, navigate])

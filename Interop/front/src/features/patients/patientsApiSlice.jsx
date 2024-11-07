@@ -1,5 +1,5 @@
-import { createSelector, createEntityAdapter } from "@reduxjs/toolkit";
-import { apiSlice } from '../../app/api/apiSlice.jsx'
+import {createEntityAdapter, createSelector} from "@reduxjs/toolkit";
+import {apiSlice} from '../../app/api/apiSlice.jsx'
 
 const patientsAdapter = createEntityAdapter({})
 const initialState = patientsAdapter.getInitialState()
@@ -21,7 +21,8 @@ export const patientsApiSlice = apiSlice.injectEndpoints({
                         ...result.ids.map(id => ({ type: 'Patient', id }))
                     ]
                 } else return [{ type: 'Patient', id: 'LIST' }]
-            }
+            },
+            refetchOnMountOrArgChange: true,
         }),
         addNewPatient: builder.mutation({
             query: initialNote => ({

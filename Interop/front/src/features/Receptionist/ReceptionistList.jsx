@@ -6,7 +6,6 @@ import {useGetReceptionistsQuery} from "./ReceptionistApiSlice.jsx";
 import Receptionist from "./Receptionist.jsx";
 
 const ReceptionistList = () => {
-
     const {isManager, isAdmin, isReceptionist} = useAuth()
 
     const {
@@ -44,7 +43,7 @@ const ReceptionistList = () => {
 
         if (isManager || isAdmin || isReceptionist) {
             tableContent = ids?.length
-                ? ids.map(medecin => <Receptionist key={medecin} ReceptionistID={medecin}/>)
+                ? ids.map(receptionist => <Receptionist key={receptionist} ReceptionistID={receptionist}/>)
                 : null
         }
 
@@ -55,6 +54,7 @@ const ReceptionistList = () => {
                 <tr>
                     <th scope='col' className="table__th table__Uppercase">id</th>
                     <th scope='col' className="table__th table__Uppercase">name</th>
+                    <th scope='col' className="table__th table__Uppercase">Cabinet Name</th>
                     <th scope='col' className="table__th table__Uppercase">View/Edit</th>
                 </tr>
                 </thead>

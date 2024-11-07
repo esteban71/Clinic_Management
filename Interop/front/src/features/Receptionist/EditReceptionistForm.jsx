@@ -22,7 +22,7 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
     const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
     const [
-        updatemedecin, {
+        updateReceptionist, {
             isLoading,
             isSuccess,
             isError,
@@ -98,6 +98,7 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
             setEmail('')
             setReEnterPassword('')
             navigate('/dash/receptionists')
+            window.location.reload()
 
         }
     }, [isSuccess, isDelSuccess, navigate])
@@ -131,7 +132,7 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
 
     const onSaveUserClicked = async (e) => {
         if (validUsername && validPassword && validMobileNumber && validEmail && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
+            const result = await updateReceptionist({
                 "id": receptionist.id,
                 "name": name,
                 "telecom": mobileNumber,
@@ -147,7 +148,7 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
                 alert('updated successfully')
             }
         } else if (validUsername && validMobileNumber && validEmail && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
+            const result = await updateReceptionist({
                 id: receptionist.id,
                 "name": name,
                 "newusername": newusername,

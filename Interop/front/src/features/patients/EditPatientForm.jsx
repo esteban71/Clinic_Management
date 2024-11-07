@@ -57,6 +57,7 @@ const EditPatientForm = ({patient, medecin}) => {
             setTelecom('')
             setMedecin_id('')
             navigate('/dash/patients')
+            window.location.reload()
         }
 
     }, [isSuccess, isDelSuccess, navigate])

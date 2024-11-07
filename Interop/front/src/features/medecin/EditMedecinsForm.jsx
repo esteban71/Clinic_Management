@@ -98,7 +98,7 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
             setEmail('')
             setReEnterPassword('')
             navigate('/dash/medecins')
-
+            window.location.reload()
         }
     }, [isSuccess, isDelSuccess, navigate])
 

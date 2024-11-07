@@ -14,7 +14,7 @@ export const receptionistApiSlice = apiSlice.injectEndpoints({
             },
             transformResponse: responseData => {
                 console.log('transformResponse', responseData)
-                return medecinAdapter.setAll(initialState, responseData)
+                return ReceptionistAdapter.setAll(initialState, responseData);
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
@@ -73,7 +73,7 @@ export const {
 } = receptionistApiSlice
 
 // returns the query result object
-export const selectReceptionistsResult = receptionistApiSlice.endpoints.getMedecins.select()
+export const selectReceptionistsResult = receptionistApiSlice.endpoints.getReceptionists.select()
 
 // creates memorized selector
 

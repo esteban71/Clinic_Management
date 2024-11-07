@@ -73,6 +73,7 @@ const NewDoctorForm = ({cabinet}) => {
             setReEnterPassword('')
             setCabinetId([])
             navigate('/dash/medecins')
+            window.location.reload()
         }
     }, [isSuccess, navigate])
 

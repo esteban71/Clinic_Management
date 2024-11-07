@@ -73,6 +73,7 @@ const NewReceptionistForm = ({cabinet}) => {
             setReEnterPassword('')
             setCabinetId([])
             navigate('/dash/receptionists')
+            window.location.reload()
         }
     }, [isSuccess, navigate])
 
@@ -107,7 +108,7 @@ const NewReceptionistForm = ({cabinet}) => {
             if (result.error) {
                 alert('Unable to create new Doctor! please try again...')
             } else {
-                alert('New Doctor created successfully')
+                alert('New Receptionist created successfully')
             }
 
         } else if (!validUsername && !validPassword && !validMobileNumber && !(values.password === reEnterPassword)) {
