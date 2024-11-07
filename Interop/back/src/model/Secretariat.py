@@ -10,10 +10,8 @@ class Secretariat(Base):
     name = Column(String)  # name of the secretariat
     username = Column(String, nullable=True)  # Nom d'utilisateur dans keycloak
     email = Column(String, nullable=True)  # email of the secretariat
-    telephone = Column(String, nullable=True)  # telephone of the secretariat
+    telecom = Column(String, nullable=True)  # telephone of the secretariat
     habilitations = Column(String, nullable=True)  # habilitations of the secretariat
-    medecin_id = Column(Integer, ForeignKey('medecins.id'), nullable=True)  # medecin of the secretariat
-    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'), nullable=False)  # cabinet_medical of the secretariat
 
     # Relationships
     cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))

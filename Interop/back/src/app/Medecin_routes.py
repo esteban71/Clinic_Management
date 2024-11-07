@@ -1,12 +1,11 @@
 import logging
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model import Medecin
-from src.schemas import MedecinSchema
+from src.schemas import MedecinSchema, CreateMedecinSchema, UpdateMedecinSchema
 from src.utils.auth import create_user, add_attribute_to_user, modify_user, delete_user
 
 logger = logging.getLogger('uvicorn.error')
@@ -16,33 +15,20 @@ router = APIRouter()
 
 @router.get("", response_model=List[MedecinSchema])
 async def get_all_medecins(request: Request, db: Session = Depends(get_db)):
+    if request.state.user["attributes"].get("cabinet_id") is not None:
+        cabinet_id = int(request.state.user["attributes"]["cabinet_id"][0])
+        logger.info(f"Getting medecin with id {cabinet_id}")
+        medecins = db.query(Medecin).filter(Medecin.cabinet_medical_id == cabinet_id).all()
+        if medecins is None:
+            raise HTTPException(status_code=404, detail="Medecin not found")
+        return medecins
     medecins = db.query(Medecin).all()
     return medecins
 
 
-class CreateMedecinSchema(BaseModel):
-    name: str
-    telecom: str
-    username: str
-    email: str
-    password: str
-    cabinet_id: int
-
-
-class UpdateMedecinSchema(BaseModel):
-    id: int
-    name: str
-    telecom: str
-    newusername: str
-    username: str
-    cabinet_id: int
-    email: str
-    password: Optional[str] = None
-
-
 @router.post("")
 async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get_db)):
-    db_medecin = db.query(Medecin).filter(Medecin.name == medecin.name).first()
+    db_medecin = db.query(Medecin).filter(Medecin.username == medecin.username).first()
     if db_medecin is not None:
         raise HTTPException(status_code=400, detail="Medecin already exists")
     result = await create_user(
