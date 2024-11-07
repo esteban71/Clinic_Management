@@ -1,58 +1,39 @@
 import React, {useEffect, useState} from 'react'
-import {useDeleteMedecinMutation, useUpdateMedecinMutation} from "./medecinApiSlice.jsx";
+import {useAddNewReceptionistMutation} from './ReceptionistApiSlice.jsx'
 import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
-import {faSave, faTrashCan} from '@fortawesome/free-solid-svg-icons'
+import {faSave} from '@fortawesome/free-solid-svg-icons'
 import useAuth from '../../hooks/useAuth.jsx'
-import CircularLoader from '../../pageLoader/CircularLoader.jsx'
-import {TextField} from '@mui/material'
+import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-const USER_REGEX = /^[A-z0-9]{3,10}$/
+const USER_REGEX = /^[A-z0-9]{3,20}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
-const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
-const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
+const NewReceptionistForm = ({cabinet}) => {
+    const {isManager, isAdmin, isReceptionist} = useAuth()
 
-    const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
-
-    const [
-        updatemedecin, {
-            isLoading,
-            isSuccess,
-            isError,
-            error
-        }
-    ] = useUpdateMedecinMutation()
-
-    const [
-        deletemedecin, {
-            isSuccess: isDelSuccess,
-            isError: isDelError,
-            error: delerror
-        }
-    ] = useDeleteMedecinMutation()
+    const [addNewReceptionist, {isLoading, isSuccess, isError, error}] = useAddNewReceptionistMutation();
 
     const navigate = useNavigate()
 
-    const [name, setName] = useState(doctor.name)
-    const [mobileNumber, setMobileNumber] = useState(doctor.telecom)
+    const [name, setName] = useState('')
+    const [mobileNumber, setMobileNumber] = useState('')
     const [validMobileNumber, setValidMobileNumber] = useState(false)
-    const [newusername, setNewusername] = useState(doctor.username)
-    const [username, setUsername] = useState(doctor.username)
+    const [username, setUsername] = useState('')
     const [validUsername, setValidUsername] = useState(false)
-    const [email, setEmail] = useState(doctor.email)
+    const [email, setEmail] = useState('')
     const [validEmail, setValidEmail] = useState(false)
+    const [cabinet_id, setCabinetId] = useState('')
+    const [validCabinetId, setValidCabinetId] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
     const [iserror, setIsError] = useState(false);
-    const [cabinet_id, setCabinetId] = useState(cabinet.id)
     const [values, setValues] = React.useState({
         password: "",
         showPassword: false,
@@ -71,8 +52,8 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     };
 
     useEffect(() => {
-        setValidUsername(USER_REGEX.test(newusername))
-    }, [newusername])
+        setValidUsername(USER_REGEX.test(username))
+    }, [username])
 
     useEffect(() => {
         setValidMobileNumber(MOBILENUMBER_REGEX.test(mobileNumber))
@@ -83,34 +64,25 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     }, [values.password])
 
     useEffect(() => {
-        setValidEmail(EMAIL_REGEX.test(email))
-    }, [email])
-
-    useEffect(() => {
-        console.log(isSuccess)
-        console.log(isDelSuccess)
-        if (isSuccess || isDelSuccess) {
+        if (isSuccess) {
             setName('')
             setMobileNumber('')
-            setNewusername('')
-            setPassword('')
             setUsername('')
             setEmail('')
+            setPassword('')
             setReEnterPassword('')
-            navigate('/dash/medecins')
+            setCabinetId([])
+            navigate('/dash/receptionists')
             window.location.reload()
         }
-    }, [isSuccess, isDelSuccess, navigate])
+    }, [isSuccess, navigate])
 
     const onNameChanged = e => setName(e.target.value)
     const onMobileNumberChanged = e => setMobileNumber(e.target.value)
-    const onNewUsernameChanged = e => setNewusername(e.target.value)
     const onUsernameChanged = e => setUsername(e.target.value)
-    const onEmailChanged = e => setEmail(e.target.value)
     const onPasswordChanged = e => setPassword(e.target.value)
-
     const onReEnterPassword = e => setReEnterPassword(e.target.value)
-
+    const onEmailChanged = e => setEmail(e.target.value)
     const onCabinetIdChanged = e => {
         const values = Array.from(
             e.target.selectedOptions,
@@ -119,7 +91,42 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
         setCabinetId(values)
     }
 
-    const cabinetOptions = Object.values(allcabinet).map(cabinet => {
+
+    const canSave = [name, mobileNumber, username, email, values.password, cabinet_id.length].every(Boolean) && !isLoading
+
+    const onSaveUserClicked = async (e) => {
+        e.preventDefault()
+        if (canSave && validUsername && validPassword && validMobileNumber && (values.password === reEnterPassword)) {
+            const result = await addNewReceptionist({
+                'name': name,
+                'telecom': mobileNumber,
+                'username': username,
+                'email': email,
+                password: values.password,
+                "cabinet_id": cabinet_id[0]
+            })
+            if (result.error) {
+                alert('Unable to create new Doctor! please try again...')
+            } else {
+                alert('New Receptionist created successfully')
+            }
+
+        } else if (!validUsername && !validPassword && !validMobileNumber && !(values.password === reEnterPassword)) {
+            alert('All fields are invalid')
+        } else if (!validUsername) {
+            alert('Invalid username')
+        } else if (!validPassword) {
+            alert('Invalid password')
+        } else if (!validMobileNumber) {
+            alert('Invalid mobile number')
+        } else if (!(values.password === reEnterPassword)) {
+            alert('Please re-enter password correctly')
+        } else {
+            alert('Unable to create new Doctor! please try again...')
+        }
+    }
+
+    const cabinetOptions = Object.values(cabinet).map(cabinet => {
         return (
             <option
                 key={cabinet.id}
@@ -129,94 +136,24 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
         )
     })
 
-    const onSaveUserClicked = async (e) => {
-        if (validUsername && validPassword && validMobileNumber && validEmail && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
-                "id": doctor.id,
-                "name": name,
-                "telecom": mobileNumber,
-                "newusername": newusername,
-                "username": username,
-                "email": email,
-                password: values.password,
-                "cabinet_id": parseInt(cabinet_id)
-            })
-            if (result.error) {
-                alert('Unable to update! please try again...')
-            } else {
-                alert('updated successfully')
-            }
-        } else if (validUsername && validMobileNumber && validEmail && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
-                id: doctor.id,
-                "name": name,
-                "newusername": newusername,
-                "username": username,
-                "telecom": mobileNumber,
-                "email": email,
-                "cabinet_id": parseInt(cabinet_id)
-            })
-            console.log(result)
-            if (result.error) {
-                alert('Unable to update! please try again...')
-            } else {
-                alert('updated successfully')
-            }
-        } else if (!validUsername) {
-            alert('Invalid newusername')
-        } else if (!validPassword) {
-            alert('Invalid password')
-        } else if (!(values.password === reEnterPassword)) {
-            alert('Please re-enter password correctly')
-        } else if (!validMobileNumber) {
-            alert('Invalid mobile number')
-        } else {
-            alert('Unable to update! please try again...')
-        }
-    }
 
-    const onDeleteUserClicked = async () => {
-        if (window.confirm("Hit 'Ok' to delete")) {
-            const result = await deletemedecin({id: doctor.id})
-            console.log(result)
-        }
-    }
+    const errClass = isError ? "errmsg" : "offscreen"
 
-
-    if (isLoading) return <CircularLoader/>
-
-    let canSave
-    if (values.password) {
-        canSave = [name, mobileNumber, newusername, values.password, (values.password === reEnterPassword)].every(Boolean) && !isLoading
-    } else {
-        canSave = [name, mobileNumber, newusername].every(Boolean) && !isLoading
-    }
-
-    const errClass = (isError || isDelError) ? "errmsg" : "offscreen"
-    const errContent = (error?.data?.message || delerror?.data?.message) ?? ''
 
     const content = (
         <>
-            <p className={errClass}>{errContent}</p>
+            <p className={errClass}>{error?.data?.message}</p>
 
-            <form className="form" onSubmit={e => e.preventDefault()}>
+            <form className="form" onSubmit={onSaveUserClicked}>
                 <div className="form__title-row">
-                    <h1>Edit Form</h1>
+                    <h2>Add New Receptionist</h2>
                     <div className="form__action-buttons">
                         <button
                             className="icon-button"
                             title="Save"
-                            onClick={onSaveUserClicked}
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} fontSize='large'/>
-                        </button>
-                        <button
-                            className="icon-button"
-                            title="Delete"
-                            onClick={onDeleteUserClicked}
-                        >
-                            <FontAwesomeIcon icon={faTrashCan} fontSize='large'/>
+                            <FontAwesomeIcon icon={faSave}/>
                         </button>
                     </div>
                 </div>
@@ -226,12 +163,11 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     id="name"
                     name="name"
                     type="text"
-                    label="Enter Name"
+                    label="Enter Receptionist's name"
                     autoComplete="on"
                     value={name}
                     onChange={onNameChanged}
                 />
-
 
                 <TextField
                     required
@@ -239,7 +175,7 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     id="note-title"
                     name="title"
                     type="tel"
-                    label="Enter Patient Mobile Number"
+                    label="Enter Receptionist Mobile Number"
                     autoComplete="off"
                     error={iserror}
                     value={mobileNumber}
@@ -251,16 +187,15 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     }}
                 />
 
-
                 <TextField
                     className={`form__input`}
                     id="username"
                     name="username"
                     type="text"
-                    label="Enter username"
-                    autoComplete="on"
-                    value={newusername}
-                    onChange={onNewUsernameChanged}
+                    label=" Enter Receptionist's username"
+                    autoComplete="off"
+                    value={username}
+                    onChange={onUsernameChanged}
                 />
 
                 <TextField
@@ -273,7 +208,6 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     value={email}
                     onChange={onEmailChanged}
                 />
-
 
                 <TextField
                     className={`form__input`}
@@ -295,13 +229,12 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                     }}
                 />
 
-
                 <TextField
                     className={`form__input`}
                     id="ReEnterPassword"
                     name="ReEnterPassword"
                     type="password"
-                    label="Re-Enter password"
+                    label=" Re-Enter password"
                     value={reEnterPassword}
                     onChange={onReEnterPassword}
                 />
@@ -325,6 +258,8 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     )
 
     return content
+
 }
 
-export default EditMedecinsForm
+export default NewReceptionistForm
+

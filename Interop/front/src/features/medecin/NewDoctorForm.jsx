@@ -4,7 +4,6 @@ import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSave} from '@fortawesome/free-solid-svg-icons'
 import useAuth from '../../hooks/useAuth.jsx'
-import {Roles} from '../../config/roles.jsx'
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
@@ -15,8 +14,7 @@ const USER_REGEX = /^[A-z0-9]{3,20}$/
 const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
-const NewDoctorForm = () => {
-
+const NewDoctorForm = ({cabinet}) => {
     const {isManager, isAdmin, isReceptionist} = useAuth()
 
     const [addNewMedecin, {isLoading, isSuccess, isError, error}] = useAddNewMedecinMutation();
@@ -30,10 +28,11 @@ const NewDoctorForm = () => {
     const [validUsername, setValidUsername] = useState(false)
     const [email, setEmail] = useState('')
     const [validEmail, setValidEmail] = useState(false)
+    const [cabinet_id, setCabinetId] = useState('')
+    const [validCabinetId, setValidCabinetId] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
     const [validPassword, setValidPassword] = useState(false)
-    const [roles, setRoles] = useState(["Employee"])
     const [iserror, setIsError] = useState(false);
     const [values, setValues] = React.useState({
         password: "",
@@ -72,8 +71,9 @@ const NewDoctorForm = () => {
             setEmail('')
             setPassword('')
             setReEnterPassword('')
-            setRoles([])
+            setCabinetId([])
             navigate('/dash/medecins')
+            window.location.reload()
         }
     }, [isSuccess, navigate])
 
@@ -83,15 +83,16 @@ const NewDoctorForm = () => {
     const onPasswordChanged = e => setPassword(e.target.value)
     const onReEnterPassword = e => setReEnterPassword(e.target.value)
     const onEmailChanged = e => setEmail(e.target.value)
-    const onRolesChanged = e => {
+    const onCabinetIdChanged = e => {
         const values = Array.from(
             e.target.selectedOptions,
-            (option) => option.value
+            (option) => option.id
         )
-        setRoles(values)
+        setCabinetId(values)
     }
 
-    const canSave = [name, mobileNumber, username, email, values.password, roles.length].every(Boolean) && !isLoading
+
+    const canSave = [name, mobileNumber, username, email, values.password, cabinet_id.length].every(Boolean) && !isLoading
 
     const onSaveUserClicked = async (e) => {
         e.preventDefault()
@@ -101,7 +102,8 @@ const NewDoctorForm = () => {
                 'telecom': mobileNumber,
                 'username': username,
                 'email': email,
-                password: values.password
+                password: values.password,
+                "cabinet_id": cabinet_id[0]
             })
             if (result.error) {
                 alert('Unable to create new Doctor! please try again...')
@@ -124,22 +126,18 @@ const NewDoctorForm = () => {
         }
     }
 
-    const options = Object.values(Roles)
-        .filter(val => val === 'Doctor')
-        .map(role => {
-            return (
-                <option
-                    key={role}
-                    value={role}
+    const cabinetOptions = Object.values(cabinet).map(cabinet => {
+        return (
+            <option
+                key={cabinet.id}
+                value={cabinet.id}
+                id={cabinet.id}
+            > {cabinet.name}</option>
+        )
+    })
 
-                > {role}</option>
-            )
-        })
 
     const errClass = isError ? "errmsg" : "offscreen"
-    const validUserClass = !validUsername ? 'form__input--incomplete' : ''
-    const validPwdClass = !validPassword ? 'form__input--incomplete' : ''
-    const validRolesClass = !Boolean(roles.length) ? 'form__input--incomplete' : ''
 
 
     const content = (
@@ -177,14 +175,14 @@ const NewDoctorForm = () => {
                     id="note-title"
                     name="title"
                     type="tel"
-                    label="Enter Patient Mobile Number"
+                    label="Enter Doctor Patient Mobile Number"
                     autoComplete="off"
                     error={iserror}
                     value={mobileNumber}
                     onChange={onMobileNumberChanged}
                     InputProps={{
                         startAdornment: <InputAdornment position="start">
-                            +91
+                            +33
                         </InputAdornment>,
                     }}
                 />
@@ -241,18 +239,18 @@ const NewDoctorForm = () => {
                     onChange={onReEnterPassword}
                 />
 
-                <label className="form__label" htmlFor="roles">
-                    ASSIGNED ROLES:</label>
+                <label className="form__label form__checkbox-container" htmlFor="cabinet">
+                    ASSIGNED CABINET:</label>
                 <select
-                    id="roles"
-                    name="roles"
-                    className={`form__select ${validRolesClass}`}
-                    multiple={true}
-                    size="3"
-                    value={roles}
-                    onChange={onRolesChanged}
+                    id="cabinet"
+                    name="cabinet"
+                    className="form__select"
+                    value={cabinet_id}
+
+                    onChange={onCabinetIdChanged}
                 >
-                    {options}
+
+                    {cabinetOptions}
                 </select>
 
             </form>

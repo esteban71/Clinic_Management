@@ -6,18 +6,18 @@ import Login from './features/auth/Login'
 import DashLayout from './components/DashLayout';
 import Welcome from './features/auth/Welcome';
 import PatientsList from './features/patients/PatientsList'
-import UsersList from './features/users/UsersList'
-import EditUser from './features/users/EditUser'
-import NewUserForm from './features/users/NewUserForm'
 import EditPatient from './features/patients/EditPatient'
 import NewPatient from './features/patients/NewPatient'
 import MedecinsList from './features/medecin/MedecinsList.jsx';
-import NewDoctorForm from './features/medecin/NewDoctorForm.jsx';
 import Prefetch from './features/auth/Prefetch.jsx'
 import PersistLogin from './features/auth/PersistLogin.jsx';
 import RequireAuth from './features/auth/RequireAuth.jsx';
 import {Roles} from './config/roles.jsx'
 import EditMedecins from "./features/medecin/EditMedecins.jsx";
+import NewDoctor from "./features/medecin/NewDoctor.jsx";
+import ReceptionistList from "./features/Receptionist/ReceptionistList.jsx";
+import EditReceptionist from "./features/Receptionist/EditReceptionist.jsx";
+import NewReceptionist from "./features/Receptionist/NewReceptionist.jsx";
 
 
 function App() {
@@ -45,10 +45,10 @@ function App() {
                 </Route>
 
                 <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Receptionist]} />}>
-                  <Route path='users'>
-                    <Route index element={<UsersList />} />
-                    <Route path=':id' element={<EditUser />} />
-                    <Route path='new' element={<NewUserForm />} />
+                    <Route path='receptionists'>
+                        <Route index element={<ReceptionistList/>}/>
+                        <Route path=':id' element={<EditReceptionist/>}/>
+                        <Route path='new' element={<NewReceptionist/>}/>
                   </Route>
                 </Route>
 
@@ -56,7 +56,7 @@ function App() {
                   <Route path='medecins'>
                     <Route index element={<MedecinsList/>}/>
                     <Route path=':id' element={<EditMedecins/>}/>
-                    <Route path='new' element={<NewDoctorForm />} />
+                    <Route path='new' element={<NewDoctor/>}/>
                   </Route>
                 </Route>
 

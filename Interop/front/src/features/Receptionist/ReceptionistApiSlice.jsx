@@ -1,34 +1,34 @@
 import {createEntityAdapter, createSelector} from "@reduxjs/toolkit";
 import {apiSlice} from '../../app/api/apiSlice.jsx'
 
-const medecinAdapter = createEntityAdapter({})
-const initialState = medecinAdapter.getInitialState()
+const ReceptionistAdapter = createEntityAdapter({})
+const initialState = ReceptionistAdapter.getInitialState()
 
 
-export const medecinApiSlice = apiSlice.injectEndpoints({
+export const receptionistApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
-        getMedecins: builder.query({
-            query: () => '/medecins',
+        getReceptionists: builder.query({
+            query: () => '/receptionists',
             validateStatus: (response, result) => {
                 return response.status === 200 && !result.isError
             },
             transformResponse: responseData => {
                 console.log('transformResponse', responseData)
-                return medecinAdapter.setAll(initialState, responseData)
+                return ReceptionistAdapter.setAll(initialState, responseData);
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
                     return [
-                        {type: 'Medecin', id: 'List'},
-                        ...result.ids.map(id => ({type: 'Medecin', id}))
+                        {type: 'Receptionist', id: 'LIST'},
+                        ...result.ids.map(id => ({type: 'Receptionist', id}))
                     ]
-                } else return [{type: 'Medecin', id: 'LIST'}]
+                } else return [{type: 'Receptionist', id: 'LIST'}]
             },
             refetchOnMountOrArgChange: true,
         }),
-        addNewMedecin: builder.mutation({
+        addNewReceptionist: builder.mutation({
             query: initialMedecinData => ({
-                url: '/medecins',
+                url: '/receptionists',
                 method: 'POST',
                 body: {
                     ...initialMedecinData,
@@ -38,53 +38,53 @@ export const medecinApiSlice = apiSlice.injectEndpoints({
                 {type: 'Medecin', id: "LIST"}
             ]
         }),
-        updateMedecin: builder.mutation({
+        updateReceptionist: builder.mutation({
             query: initialMedecinData => ({
-                url: '/medecins',
+                url: '/receptionists',
                 method: 'PATCH',
                 body: {
                     ...initialMedecinData,
                 }
             }),
             invalidatesTags: (result, error, arg) => [
-                {type: 'Medecin', id: arg.id}
+                {type: 'Receptionist', id: arg.id}
             ]
         }),
-        deleteMedecin: builder.mutation({
+        deleteReceptionist: builder.mutation({
             query: ({id}) => ({
-                url: `/medecins`,
+                url: `/receptionists`,
                 method: 'DELETE',
                 body: {
                     id
                 }
             }),
             invalidatesTags: (result, error, arg) => [
-                {type: 'Medecin', id: arg.id}
+                {type: 'Receptionist', id: arg.id}
             ]
         })
     })
 })
 
 export const {
-    useGetMedecinsQuery,
-    useAddNewMedecinMutation,
-    useUpdateMedecinMutation,
-    useDeleteMedecinMutation
-} = medecinApiSlice
+    useGetReceptionistsQuery,
+    useAddNewReceptionistMutation,
+    useUpdateReceptionistMutation,
+    useDeleteReceptionistMutation
+} = receptionistApiSlice
 
 // returns the query result object
-export const selectMedecinsResult = medecinApiSlice.endpoints.getMedecins.select()
+export const selectReceptionistsResult = receptionistApiSlice.endpoints.getReceptionists.select()
 
 // creates memorized selector
 
-const selectmedecinData = createSelector(
-    selectMedecinsResult,
-    medecinResult => medecinResult.data
+const selectReceptionistData = createSelector(
+    selectReceptionistsResult,
+    ReceptionistResult => ReceptionistResult.data
 )
 
 // getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
-    selectAll: selectAllMedecins,
-    selectById: selectMedecinById,
-    selectIds: selectMedecinIds
-} = medecinAdapter.getSelectors(state => selectmedecinData(state) ?? initialState)
+    selectAll: selectAllReceptionists,
+    selectById: selectReceptionistById,
+    selectIds: selectReceptionistIds
+} = ReceptionistAdapter.getSelectors(state => selectReceptionistData(state) ?? initialState)

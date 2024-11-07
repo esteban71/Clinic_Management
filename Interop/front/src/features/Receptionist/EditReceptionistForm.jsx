@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useDeleteMedecinMutation, useUpdateMedecinMutation} from "./medecinApiSlice.jsx";
+import {useDeleteReceptionistMutation, useUpdateReceptionistMutation} from "./ReceptionistApiSlice.jsx";
 import {useNavigate} from 'react-router-dom'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import {faSave, faTrashCan} from '@fortawesome/free-solid-svg-icons'
@@ -17,18 +17,18 @@ const PWD_REGEX = /^[A-z0-9!@#$%]{4,12}$/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 const EMAIL_REGEX = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/
 
-const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
+const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
 
     const {isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
     const [
-        updatemedecin, {
+        updateReceptionist, {
             isLoading,
             isSuccess,
             isError,
             error
         }
-    ] = useUpdateMedecinMutation()
+    ] = useUpdateReceptionistMutation();
 
     const [
         deletemedecin, {
@@ -36,17 +36,17 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
             isError: isDelError,
             error: delerror
         }
-    ] = useDeleteMedecinMutation()
+    ] = useDeleteReceptionistMutation();
 
     const navigate = useNavigate()
 
-    const [name, setName] = useState(doctor.name)
-    const [mobileNumber, setMobileNumber] = useState(doctor.telecom)
+    const [name, setName] = useState(receptionist.name)
+    const [mobileNumber, setMobileNumber] = useState(receptionist.telecom)
     const [validMobileNumber, setValidMobileNumber] = useState(false)
-    const [newusername, setNewusername] = useState(doctor.username)
-    const [username, setUsername] = useState(doctor.username)
+    const [newusername, setNewusername] = useState(receptionist.username)
+    const [username, setUsername] = useState(receptionist.username)
     const [validUsername, setValidUsername] = useState(false)
-    const [email, setEmail] = useState(doctor.email)
+    const [email, setEmail] = useState(receptionist.email)
     const [validEmail, setValidEmail] = useState(false)
     const [password, setPassword] = useState('')
     const [reEnterPassword, setReEnterPassword] = useState('')
@@ -97,8 +97,9 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
             setUsername('')
             setEmail('')
             setReEnterPassword('')
-            navigate('/dash/medecins')
+            navigate('/dash/receptionists')
             window.location.reload()
+
         }
     }, [isSuccess, isDelSuccess, navigate])
 
@@ -131,8 +132,8 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
     const onSaveUserClicked = async (e) => {
         if (validUsername && validPassword && validMobileNumber && validEmail && (values.password === reEnterPassword) && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
-                "id": doctor.id,
+            const result = await updateReceptionist({
+                "id": receptionist.id,
                 "name": name,
                 "telecom": mobileNumber,
                 "newusername": newusername,
@@ -147,8 +148,8 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                 alert('updated successfully')
             }
         } else if (validUsername && validMobileNumber && validEmail && window.confirm("Press 'Ok' to update") == true) {
-            const result = await updatemedecin({
-                id: doctor.id,
+            const result = await updateReceptionist({
+                id: receptionist.id,
                 "name": name,
                 "newusername": newusername,
                 "username": username,
@@ -177,7 +178,7 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
 
     const onDeleteUserClicked = async () => {
         if (window.confirm("Hit 'Ok' to delete")) {
-            const result = await deletemedecin({id: doctor.id})
+            const result = await deletemedecin({id: receptionist.id})
             console.log(result)
         }
     }
@@ -327,4 +328,4 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     return content
 }
 
-export default EditMedecinsForm
+export default EditReceptionistForm

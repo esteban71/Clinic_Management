@@ -1,5 +1,4 @@
-import React from 'react'
-import {useState, useEffect} from "react"
+import React, {useEffect, useState} from 'react'
 import {useNavigate} from "react-router-dom"
 import {useAddNewPatientMutation} from './patientsApiSlice.jsx'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -46,6 +45,7 @@ const NewPatientForm = ({medecin}) => {
             setTelecom('')
             setMedecin_id('')
             navigate('/dash/patients')
+            window.location.reload()
         }
 
     }, [isSuccess, navigate])
@@ -99,8 +99,8 @@ const NewPatientForm = ({medecin}) => {
     const options = medecin.map(user => {
         return (
             <option
-                key={user.name}
-                value={user.name}
+                key={user.id}
+                value={user.id}
                 id={user.id}
 
             > {user.name} </option>
@@ -169,7 +169,7 @@ const NewPatientForm = ({medecin}) => {
                                 onChange={onMobileNumberChanged}
                                 InputProps={{
                                     startAdornment: <InputAdornment position="start">
-                                        +91
+                                        +33
                                     </InputAdornment>,
                                 }}
                             /></div>

@@ -49,8 +49,8 @@ const Welcome = () => {
             </div>
         </Link>}
 
-        { (isManager || isAdmin) && 
-        <Link to="/dash/users">
+        { (isManager || isAdmin) &&
+            <Link to="/dash/receptionists">
             <div className="welcome-container">
                {/* <FontAwesomeIcon icon={ faUserDoctor } style={{ fontSize: '4.2rem', color: '#fff' }} className='logo--style' /> */}
                <img src={userPanel} alt="image not availbale" style={{width: '6em'}} className='logo--style' />
@@ -59,8 +59,8 @@ const Welcome = () => {
         </Link> }
 
 
-        { (isManager || isAdmin) && 
-        <Link to="/dash/users/new">
+        { (isManager || isAdmin) &&
+            <Link to="/dash/receptionists/new">
             <div className="welcome-container">
                {/* <FontAwesomeIcon icon={ faUserGear } style={{ fontSize: '4.2rem', color: '#fff' }} className='logo--style' />  */}
                <img src={addUser} alt="image not availbale" style={{width: '6em'}} className='logo--style' />

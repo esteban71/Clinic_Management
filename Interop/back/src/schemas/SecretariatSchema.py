@@ -2,24 +2,24 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from .CabinetMedicalSchema import CabinetMedicalSchema
 
-class MedecinSchema(BaseModel):
+
+class SecretariatSchema(BaseModel):
     id: int
-    rpps: Optional[str] = None
     name: str
-    specialite: Optional[str] = None
+    username: Optional[str] = None
     email: Optional[str] = None
     telecom: Optional[str] = None
-    habilitations: Optional[str] = None
-    cabinet_medical_id: Optional[int] = None
-    username: Optional[str] = None
+    cabinet_medical_id: int = None
+    cabinet_medical: CabinetMedicalSchema = None
 
     class Config:
         orm_mode = True
         from_attributes = True
 
 
-class CreateMedecinSchema(BaseModel):
+class CreateSecretariatSchema(BaseModel):
     name: str
     telecom: str
     username: str
@@ -28,7 +28,7 @@ class CreateMedecinSchema(BaseModel):
     cabinet_id: int
 
 
-class UpdateMedecinSchema(BaseModel):
+class UpdateSecretariatSchema(BaseModel):
     id: int
     name: str
     telecom: str

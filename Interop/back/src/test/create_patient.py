@@ -1,6 +1,6 @@
+import numpy as np
 from faker import Faker
 from src.model.Patient import Patient
-import numpy as np
 
 fake = Faker()
 from sqlalchemy.orm import Session
@@ -8,8 +8,9 @@ from sqlalchemy.orm import Session
 
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
-    for _ in range(nb_patient):
+    for i in range(nb_patient):
         patient = Patient(
+            id=i,
             name=fake.name(),
             active=fake.boolean(),
             telecom=fake.phone_number(),
