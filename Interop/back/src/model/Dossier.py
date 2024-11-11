@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Date, JSON
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, JSON
 from sqlalchemy.orm import relationship
 from src.model.Base import Base
 
@@ -10,7 +10,6 @@ class DossierMedical(Base):
     patient_id = Column(Integer, ForeignKey('patients.id'))
     date_creation = Column(Date, nullable=True)
     type_acces = Column(String, nullable=True)
-    cabinet_medical_id = Column(Integer, ForeignKey('cabinet_medical.id'))
 
     patient = relationship("Patient", back_populates="dossier_medical")
     comptes_rendus = relationship("CompteRenduMedical", back_populates="dossier_medical")
@@ -33,8 +32,8 @@ class CompteRenduMedical(Base):
     id = Column(Integer, primary_key=True)
     dossier_medical_id = Column(Integer, ForeignKey('dossiers_medicaux.id'))
     date = Column(Date, nullable=True)
-    type = Column(String, nullable=True)
-    contenu = Column(String, nullable=True)
+    title = Column(String, nullable=True)
+    content = Column(String, nullable=True)
 
     dossier_medical = relationship("DossierMedical", back_populates="comptes_rendus")
     auteur_id = Column(Integer, ForeignKey('medecins.id'))

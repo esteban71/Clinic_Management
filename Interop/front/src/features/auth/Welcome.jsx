@@ -54,7 +54,7 @@ const Welcome = () => {
             <div className="welcome-container">
                {/* <FontAwesomeIcon icon={ faUserDoctor } style={{ fontSize: '4.2rem', color: '#fff' }} className='logo--style' /> */}
                <img src={userPanel} alt="image not availbale" style={{width: '6em'}} className='logo--style' />
-               <p className='welcome-container--description'><strong>User panel</strong></p>
+                <p className='welcome-container--description'><strong>Receptionist panel</strong></p>
             </div>
         </Link> }
 
@@ -64,7 +64,7 @@ const Welcome = () => {
             <div className="welcome-container">
                {/* <FontAwesomeIcon icon={ faUserGear } style={{ fontSize: '4.2rem', color: '#fff' }} className='logo--style' />  */}
                <img src={addUser} alt="image not availbale" style={{width: '6em'}} className='logo--style' />
-               <p className='welcome-container--description'><strong>Add New user</strong></p>
+                <p className='welcome-container--description'><strong>Add New Receptionist</strong></p>
             </div>
         </Link> }
         </section>

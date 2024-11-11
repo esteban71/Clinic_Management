@@ -26,6 +26,7 @@ const DashHeader = () => {
     const onAddNewPatient = () => navigate('/dash/patients/new')
     const onAddReceptionist = () => navigate('/dash/receptionists/new')
     const onAddNewDoctor = () => navigate('/dash/medecins/new')
+    const onAddMedicalReport = () => navigate('/dash/patients/:patientID/reports/new')
 
     let goHomeButton = null
     if(pathname !== '/dash') {
@@ -62,6 +63,19 @@ const DashHeader = () => {
             onClick={onAddReceptionist}
             >
                 <FontAwesomeIcon icon={faUserPlus} />
+            </button>
+        )
+    }
+
+    let addNewMedicalReport = null
+    if (pathname === '/dash/patients/:patientID/reports' && !isDoctor) {
+        addNewMedicalReport = (
+            <button
+                className="dash-header__button icon-button"
+                title="Add New Medical Report"
+                onClick={onAddMedicalReport}
+            >
+                <FontAwesomeIcon icon={faFileCirclePlus} style={{fontSize: 'large'}}/>
             </button>
         )
     }
@@ -124,6 +138,7 @@ const DashHeader = () => {
                     {addNewReceptionist}
                     {addNewPatient}
                     {addNewDoctor}
+                    {addNewMedicalReport}
                     {logoutButton}
                 </nav>
             </div>

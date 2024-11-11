@@ -1,9 +1,9 @@
 import React from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare, faStreetView } from "@fortawesome/free-solid-svg-icons"
-import { useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { selectPatientById } from './patientsApiSlice.jsx'
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {faStreetView} from "@fortawesome/free-solid-svg-icons"
+import {useNavigate} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+import {selectPatientById} from './patientsApiSlice.jsx'
 
 
 const Patient = ({patientID}) => {
@@ -21,7 +21,11 @@ const Patient = ({patientID}) => {
     //const deceaseRecordTwo = patient.deceaseRecordTwo
     //const medicineRecordTwo = patient.medicineRecordTwo
    // const doctorID = patient.medecin.id
-    
+
+      const handleViewAllReport = () => {
+          navigate(`/dash/patients/${patientID}/reports`)
+      }
+
     return (
       <tr className="table__row">
         <td className="table__cell">{patient.id}</td>
@@ -33,14 +37,20 @@ const Patient = ({patientID}) => {
               className="icon-button table__button"
               onClick={handleEdit}
           >
-              <FontAwesomeIcon icon={faStreetView} />
+              <FontAwesomeIcon icon={faStreetView}/>
+          </button>
+        </td>
+          <td className="table__cell">
+              <button
+                  className="icon-button table__button"
+                  onClick={handleViewAllReport}
+              >
+                  <FontAwesomeIcon icon={faStreetView}/>
           </button>
         </td>
       </tr>
     )
   } else return null
-
 }
 
 export default Patient
-
