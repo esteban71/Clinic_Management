@@ -27,7 +27,7 @@ const NewPatientForm = ({medecin}) => {
     const [telecom, setTelecom] = useState('')
     const [validtelecom, setValidtelecom] = useState(false)
     const [iserror, setIsError] = useState(false);
-    const [medecin_id, setMedecin_id] = useState('')
+    const [medecin_id, setMedecin_id] = useState([medecin[0].id])
 
     useEffect(() => {
         setvalidid(EMAIL_REGEX.test(email))
