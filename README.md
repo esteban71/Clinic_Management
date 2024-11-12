@@ -1,4 +1,4 @@
-# Interop-rabilit-avanc-e
+![image](https://github.com/user-attachments/assets/22a3711e-2484-4721-af43-a871ef3a9320)# Interop-rabilit-avanc-e
 
 
 
@@ -67,6 +67,9 @@ The system supports different user roles, each with specific permissions:
 - **Add New Medical Report**: Click on "Add New Medical Report" and fill in the required details to create a new medical report.
 - **Edit Medical Report**: Select a medical report from the list and click "Edit" to update its information.
 - **Delete Medical Report**: Select a medical report from the list and click "Delete" to remove it from the system.
+
+## Multi-Cabinet Support
+The frontend of the application is designed to work with multiple medical cabinets. This allows users to manage patient records, appointments, and staff information across different medical facilities seamlessly.
 
 # Authentication and Authorization
 
