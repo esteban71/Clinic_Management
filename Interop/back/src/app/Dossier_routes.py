@@ -1,15 +1,12 @@
 import logging
+from datetime import datetime
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException
-from typing import Optional
-from pydantic import BaseModel
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model.Dossier import DossierMedical, CompteRenduMedical
-from src.model.Patient import Patient
 from src.schemas.DossierSchema import DossierMedicalSchema, CompteRenduMedicalSchema, CreateCompteRenduMedicalSchema
-from datetime import datetime
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -28,7 +25,11 @@ async def get_medical_reports(patient_id: int, db: Session = Depends(get_db)):
 
 
 @router.post("/{patient_id}/reports/new", response_model=CompteRenduMedicalSchema)
-async def create_medical_report(patient_id: int, report: CreateCompteRenduMedicalSchema, db: Session = Depends(get_db)):
+async def create_medical_report(request: Request, patient_id: int, report: CreateCompteRenduMedicalSchema,
+                                db: Session = Depends(get_db)):
+    medecin_id = None
+    if request.state.user["attributes"].get("medecin_id") is not None:
+        medecin_id = int(request.state.user["attributes"]["medecin_id"][0])
     dossier_medical = db.query(DossierMedical).filter(DossierMedical.patient_id == patient_id).first()
 
     if not dossier_medical:
@@ -36,14 +37,14 @@ async def create_medical_report(patient_id: int, report: CreateCompteRenduMedica
 
     # patient = db.query(Patient).filter(Patient.id == dossier_medical.patient_id).first()
     # medecin_id = medecin_id
-    
+
     # Créer un nouveau rapport médical associé au dossier médical existant
     new_report = CompteRenduMedical(
         dossier_medical_id=dossier_medical.id,
         title=report.title,
         content=report.content,
         date=datetime.strptime(report.date, "%Y-%m-%d").date(),
-        # auteur_id= medecin_id
+        auteur_id=medecin_id if medecin_id else None
     )
 
     db.add(new_report)
@@ -56,8 +57,7 @@ async def create_medical_report(patient_id: int, report: CreateCompteRenduMedica
 async def update_medical_report(patient_id: int, report_id: int, report: CreateCompteRenduMedicalSchema,
                                 db: Session = Depends(get_db)):
     db_report = db.query(CompteRenduMedical).filter(
-        CompteRenduMedical.id == report_id,
-        CompteRenduMedical.patient_id == patient_id
+        CompteRenduMedical.id == report_id
     ).first()
 
     if not db_report:
@@ -69,12 +69,12 @@ async def update_medical_report(patient_id: int, report_id: int, report: CreateC
     db.refresh(db_report)
     return db_report
 
+
 # Route pour supprimer un rapport médical d'un patient
 @router.delete("/{patient_id}/reports/{report_id}")
 async def delete_medical_report(patient_id: int, report_id: int, db: Session = Depends(get_db)):
     db_report = db.query(CompteRenduMedical).filter(
         CompteRenduMedical.id == report_id,
-        CompteRenduMedical.patient_id == patient_id
     ).first()
 
     if not db_report:
@@ -83,6 +83,7 @@ async def delete_medical_report(patient_id: int, report_id: int, db: Session = D
     db.delete(db_report)
     db.commit()
     return {"message": "Medical report deleted successfully"}
+
 
 # Route pour obtenir tous les dossiers médicaux d'un patient
 @router.get("/{patient_id}/dossier", response_model=List[DossierMedicalSchema])
