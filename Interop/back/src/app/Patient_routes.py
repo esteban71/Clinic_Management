@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model import Patient, Medecin, DossierMedical
 from src.schemas import PatientSchema
-from src.schemas.DossierSchema import CreateDossierMedicalSchema
 from src.schemas.PatientSchema import CreatePatientSchema
 
 logger = logging.getLogger('uvicorn.error')
@@ -36,7 +35,7 @@ async def get_all_patients(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=PatientSchema)
-async def create_patient(patient: CreatePatientSchema, dossierMedical: CreateDossierMedicalSchema,
+async def create_patient(patient: CreatePatientSchema,
                          db: Session = Depends(get_db)):
     # check if patient exists
     db_patient = db.query(Patient).filter(Patient.name == patient.name).first()
@@ -44,6 +43,7 @@ async def create_patient(patient: CreatePatientSchema, dossierMedical: CreateDos
         raise HTTPException(status_code=400, detail="Patient already exists")
     cabinet_id = db.query(Medecin).filter(Medecin.id == patient.medecin_id).first().cabinet_medical_id
     db_patient = Patient(
+        id=db.query(Patient).count(),
         name=patient.name,
         telecom=patient.telecom,
         address=patient.address,
@@ -54,9 +54,8 @@ async def create_patient(patient: CreatePatientSchema, dossierMedical: CreateDos
     db.add(db_patient)
     db.commit()
     db_dossier_medical = DossierMedical(
-        patient_id=DossierMedical.patient_id,
-        type_acces=DossierMedical.type_acces,
-        cabinet_medical_id=DossierMedical.cabinet_medical_id
+        id=db.query(DossierMedical).count(),
+        patient_id=db_patient.id,
     )
     db.add(db_dossier_medical)
     db.commit()

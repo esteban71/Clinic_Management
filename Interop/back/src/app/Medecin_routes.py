@@ -44,7 +44,8 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
             telecom=medecin.telecom,
             email=medecin.email,
             username=medecin.username,
-            cabinet_medical_id=medecin.cabinet_id
+            cabinet_medical_id=medecin.cabinet_id,
+            specialite="cardiologist"
         )
         db.add(db_medecin)
         db.commit()
