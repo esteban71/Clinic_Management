@@ -1,5 +1,5 @@
 import logging
-from typing import List, Optional
+from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
@@ -21,6 +21,9 @@ async def get_all_cabinets(request: Request, db: Session = Depends(get_db)):
         if cabinet is None:
             raise HTTPException(status_code=404, detail="Cabinet not found")
         return [cabinet]
-    logger.info(request.state.user)
-    cabinets = db.query(CabinetMedical).all()
-    return cabinets
+    roles = valid.get("realm_access", {}).get("roles", [])
+    if "admin" in roles:
+        cabinets = db.query(CabinetMedical).all()
+        return cabinets
+    else:
+        raise HTTPException(status_code=403, detail="Unauthorized")
