@@ -32,8 +32,18 @@ Before you begin, ensure you have the following installed on your local machine:
    docker-compose up -d
    ```
 
-4. **Access the Application:**  
+3. **Access the Application:**  
    Open your web browser and navigate to [http://localhost:3000](http://localhost:3000) to access the frontend of the application.
+
+
+4. **Login Credentials**:
+
+Use the following credentials to log in as an admin:
+   
+   Username: `admin`
+   
+   Password: `password`
+
 
 # User Roles and Permissions
 
