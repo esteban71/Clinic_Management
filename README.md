@@ -1,7 +1,4 @@
-![image](https://github.com/user-attachments/assets/22a3711e-2484-4721-af43-a871ef3a9320)# Interop-rabilit-avanc-e
-
-
-
+# Interop-rabilit-avanc-e
 
 ## User Guide
 
