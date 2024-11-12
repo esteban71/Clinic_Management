@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Annotated
 
 from fastapi import Depends, HTTPException, Header, Body, Cookie, Request
@@ -8,12 +9,12 @@ from src.schemas.AuthSchema import LoginRequest
 logger = logging.getLogger('uvicorn.error')
 
 KEYCLOAK_CONFIG = {
-    "server_url": "http://keycloak:8080/",
-    "client_id": "backend",
-    "realm_name": "master",
-    "client_secret_key": "**********",
-    "username": "admin",
-    "password": "password"
+    "server_url": os.environ.get("KEYCLOAK_URL"),
+    "client_id": os.environ.get("KEYCLOAK_CLIENT_ID"),
+    "realm_name": os.environ.get("KEYCLOAK_REALM_NAME"),
+    "client_secret_key": os.environ.get("KEYCLOAK_CLIENT_SECRET_KEY"),
+    "username": os.environ.get("KEYCLOAK_ADMIN"),
+    "password": os.environ.get("KEYCLOAK_ADMIN_PASSWORD")
 }
 
 

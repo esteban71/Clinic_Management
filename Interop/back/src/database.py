@@ -1,9 +1,11 @@
+import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from sqlalchemy.pool import QueuePool
 
 # Replace with your own PostgreSQL instance
-DATABASE_URL = 'postgresql://admin:password@db/sante_db'
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 engine = create_engine(DATABASE_URL,
                        poolclass=QueuePool,
