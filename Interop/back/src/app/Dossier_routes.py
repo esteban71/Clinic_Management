@@ -1,7 +1,7 @@
 import logging
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
@@ -34,15 +34,16 @@ async def create_medical_report(patient_id: int, report: CreateCompteRenduMedica
     if not dossier_medical:
         raise HTTPException(status_code=404, detail="Dossier médical non trouvé pour ce patient")
 
-    patient = db.query(Patient).filter(Patient.id == dossier_medical.patient_id).first()
-    medecin_id = patient.medecin_id
+    # patient = db.query(Patient).filter(Patient.id == dossier_medical.patient_id).first()
+    # medecin_id = medecin_id
+    
     # Créer un nouveau rapport médical associé au dossier médical existant
     new_report = CompteRenduMedical(
         dossier_medical_id=dossier_medical.id,
         title=report.title,
         content=report.content,
         date=datetime.strptime(report.date, "%Y-%m-%d").date(),
-        auteur_id= medecin_id
+        # auteur_id= medecin_id
     )
 
     db.add(new_report)
