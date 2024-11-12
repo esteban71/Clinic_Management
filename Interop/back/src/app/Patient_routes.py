@@ -4,8 +4,9 @@ from typing import Dict, List
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.database import get_db
-from src.model import Patient, Medecin
+from src.model import Patient, Medecin, DossierMedical
 from src.schemas import PatientSchema
+from src.schemas.DossierSchema import CreateDossierMedicalSchema
 from src.schemas.PatientSchema import CreatePatientSchema
 
 logger = logging.getLogger('uvicorn.error')
@@ -35,7 +36,8 @@ async def get_all_patients(request: Request, db: Session = Depends(get_db)):
 
 
 @router.post("", response_model=PatientSchema)
-async def create_patient(patient: CreatePatientSchema, db: Session = Depends(get_db)):
+async def create_patient(patient: CreatePatientSchema, dossierMedical: CreateDossierMedicalSchema,
+                         db: Session = Depends(get_db)):
     # check if patient exists
     db_patient = db.query(Patient).filter(Patient.name == patient.name).first()
     if db_patient is not None:
@@ -51,7 +53,15 @@ async def create_patient(patient: CreatePatientSchema, db: Session = Depends(get
     )
     db.add(db_patient)
     db.commit()
+    db_dossier_medical = DossierMedical(
+        patient_id=DossierMedical.patient_id,
+        type_acces=DossierMedical.type_acces,
+        cabinet_medical_id=DossierMedical.cabinet_medical_id
+    )
+    db.add(db_dossier_medical)
+    db.commit()
     db.refresh(db_patient)
+    db.refresh(db_dossier_medical)
     return db_patient
 
 

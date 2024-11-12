@@ -1,14 +1,25 @@
 import numpy as np
 from faker import Faker
+from src.model.Dossier import DossierMedical
 from src.model.Patient import Patient
 
 fake = Faker()
 from sqlalchemy.orm import Session
 
 
+def create_medical_folder(db: Session, patient_id: int):
+    dossier = DossierMedical(
+        patient_id=patient_id,
+        date_creation=fake.date_of_birth(),
+        type_acces=fake.random_element(elements=("public", "private"))
+    )
+    return dossier
+
+
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
     for i in range(nb_patient):
+        dossier_medical = create_medical_folder(db, i)
         patient = Patient(
             id=i,
             name=fake.name(),
@@ -18,7 +29,10 @@ def create_patient(db: Session, nb_patient: int):
             birth_date=fake.date_of_birth(),
             address=fake.address(),
             marital_status=fake.random_element(elements=("single", "married", "divorced")),
+            dossier_medical=dossier_medical
         )
+        db.add(dossier_medical)
+        db.flush()
         db.add(patient)
         db.flush()
         patient_ids.append(patient.id)

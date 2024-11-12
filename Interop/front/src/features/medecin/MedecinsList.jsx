@@ -21,8 +21,6 @@ const MedecinsList = () => {
         refetchOnMountOrArgChange: true
     })
 
-    console.log(users)
-
     let content
 
     if (isLoading) {

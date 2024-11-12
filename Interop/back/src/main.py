@@ -9,14 +9,15 @@ from src.app.Secretariat_routes import router as Secretariat_router
 from src.app.auth_routes import router as auth_router
 from src.app.cabinet_routes import router as Cabinet_router
 from src.utils.auth import protected_route
+from src.test.create_db import create_db, drop_all_data
 
 env = os.getenv("ENV", "dev")
 
 def create_app():
     if env == "dev":
-        # drop_all_data()
+        drop_all_data()
         app = FastAPI()
-        #create_db()
+        create_db()
     elif env == "prod":
         app = FastAPI()
     return app
@@ -37,7 +38,7 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(Medecin_router, prefix="/medecins",
                    dependencies=[Security(protected_route(["admin", "Receptionist"]))])
 
-app.include_router(Dossier_router, prefix="/dossiers",
+app.include_router(Dossier_router, prefix="/dossier",
                    dependencies=[Security(protected_route(["admin", "Doctor"]))])
 
 app.include_router(Cabinet_router, prefix="/cabinets",

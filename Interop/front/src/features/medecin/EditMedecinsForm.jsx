@@ -87,8 +87,6 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     }, [email])
 
     useEffect(() => {
-        console.log(isSuccess)
-        console.log(isDelSuccess)
         if (isSuccess || isDelSuccess) {
             setName('')
             setMobileNumber('')
@@ -156,7 +154,6 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
                 "email": email,
                 "cabinet_id": parseInt(cabinet_id)
             })
-            console.log(result)
             if (result.error) {
                 alert('Unable to update! please try again...')
             } else {
@@ -178,7 +175,6 @@ const EditMedecinsForm = ({doctor, allcabinet, cabinet}) => {
     const onDeleteUserClicked = async () => {
         if (window.confirm("Hit 'Ok' to delete")) {
             const result = await deletemedecin({id: doctor.id})
-            console.log(result)
         }
     }
 

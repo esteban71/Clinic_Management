@@ -13,7 +13,6 @@ export const receptionistApiSlice = apiSlice.injectEndpoints({
                 return response.status === 200 && !result.isError
             },
             transformResponse: responseData => {
-                console.log('transformResponse', responseData)
                 return ReceptionistAdapter.setAll(initialState, responseData);
             },
             providesTags: (result, error, arg) => {

@@ -28,8 +28,6 @@ const PatientsList = () => {
         refetchOnMountOrArgChange: true
     })
 
-    console.log(patients)
-
     let content
 
     if (isLoading) {
@@ -45,13 +43,10 @@ const PatientsList = () => {
     if (isSuccess) {
         const {ids, entities} = patients
 
-        console.log(entities)
 
         const searchToken = () => {
             for (let i = 0; i < ids?.length; i++) {
-                console.log('ids[i] -> ', ids[i])
                 if (entities[ids[i]].id === Number(q)) {
-                    console.log('pTokenId -> ', ids[i])
                     navigate(`/dash/patients/${ids[i]}`)
                 }
             }
@@ -96,17 +91,18 @@ const PatientsList = () => {
                 <table className='table_patientlist'>
                     <thead className='table__thead'>
                     <tr className='table_patientlist--header'>
-                        <th scope='col' className='table__th table__Uppercase'>Patient Token</th>
-                        <th scope='col' className='table__th table__Uppercase'>Patient Name</th>
-                        <th scope='col' className='table__th table__Uppercase'>Address</th>
-                        <th scope='col' className='table__th table__Uppercase'>Mobile Number</th>
-                        {/* <th scope='col' className='table__th table__Uppercase'>Record [One]</th> */}
-                        {/* <th scope='col' className='table__th table__Uppercase'>Medicines [One]</th> */}
-                        {/* <th scope='col' className='table__th table__Uppercase'>Record [Two]</th> */}
-                        {/* <th scope='col' className='table__th table__Uppercase'>Medicines [Two]</th> */}
-                        {/* <th scope='col' className='table__th table__Uppercase'>Doctor ID</th> */}
-                        {/* <th scope='col' className='table__th table__Uppercase'>View</th> */}
-                        <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
+                      <th scope='col' className='table__th table__Uppercase'>Patient Token</th>
+                      <th scope='col' className='table__th table__Uppercase'>Patient Name</th>
+                      <th scope='col' className='table__th table__Uppercase'>Address</th>
+                      <th scope='col' className='table__th table__Uppercase'>Mobile Number</th>
+                      {/* <th scope='col' className='table__th table__Uppercase'>Record [One]</th> */}
+                      {/* <th scope='col' className='table__th table__Uppercase'>Medicines [One]</th> */}
+                      {/* <th scope='col' className='table__th table__Uppercase'>Record [Two]</th> */}
+                      {/* <th scope='col' className='table__th table__Uppercase'>Medicines [Two]</th> */}
+                      {/* <th scope='col' className='table__th table__Uppercase'>Doctor ID</th> */}
+                      {/* <th scope='col' className='table__th table__Uppercase'>View</th> */}
+                      <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
+                      <th scope='col' className='table__th table__Uppercase'>Medical Report</th>
                     </tr>
                     </thead>
 
