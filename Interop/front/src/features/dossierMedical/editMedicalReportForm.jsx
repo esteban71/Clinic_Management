@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useUpdateMedicalReportMutation } from './medicalReportsApiSlice.jsx';
+import { useDeleteMedicalReportMutation, useUpdateMedicalReportMutation } from './medicalReportsApiSlice.jsx';
 import { useNavigate, useParams } from 'react-router-dom'; // Importer useParams
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import TextField from '@mui/material/TextField';
 
-const EditMedicalReportForm = ({ report, doctors }) => {
-    const { patientID } = useParams(); // Récupérer patientID depuis l'URL
+const EditMedicalReportForm = ({ report }) => {
+    const { patientID } = useParams();
     const [updateMedicalReport, { isLoading, isSuccess, isError, error }] = useUpdateMedicalReportMutation();
-    const navigate = useNavigate();
+
+    console.log('report:', report);
 
     // Initialisation des états pour les champs du formulaire
     const [title, setTitle] = useState(report.title);
     const [content, setContent] = useState(report.content);
     const [date, setDate] = useState(report.date);
+
+    const [deleteMedicalReport, {
+        isSuccess: isDelSuccess,
+        isError: isDelError,
+        error: delerror
+    }] = useDeleteMedicalReportMutation()
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isSuccess) {
@@ -21,7 +29,7 @@ const EditMedicalReportForm = ({ report, doctors }) => {
             setTitle('');
             setContent('');
             setDate('');
-            navigate(`/dash/patients/${patientID}/reports`);
+            navigate(`/dash/patients/${patientID}/reports/${report.id}`);
         }
     }, [isSuccess, navigate, patientID]);
 
@@ -52,6 +60,11 @@ const EditMedicalReportForm = ({ report, doctors }) => {
         }
     };
 
+    const onDeleteReportClicked = async (e) => {
+        await deleteMedicalReport(report.id);
+        alert('Medical report deleted successfully!');
+    };
+
     const errClass = isError ? "errmsg" : "offscreen";
     const errContent = error?.data?.message ?? '';
 
@@ -70,6 +83,13 @@ const EditMedicalReportForm = ({ report, doctors }) => {
                         >
                             <FontAwesomeIcon icon={faSave} />
                         </button>
+                        <button
+                                className="icon-button"
+                                title="Delete"
+                                onClick={onDeleteReportClicked}
+                            >
+                                <FontAwesomeIcon icon={faTrashCan}/>
+                            </button>
                     </div>
                 </div>
 

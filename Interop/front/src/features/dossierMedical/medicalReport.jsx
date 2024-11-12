@@ -3,11 +3,12 @@ import {faStreetView} from "@fortawesome/free-solid-svg-icons"
 import React from 'react';
 import {useNavigate} from 'react-router-dom';
 
-const MedicalReport = ({report, ReportID}) => {
+const MedicalReport = ({report}) => {
     const navigate = useNavigate();
-
+    const PatientID = window.location.href.split('/')[5];
+    const reportID = report.id;
     const handleView = () => {
-        navigate(`/dash/patients/${ReportID}/reports`);
+        navigate(`/dash/patients/${PatientID}/reports/${reportID}`);
     };
 
     return (

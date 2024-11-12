@@ -62,13 +62,13 @@ export const {
 } = medicalReportApiSlice;
 
 // returns the query result object
-export const selectMedicalReportsResult = (state, patientID) => medicalReportApiSlice.endpoints.getMedicalReports.select(patientID)(state);
+export const selectMedicalReportsResult = medicalReportApiSlice.endpoints.getMedicalReports.select();
 
 
 // creates memorized selector
 const selectMedicalReportData = createSelector(
-    (state, patientID) => selectMedicalReportsResult(state, patientID),
-    medicalReportsResult => medicalReportsResult?.data ?? initialState
+    selectMedicalReportsResult,
+    medicalReportsResult => medicalReportsResult.data
 );
 
 // getSelectors creates these selectors and we rename them with aliases using destructuring
@@ -76,4 +76,4 @@ export const {
     selectAll: selectAllMedicalReports,
     selectById: selectMedicalReportById,
     selectIds: selectMedicalReportIds
-} = medicalReportAdapter.getSelectors((state, patientID) => selectMedicalReportData(state, patientID));
+} = medicalReportAdapter.getSelectors(state => selectMedicalReportData(state) ?? initialState);
