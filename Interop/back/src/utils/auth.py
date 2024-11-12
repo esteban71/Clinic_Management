@@ -146,7 +146,7 @@ def protected_route(required_roles: list):
 
             roles = valid.get("realm_access", {}).get("roles", [])
             if not any(role in required_roles for role in roles):
-                raise HTTPException(status_code=401, detail="Forbidden: Insufficient permissions")
+                raise HTTPException(status_code=403, detail="Forbidden")
             request.state.user = keycloak_openid.decode_token(token)
             admin = get_keycloak_admin_connection()
             user_id = admin.get_user_id(request.state.user["preferred_username"])
