@@ -3,13 +3,22 @@ from typing import Optional, List
 
 from pydantic import BaseModel
 
+class CreateCompteRenduMedicalSchema(BaseModel):
+    title: str
+    content: str
+    date: str  # Utiliser une chaîne pour éviter les erreurs de validation lors de l'envoi depuis le frontend
+    patient_id: int
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
 
 class CompteRenduMedicalSchema(BaseModel):
     id: int
     dossier_medical_id: Optional[int] = None
-    title: Optional[str] = None
-    content: Optional[str] = None
-    date: Optional[date] = None
+    title: str
+    content: str
+    date: date
     auteur_id: Optional[int] = None  # ID du médecin qui a rédigé le compte-rendu
 
     class Config:
