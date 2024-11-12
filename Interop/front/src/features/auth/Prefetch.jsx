@@ -11,7 +11,6 @@ import {medicalReportApiSlice} from '../dossierMedical/medicalReportsApiSlice.js
 const Prefetch = () => {
 
     useEffect(() => {
-        console.log('subscribing')
         const patients = store.dispatch(patientsApiSlice.endpoints.getpatients.initiate())
         const medecins = store.dispatch(medecinApiSlice.endpoints.getMedecins.initiate())
         const cabinet = store.dispatch(cabinetApiSlice.endpoints.getCabinets.initiate())
@@ -19,7 +18,6 @@ const Prefetch = () => {
         const medicalReports = store.dispatch(medicalReportApiSlice.endpoints.getMedicalReports.initiate())
 
         return () => {
-            console.log('unsubscribing')
             patients.unsubscribe()
             medecins.unsubscribe()
             cabinet.unsubscribe()

@@ -28,8 +28,6 @@ const PatientsList = () => {
         refetchOnMountOrArgChange: true
     })
 
-    console.log(patients)
-
     let content
 
     if (isLoading) {
@@ -45,13 +43,10 @@ const PatientsList = () => {
     if (isSuccess) {
         const {ids, entities} = patients
 
-        console.log(entities)
 
         const searchToken = () => {
             for (let i = 0; i < ids?.length; i++) {
-                console.log('ids[i] -> ', ids[i])
                 if (entities[ids[i]].id === Number(q)) {
-                    console.log('pTokenId -> ', ids[i])
                     navigate(`/dash/patients/${ids[i]}`)
                 }
             }

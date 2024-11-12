@@ -87,8 +87,6 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
     }, [email])
 
     useEffect(() => {
-        console.log(isSuccess)
-        console.log(isDelSuccess)
         if (isSuccess || isDelSuccess) {
             setName('')
             setMobileNumber('')
@@ -157,7 +155,6 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
                 "email": email,
                 "cabinet_id": parseInt(cabinet_id)
             })
-            console.log(result)
             if (result.error) {
                 alert('Unable to update! please try again...')
             } else {
@@ -179,7 +176,6 @@ const EditReceptionistForm = ({receptionist, allcabinet, cabinet}) => {
     const onDeleteUserClicked = async () => {
         if (window.confirm("Hit 'Ok' to delete")) {
             const result = await deletemedecin({id: receptionist.id})
-            console.log(result)
         }
     }
 

@@ -16,8 +16,6 @@ const EditMedicalReport = () => {
     const content = report ? <EditMedicalReportForm report={report} patientID={id}/> :
         <p>Loading...</p>;
 
-    console.log('content', content);
-
     return content;
 };
 

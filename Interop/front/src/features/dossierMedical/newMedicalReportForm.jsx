@@ -30,7 +30,6 @@ const NewMedicalReportForm = () => {
           content,
           date
         }).unwrap();
-        console.log(result);
       } catch (err) {
         console.error('Erreur lors de l\'envoi du rapport médical:', err);
       }

@@ -17,9 +17,6 @@ const EditPatient = () => {
     const medecin = isDoctor ? [patient.medecin] : useSelector(selectAllMedecins)
     // modify to send all user
 
-
-  console.log('users', medecin)
-
     const content = patient ? <EditPatientForm patient={patient} medecin={medecin}/> : <CircularLoader/>
 
   return content
