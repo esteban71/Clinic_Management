@@ -21,7 +21,7 @@ async def get_all_cabinets(request: Request, db: Session = Depends(get_db)):
         if cabinet is None:
             raise HTTPException(status_code=404, detail="Cabinet not found")
         return [cabinet]
-    roles = valid.get("realm_access", {}).get("roles", [])
+    roles = request.state.user.get("realm_access", {}).get("roles", [])
     if "admin" in roles:
         cabinets = db.query(CabinetMedical).all()
         return cabinets
