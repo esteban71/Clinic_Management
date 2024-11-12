@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useDeleteMedicalReportMutation, useUpdateMedicalReportMutation } from './medicalReportsApiSlice.jsx';
-import { useNavigate, useParams } from 'react-router-dom'; // Importer useParams
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faTrashCan } from '@fortawesome/free-solid-svg-icons';
+import React, {useEffect, useState} from 'react';
+import {useDeleteMedicalReportMutation, useUpdateMedicalReportMutation} from './medicalReportsApiSlice.jsx';
+import {useNavigate} from 'react-router-dom'; // Importer useParams
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSave, faTrashCan} from '@fortawesome/free-solid-svg-icons';
 import TextField from '@mui/material/TextField';
 
-const EditMedicalReportForm = ({ report }) => {
-    const { patientID } = useParams();
-    const [updateMedicalReport, { isLoading, isSuccess, isError, error }] = useUpdateMedicalReportMutation();
+const EditMedicalReportForm = ({report, patientID}) => {
+    const [updateMedicalReport, {isLoading, isSuccess, isError, error}] = useUpdateMedicalReportMutation();
 
     console.log('report:', report);
 
@@ -24,14 +23,14 @@ const EditMedicalReportForm = ({ report }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (isSuccess) {
+        if (isSuccess || isDelSuccess) {
             // Réinitialiser les champs après une mise à jour réussie
             setTitle('');
             setContent('');
             setDate('');
-            navigate(`/dash/patients/${patientID}/reports/${report.id}`);
+            navigate(`/dash/patients/${patientID}/reports`);
         }
-    }, [isSuccess, navigate, patientID]);
+    }, [isSuccess, isDelSuccess, navigate, patientID]);
 
     const onTitleChanged = (e) => setTitle(e.target.value);
     const onContentChanged = (e) => setContent(e.target.value);
@@ -44,8 +43,8 @@ const EditMedicalReportForm = ({ report }) => {
         if (canSave) {
             try {
                 await updateMedicalReport({
-                    id: report.id,
-                    patient_id: patientID,
+                    report_id: parseInt(report.id),
+                    patient_id: parseInt(patientID),
                     title,
                     content,
                     date
@@ -61,8 +60,18 @@ const EditMedicalReportForm = ({ report }) => {
     };
 
     const onDeleteReportClicked = async (e) => {
-        await deleteMedicalReport(report.id);
-        alert('Medical report deleted successfully!');
+        const result = await deleteMedicalReport({
+                report_id: parseInt(report.id),
+                patient_id: parseInt(patientID)
+            }
+        );
+        if (result.error) {
+            console.error('Failed to delete medical report:', result.error);
+            alert('Error deleting report! Please try again.');
+        } else {
+            alert('Medical report deleted successfully!');
+        }
+
     };
 
     const errClass = isError ? "errmsg" : "offscreen";
@@ -81,15 +90,15 @@ const EditMedicalReportForm = ({ report }) => {
                             onClick={onSaveReportClicked}
                             disabled={!canSave}
                         >
-                            <FontAwesomeIcon icon={faSave} />
+                            <FontAwesomeIcon icon={faSave}/>
                         </button>
                         <button
-                                className="icon-button"
-                                title="Delete"
-                                onClick={onDeleteReportClicked}
-                            >
-                                <FontAwesomeIcon icon={faTrashCan}/>
-                            </button>
+                            className="icon-button"
+                            title="Delete"
+                            onClick={onDeleteReportClicked}
+                        >
+                            <FontAwesomeIcon icon={faTrashCan}/>
+                        </button>
                     </div>
                 </div>
 

@@ -33,18 +33,18 @@ export const medicalReportApiSlice = apiSlice.injectEndpoints({
             invalidatesTags: [{type: 'MedicalReport', id: 'LIST'}]
         }),
         updateMedicalReport: builder.mutation({
-            query: ({patientID, report_id, ...updatedReport}) => ({
-                url: `/dossier/${patientID}/reports/${report_id}`,
+            query: (report) => ({
+                url: `/dossier/${report.patient_id}/reports/${report.report_id}`,
                 method: 'PATCH',
-                body: updatedReport
+                body: report
             }),
             invalidatesTags: (result, error, arg) => [
                 {type: 'MedicalReport', id: arg.report_id}
             ]
         }),
         deleteMedicalReport: builder.mutation({
-            query: ({patient_id, report_id}) => ({
-                url: `/dossier/${patient_id}/reports/${report_id}`,
+            query: (report) => ({
+                url: `/dossier/${report.patient_id}/reports/${report.report_id}`,
                 method: 'DELETE'
             }),
             invalidatesTags: (result, error, arg) => [
@@ -61,19 +61,15 @@ export const {
     useDeleteMedicalReportMutation
 } = medicalReportApiSlice;
 
-// returns the query result object
 export const selectMedicalReportsResult = medicalReportApiSlice.endpoints.getMedicalReports.select();
 
-
-// creates memorized selector
 const selectMedicalReportData = createSelector(
     selectMedicalReportsResult,
     medicalReportsResult => medicalReportsResult.data
 );
 
-// getSelectors creates these selectors and we rename them with aliases using destructuring
 export const {
     selectAll: selectAllMedicalReports,
     selectById: selectMedicalReportById,
     selectIds: selectMedicalReportIds
-} = medicalReportAdapter.getSelectors(state => selectMedicalReportData(state) ?? initialState);
+} = medicalReportAdapter.getSelectors(state => selectMedicalReportData(state) || medicalReportAdapter.getInitialState());
