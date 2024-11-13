@@ -17,6 +17,7 @@ const MedicalReport = ({report}) => {
             <td className="table__cell">{report.date}</td>
             <td className="table__cell">{report.title}</td>
             <td className="table__cell">{report.content}</td>
+            <td className="table__cell">{report.auteur?.name}</td>
             <td className="table__cell">
                 <button
                     className="icon-button table__button"
@@ -26,7 +27,6 @@ const MedicalReport = ({report}) => {
                     Edit
                 </button>
             </td>
-            <td className="table__cell">{report.auteur}</td>
         </tr>
     );
 };

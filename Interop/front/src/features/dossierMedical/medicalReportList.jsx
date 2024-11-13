@@ -118,8 +118,8 @@ const MedicalReportList = () => {
                             <th scope="col" className="table__th table__Uppercase">Date</th>
                             <th scope="col" className="table__th table__Uppercase">Title</th>
                             <th scope="col" className="table__th table__Uppercase">Content</th>
+                            <th scope="col" className="table__th table__Uppercase">Author</th>
                             <th scope="col" className="table__th table__Uppercase">Edit</th>
-                            <th scope="col" className="table__th table__Uppercase"></th>
                         </tr>
                     </thead>
                     <tbody>{tableContent}</tbody>

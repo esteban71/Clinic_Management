@@ -1,5 +1,6 @@
 from datetime import date
 from typing import Optional, List
+from src.schemas.MedecinSchema import MedecinSchema
 
 from pydantic import BaseModel
 
@@ -20,6 +21,7 @@ class CompteRenduMedicalSchema(BaseModel):
     content: str
     date: date
     auteur_id: Optional[int] = None  # ID du médecin qui a rédigé le compte-rendu
+    auteur: Optional[MedecinSchema] = None  # Nom du médecin qui a rédigé le compte-rendu
 
     class Config:
         orm_mode = True

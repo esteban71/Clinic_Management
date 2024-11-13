@@ -46,7 +46,6 @@ async def create_medical_report(request: Request, patient_id: int, report: Creat
         date=datetime.strptime(report.date, "%Y-%m-%d").date(),
         auteur_id=medecin_id if medecin_id else None
     )
-
     db.add(new_report)
     db.commit()
     db.refresh(new_report)
