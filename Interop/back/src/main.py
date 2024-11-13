@@ -8,21 +8,12 @@ from src.app.Patient_routes import router as Patient_router
 from src.app.Secretariat_routes import router as Secretariat_router
 from src.app.auth_routes import router as auth_router
 from src.app.cabinet_routes import router as Cabinet_router
-from src.utils.auth import protected_route
+from src.database import SessionLocal
 from src.test.create_db import create_db, drop_all_data
+from src.utils.auth import protected_route
 
-env = os.getenv("ENV", "dev")
+app = FastAPI()
 
-def create_app():
-    if env == "dev":
-        drop_all_data()
-        app = FastAPI()
-        create_db()
-    elif env == "prod":
-        app = FastAPI()
-    return app
-
-app = create_app()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -30,6 +21,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+async def startup_event():
+    env = os.getenv("ENV", "dev")
+    if env == "dev":
+        with SessionLocal() as db:
+            drop_all_data(db)
+            create_db(db)
+
 
 app.include_router(Patient_router, prefix="/patients",
                    dependencies=[Security(protected_route(["admin", "Doctor", "Receptionist"]))])

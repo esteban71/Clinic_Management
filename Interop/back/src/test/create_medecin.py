@@ -1,15 +1,14 @@
 from faker import Faker
+from sqlalchemy.orm import Session
 from src.model.Medecin import Medecin
 
 fake = Faker()
-from sqlalchemy.orm import Session
-
 
 def create_medecin(db: Session, nb_medecin: int):
     medecin_ids = []
+    medecins = []
     for i in range(nb_medecin):
         medecin = Medecin(
-            id=i,
             name=fake.name(),
             rpps=fake.random_number(digits=11),
             specialite=fake.random_element(elements=("generalist", "cardiologist", "dermatologist")),
@@ -17,8 +16,10 @@ def create_medecin(db: Session, nb_medecin: int):
             telecom=fake.phone_number(),
             username=fake.user_name(),
         )
-        db.add(medecin)
-        db.flush()
-        medecin_ids.append(medecin.id)
+        medecins.append(medecin)
+
+    db.add_all(medecins)
     db.commit()
+    db.refresh(medecins[-1])
+    medecin_ids = [medecin.id for medecin in medecins]  # Collect ids
     return medecin_ids

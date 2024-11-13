@@ -1,10 +1,10 @@
 import numpy as np
 from faker import Faker
+from sqlalchemy.orm import Session
 from src.model.Dossier import DossierMedical
 from src.model.Patient import Patient
 
 fake = Faker()
-from sqlalchemy.orm import Session
 
 
 def create_medical_folder(db: Session, patient_id: int):
@@ -18,10 +18,14 @@ def create_medical_folder(db: Session, patient_id: int):
 
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
+    dossiers = []
+    patients = []
+
     for i in range(nb_patient):
         dossier_medical = create_medical_folder(db, i)
+        dossiers.append(dossier_medical)  # Add to list
+
         patient = Patient(
-            id=i,
             name=fake.name(),
             active=fake.boolean(),
             telecom=fake.phone_number(),
@@ -31,12 +35,14 @@ def create_patient(db: Session, nb_patient: int):
             marital_status=fake.random_element(elements=("single", "married", "divorced")),
             dossier_medical=dossier_medical
         )
-        db.add(dossier_medical)
-        db.flush()
-        db.add(patient)
-        db.flush()
-        patient_ids.append(patient.id)
+        patients.append(patient)
+
+    db.add_all(dossiers)
+    db.add_all(patients)
     db.commit()
+    patient_ids = [patient.id for patient in patients]
+    db.refresh(patients[-1])
+    db.refresh(dossiers[-1])
     return patient_ids
 
 
@@ -49,3 +55,4 @@ def add_medecin_to_patient(db: Session, medecin_id: list[int] | int, patient_id:
             random_medecin_id = int(np.random.choice(medecin_id))
             patient.medecin_id = random_medecin_id
     db.commit()
+    db.refresh(patient)

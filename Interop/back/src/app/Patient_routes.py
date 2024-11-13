@@ -43,7 +43,6 @@ async def create_patient(patient: CreatePatientSchema,
         raise HTTPException(status_code=400, detail="Patient already exists")
     cabinet_id = db.query(Medecin).filter(Medecin.id == patient.medecin_id).first().cabinet_medical_id
     db_patient = Patient(
-        id=db.query(Patient).count(),
         name=patient.name,
         telecom=patient.telecom,
         address=patient.address,
@@ -54,7 +53,6 @@ async def create_patient(patient: CreatePatientSchema,
     db.add(db_patient)
     db.commit()
     db_dossier_medical = DossierMedical(
-        id=db.query(DossierMedical).count(),
         patient_id=db_patient.id,
     )
     db.add(db_dossier_medical)

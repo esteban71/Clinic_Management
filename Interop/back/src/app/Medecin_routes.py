@@ -39,7 +39,6 @@ async def create_medecin(medecin: CreateMedecinSchema, db: Session = Depends(get
     )
     if result:
         db_medecin = Medecin(
-            id=db.query(Medecin).count(),
             name=medecin.name,
             telecom=medecin.telecom,
             email=medecin.email,
