@@ -12,7 +12,8 @@ const NewMedicalReportForm = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [date, setDate] = useState('');
+  // on veut mettre la date du jour par défaut
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   useEffect(() => {
     if (isSuccess) {
