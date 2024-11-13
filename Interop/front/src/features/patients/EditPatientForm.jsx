@@ -10,7 +10,7 @@ import useAuth from '../../hooks/useAuth.jsx'
 const EMAIL_REGEX = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
 const MOBILENUMBER_REGEX = /^(\+\d{1,3}[- ]?)?\d{10}$/
 
-const EditPatientForm = ({patient, medecin}) => {
+const EditPatientForm = ({patient, medecin, cabinet}) => {
 
     const {isDoctor, username} = useAuth()
 
@@ -38,7 +38,23 @@ const EditPatientForm = ({patient, medecin}) => {
     const [telecom, setTelecom] = useState(patient.telecom)
     const [validtelecom, setvalidtelecom] = useState(false)
     const [iserror, setIsError] = useState(false);
-    const [medecin_id, setMedecin_id] = useState(patient.medecin.id)
+    const [cabinet_id, setCabinetId] = useState([cabinet[0].id])
+    const [medecin_id, setMedecin_id] = useState(null);
+
+    useEffect(() => {
+        const filteredMedecin = medecin.filter(user => user.cabinet_medical_id === parseInt(cabinet_id[0]))[0];
+        if (filteredMedecin) {
+            setMedecin_id([filteredMedecin.id]);
+        }
+    }, [medecin, cabinet_id]);
+
+    const onCabinetIdChanged = e => {
+        const values = Array.from(
+            e.target.selectedOptions,
+            (option) => option.id
+        )
+        setCabinetId(values)
+    }
 
     useEffect(() => {
         setvalidid(EMAIL_REGEX.test(email))
@@ -71,6 +87,7 @@ const EditPatientForm = ({patient, medecin}) => {
             e.target.selectedOptions,
             (option) => option.id
         )
+        console.log(values)
         setMedecin_id(values)
     }
 
@@ -84,7 +101,7 @@ const EditPatientForm = ({patient, medecin}) => {
                 'name': name,
                 'address': address,
                 'telecom': telecom,
-                'medecin_id': medecin_id
+                'medecin_id': parseInt(medecin_id)
             })
             alert('Patient updated successfully')
         } else if (!validtelecom && !validid) {
@@ -103,14 +120,22 @@ const EditPatientForm = ({patient, medecin}) => {
         alert('Patient data deleted successfully')
     }
 
-    let filteredDoctors
-    if (isDoctor) {
-        filteredDoctors = medecin.filter(val => val.name === username)
-    } else {
-        filteredDoctors = medecin
-    }
+    let filteredDoctors = medecin
+
+
+    const options_cabinet = cabinet.map(cabinet => {
+        return (
+            <option
+                key={cabinet.id}
+                value={cabinet.id}
+                id={cabinet.id}
+
+            > {cabinet.name} </option>
+        )
+    });
 
     const options = filteredDoctors
+        .filter(user => user.cabinet_medical_id === parseInt(cabinet_id[0]))
         .map(user => {
             return (
                 <option
@@ -209,6 +234,22 @@ const EditPatientForm = ({patient, medecin}) => {
                                 value={email}
                                 onChange={onPatientPIDChanged}
                             /></div>
+
+                            <div className="form__row">
+                                <div className="form__divider">
+                                    <label className="form__label form__checkbox-container" htmlFor="note-username">
+                                        ASSIGNED TO CABINET:</label>
+                                    <select
+                                        id="note-username"
+                                        name="username"
+                                        className="form__select"
+                                        value={cabinet_id}
+                                        onChange={onCabinetIdChanged}
+                                    >
+                                        {options_cabinet}
+                                    </select>
+                                </div>
+                            </div>
 
                             <div className="form__row">
                                 <div className="form__divider">

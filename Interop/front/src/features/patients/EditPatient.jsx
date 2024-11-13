@@ -6,6 +6,7 @@ import EditPatientForm from './EditPatientForm'
 import CircularLoader from '../../pageLoader/CircularLoader.jsx'
 import {selectAllMedecins} from "../medecin/medecinApiSlice.jsx";
 import useAuth from "../../hooks/useAuth.jsx";
+import {selectAllCabinets} from "../cabinet/cabinetApiSlice.jsx";
 
 const EditPatient = () => {
 
@@ -17,7 +18,10 @@ const EditPatient = () => {
     const medecin = isDoctor ? [patient.medecin] : useSelector(selectAllMedecins)
     // modify to send all user
 
-    const content = patient ? <EditPatientForm patient={patient} medecin={medecin}/> : <CircularLoader/>
+    const cabinet_data = useSelector(selectAllCabinets)
+
+    const content = patient ? <EditPatientForm patient={patient} medecin={medecin} cabinet={cabinet_data}/> :
+        <CircularLoader/>
 
   return content
 }
