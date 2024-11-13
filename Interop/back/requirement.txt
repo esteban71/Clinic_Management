@@ -1,4 +1,4 @@
-fastapi[standard]
+fastapi[all]
 psycopg2-binary
 sqlalchemy
 alembic
