@@ -38,12 +38,14 @@ const EditPatientForm = ({patient, medecin, cabinet}) => {
     const [telecom, setTelecom] = useState(patient.telecom)
     const [validtelecom, setvalidtelecom] = useState(false)
     const [iserror, setIsError] = useState(false);
-    const [cabinet_id, setCabinetId] = useState([cabinet[0].id])
+    const [cabinet_id, setCabinetId] = useState([patient.medecin.cabinet_medical_id]);
     const [medecin_id, setMedecin_id] = useState(null);
 
     useEffect(() => {
         const filteredMedecin = medecin.filter(user => user.cabinet_medical_id === parseInt(cabinet_id[0]))[0];
-        if (filteredMedecin) {
+        if (filteredMedecin.length > 1) {
+            setMedecin_id([patient.medecin.id]);
+        } else if (filteredMedecin) {
             setMedecin_id([filteredMedecin.id]);
         }
     }, [medecin, cabinet_id]);
