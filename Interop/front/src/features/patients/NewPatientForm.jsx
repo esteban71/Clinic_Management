@@ -60,6 +60,7 @@ const NewPatientForm = ({medecin, cabinet}) => {
             setAddress('')
             setTelecom('')
             setMedecin_id('')
+            setCabinetId('')
             navigate('/dash/patients')
             window.location.reload()
         }
@@ -96,7 +97,7 @@ const NewPatientForm = ({medecin, cabinet}) => {
                 'medecin_id': medecin_id[0]
             })
             if (result.error) {
-                alert('Unable to create new patient! please try again...')
+                alert(`Unable to create new patient! please try again... ${result.error}`)
             } else {
                 alert('New patient created successfully')
             }
