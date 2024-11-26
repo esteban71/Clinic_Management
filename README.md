@@ -35,6 +35,7 @@ Before you begin, ensure you have the following installed on your local machine:
 3. **Access the Application:**  
    Open your web browser and navigate to [http://localhost:3000](http://localhost:3000) to access the frontend of the application.
 
+   Note: Please wait 2 to 3 minutes before connecting to the site to ensure all services are fully initialized.
 
 4. **Login Credentials**:
 
