@@ -84,25 +84,27 @@ const PatientsList = () => {
         const tableContent = ids?.length
             ? filteredIds.map(patientID => <Patient key={patientID} patientID={patientID}/>)
             : null
-
+        let medical_r = (isDoctor || isAdmin || isManager) ? 'Medical Report' : ''
         content = (
             <>
                 {searchBar}
                 <table className='table_patientlist'>
                     <thead className='table__thead'>
                     <tr className='table_patientlist--header'>
-                      <th scope='col' className='table__th table__Uppercase'>Patient Token</th>
-                      <th scope='col' className='table__th table__Uppercase'>Patient Name</th>
-                      <th scope='col' className='table__th table__Uppercase'>Address</th>
-                      <th scope='col' className='table__th table__Uppercase'>Mobile Number</th>
-                      {/* <th scope='col' className='table__th table__Uppercase'>Record [One]</th> */}
-                      {/* <th scope='col' className='table__th table__Uppercase'>Medicines [One]</th> */}
-                      {/* <th scope='col' className='table__th table__Uppercase'>Record [Two]</th> */}
-                      {/* <th scope='col' className='table__th table__Uppercase'>Medicines [Two]</th> */}
-                      {/* <th scope='col' className='table__th table__Uppercase'>Doctor ID</th> */}
-                      {/* <th scope='col' className='table__th table__Uppercase'>View</th> */}
-                      <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
-                      <th scope='col' className='table__th table__Uppercase'>Medical Report</th>
+                        <th scope='col' className='table__th table__Uppercase'>Patient Token</th>
+                        <th scope='col' className='table__th table__Uppercase'>Patient Name</th>
+                        <th scope='col' className='table__th table__Uppercase'>Address</th>
+                        <th scope='col' className='table__th table__Uppercase'>Mobile Number</th>
+                        {/* <th scope='col' className='table__th table__Uppercase'>Record [One]</th> */}
+                        {/* <th scope='col' className='table__th table__Uppercase'>Medicines [One]</th> */}
+                        {/* <th scope='col' className='table__th table__Uppercase'>Record [Two]</th> */}
+                        {/* <th scope='col' className='table__th table__Uppercase'>Medicines [Two]</th> */}
+                        {/* <th scope='col' className='table__th table__Uppercase'>Doctor ID</th> */}
+                        {/* <th scope='col' className='table__th table__Uppercase'>View</th> */}
+                        <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
+
+                        <th scope='col' className='table__th table__Uppercase'>{medical_r}</th>
+
                     </tr>
                     </thead>
 

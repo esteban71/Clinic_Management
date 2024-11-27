@@ -4,53 +4,58 @@ import {faStreetView} from "@fortawesome/free-solid-svg-icons"
 import {useNavigate} from 'react-router-dom'
 import {useSelector} from 'react-redux'
 import {selectPatientById} from './patientsApiSlice.jsx'
+import useAuth from "../../hooks/useAuth.jsx";
 
 
 const Patient = ({patientID}) => {
 
-  const patient = useSelector(state => selectPatientById(state, patientID))
+    const {username, isManager, isAdmin, isDoctor, isReceptionist} = useAuth()
 
-  const navigate = useNavigate()
+    const patient = useSelector(state => selectPatientById(state, patientID))
 
-  if(patient) {
+    const navigate = useNavigate()
 
-    const handleEdit = () => navigate(`/dash/patients/${patientID}`)
+    if (patient) {
 
-    //const deceaseRecordOne = patient.deceaseRecordOne
-    //const medicineRecordOne = patient.medicineRecordOne
-    //const deceaseRecordTwo = patient.deceaseRecordTwo
-    //const medicineRecordTwo = patient.medicineRecordTwo
-   // const doctorID = patient.medecin.id
+        const handleEdit = () => navigate(`/dash/patients/${patientID}`)
 
-      const handleViewAllReport = () => {
-          navigate(`/dash/patients/${patientID}/reports`)
-      }
+        //const deceaseRecordOne = patient.deceaseRecordOne
+        //const medicineRecordOne = patient.medicineRecordOne
+        //const deceaseRecordTwo = patient.deceaseRecordTwo
+        //const medicineRecordTwo = patient.medicineRecordTwo
+        // const doctorID = patient.medecin.id
 
-    return (
-      <tr className="table__row">
-        <td className="table__cell">{patient.id}</td>
-        <td className="table__cell">{patient.name}</td>
-        <td className="table__cell">{patient.address}</td>
-        <td className="table__cell">{patient.telecom}</td>
-        <td className="table__cell">
-          <button
-              className="icon-button table__button"
-              onClick={handleEdit}
-          >
-              <FontAwesomeIcon icon={faStreetView}/>
-          </button>
-        </td>
-          <td className="table__cell">
-              <button
-                  className="icon-button table__button"
-                  onClick={handleViewAllReport}
-              >
-                  <FontAwesomeIcon icon={faStreetView}/>
-          </button>
-        </td>
-      </tr>
-    )
-  } else return null
+        const handleViewAllReport = () => {
+            navigate(`/dash/patients/${patientID}/reports`)
+        }
+
+        return (
+            <tr className="table__row">
+                <td className="table__cell">{patient.id}</td>
+                <td className="table__cell">{patient.name}</td>
+                <td className="table__cell">{patient.address}</td>
+                <td className="table__cell">{patient.telecom}</td>
+                <td className="table__cell">
+                    <button
+                        className="icon-button table__button"
+                        onClick={handleEdit}
+                    >
+                        <FontAwesomeIcon icon={faStreetView}/>
+                    </button>
+                </td>
+                {(isManager || isAdmin || isDoctor) && (
+                    <td className="table__cell">
+                        <button
+                            className="icon-button table__button"
+                            onClick={handleViewAllReport}
+                        >
+                            <FontAwesomeIcon icon={faStreetView}/>
+                        </button>
+                    </td>
+                )}
+            </tr>
+        )
+    } else return null
 }
 
 export default Patient
