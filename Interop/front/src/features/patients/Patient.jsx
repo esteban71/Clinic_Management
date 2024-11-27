@@ -43,7 +43,7 @@ const Patient = ({patientID}) => {
                         <FontAwesomeIcon icon={faStreetView}/>
                     </button>
                 </td>
-                {(isManager || isAdmin || isDoctor) && (
+                {(isManager || isAdmin || isDoctor) ? (
                     <td className="table__cell">
                         <button
                             className="icon-button table__button"
@@ -52,7 +52,10 @@ const Patient = ({patientID}) => {
                             <FontAwesomeIcon icon={faStreetView}/>
                         </button>
                     </td>
+                ) : (
+                    <td className="table__cell">No Access</td>
                 )}
+
             </tr>
         )
     } else return null
