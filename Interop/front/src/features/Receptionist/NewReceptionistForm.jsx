@@ -106,7 +106,7 @@ const NewReceptionistForm = ({cabinet}) => {
                 "cabinet_id": cabinet_id[0]
             })
             if (result.error) {
-                alert('Unable to create new Doctor! please try again...')
+                alert('Unable to create new Receptionist! please try again...')
             } else {
                 alert('New Receptionist created successfully')
             }
