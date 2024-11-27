@@ -84,7 +84,6 @@ const PatientsList = () => {
         const tableContent = ids?.length
             ? filteredIds.map(patientID => <Patient key={patientID} patientID={patientID}/>)
             : null
-        let medical_r = (isDoctor || isAdmin || isManager) ? 'Medical Report' : ''
         content = (
             <>
                 {searchBar}
@@ -103,7 +102,7 @@ const PatientsList = () => {
                         {/* <th scope='col' className='table__th table__Uppercase'>View</th> */}
                         <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
 
-                        <th scope='col' className='table__th table__Uppercase'>{medical_r}</th>
+                        <th scope='col' className='table__th table__Uppercase'>Medical Report</th>
 
                     </tr>
                     </thead>
