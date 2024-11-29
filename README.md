@@ -133,6 +133,9 @@ if you want to downgrade the migration, use the following command:
 docker compose exec back alembic downgrade -1
 ```
 
+## Sources d'inspiration
+
+- [Frontend](https://github.com/sagnik26/Clinic-Management-System-frontend)
 
 
 
