@@ -29,6 +29,10 @@ const Patient = ({patientID}) => {
             navigate(`/dash/patients/${patientID}/reports`)
         }
 
+        const handleViewAllDispositifs = () => {
+            navigate(`/dash/patients/${patientID}/dispositifs`)
+        }
+
         return (
             <tr className="table__row">
                 <td className="table__cell">{patient.id}</td>
@@ -48,6 +52,18 @@ const Patient = ({patientID}) => {
                         <button
                             className="icon-button table__button"
                             onClick={handleViewAllReport}
+                        >
+                            <FontAwesomeIcon icon={faStreetView}/>
+                        </button>
+                    </td>
+                ) : (
+                    <td className="table__cell">No Access</td>
+                )}
+                {(isManager || isAdmin || isDoctor) ? (
+                    <td className="table__cell">
+                        <button
+                            className="icon-button table__button"
+                            onClick={handleViewAllDispositifs}
                         >
                             <FontAwesomeIcon icon={faStreetView}/>
                         </button>

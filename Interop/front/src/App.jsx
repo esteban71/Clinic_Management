@@ -23,6 +23,10 @@ import NewMedicalReport from './features/dossierMedical/newMedicalReport.jsx';
 import MedicalReportList from './features/dossierMedical/medicalReportList.jsx';
 import EditMedicalReport from './features/dossierMedical/editMedicalReport.jsx';
 
+
+import EditObservation from "./features/Observation/editObservation.jsx";
+import ObservationReportList from "./features/Observation/ObservationReportList.jsx";
+
 function App() {
   return (
     <Routes>
@@ -45,6 +49,8 @@ function App() {
                   <Route path=':id/reports' element={<MedicalReportList/>}/>
                   <Route path=':id/reports/new' element={<NewMedicalReport/>}/>
                   <Route path=':id/reports/:reportID' element={<EditMedicalReport/>}/>
+                    <Route path=':id/dispositifs' element={<ObservationReportList/>}/>
+                    <Route path=':id/dispositifs/:reportID' element={<EditObservation/>}/>
                   {/* <Route element={<RequireAuth allowedRoles={[Roles.Manager, Roles.admin, Roles.Doctor]} />}>
                     <Route path='new' element={<NewMedicalReport />} />
                   </Route> */}

@@ -103,6 +103,7 @@ const PatientsList = () => {
                         <th scope='col' className='table__th table__Uppercase'>View/Edit</th>
 
                         <th scope='col' className='table__th table__Uppercase'>Medical Report</th>
+                        <th scope='col' className='table__th table__Uppercase'>Dispositifs</th>
 
                     </tr>
                     </thead>

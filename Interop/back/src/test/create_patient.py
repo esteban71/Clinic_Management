@@ -1,10 +1,17 @@
+import logging
+from datetime import datetime, timedelta
+
 import numpy as np
 from faker import Faker
 from sqlalchemy.orm import Session
+from src.model.DispositifMedicaux import DispositifMedicaux
 from src.model.Dossier import DossierMedical
+from src.model.Observation import Observation
 from src.model.Patient import Patient
 
 fake = Faker()
+
+logger = logging.getLogger('uvicorn.error')
 
 
 def create_medical_folder(db: Session, patient_id: int):
@@ -16,6 +23,50 @@ def create_medical_folder(db: Session, patient_id: int):
     return dossier
 
 
+def create_dispositif_medical(db: Session, patient_id: list[int] | int):
+    if isinstance(patient_id, int):
+        patient_id = [patient_id]
+    dispositifs = []
+    for i in patient_id:
+        dispositif = DispositifMedicaux(
+            patient_id=i,
+            name=fake.name(),
+            type=fake.random_element(elements=("type1", "type2", "type3")),
+            interval=fake.random_int(min=1, max=30),
+            status=fake.random_element(elements=("active", "inactive")),
+            manufacturer=fake.company(),
+            serial_number=fake.random_int(min=1, max=1000),
+            lot_number=fake.random_int(min=1, max=1000),
+            manufacture_date=fake.date_of_birth(),
+            expiration_date=fake.date_of_birth()
+        )
+        db.add(dispositif)
+        db.commit()
+        db.refresh(dispositif)
+        dispositifs.append(dispositif)
+    dispositif_ids = [dispositif.id for dispositif in dispositifs]
+    return dispositif_ids
+
+
+def add_observation_to_dispositif(db: Session, dispositif_id: list[int] | int):
+    if isinstance(dispositif_id, int):
+        dispositif_id = [dispositif_id]
+    for i in dispositif_id:
+        dispositif = db.query(DispositifMedicaux).filter(DispositifMedicaux.id == i).first()
+        ob = Observation(
+            device_id=dispositif_id,
+            date_time=datetime.now() + timedelta(days=fake.random_int(min=-10, max=10)),
+            code="Heart rate",
+            value=fake.random_int(min=1, max=200),
+            unit="bpm",
+            device=dispositif
+        )
+        db.add(ob)
+        db.commit()
+        db.refresh(ob)
+    return dispositif
+
+
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
     dossiers = []
@@ -23,6 +74,7 @@ def create_patient(db: Session, nb_patient: int):
 
     for i in range(nb_patient):
         dossier_medical = create_medical_folder(db, i)
+
         dossiers.append(dossier_medical)  # Add to list
 
         patient = Patient(
