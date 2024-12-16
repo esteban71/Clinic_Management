@@ -56,6 +56,7 @@ The system supports different user roles, each with specific permissions:
 
 ## Doctor:
 - View patient records.
+- View medical device reports.
 - View, add, delete, and update medical reports.
 
 ## Manager/Admin:
@@ -80,6 +81,10 @@ The system supports different user roles, each with specific permissions:
 - **Add New Medical Report**: Click on "Add New Medical Report" and fill in the required details to create a new medical report.
 - **Edit Medical Report**: Select a medical report from the list and click "Edit" to update its information.
 - **Delete Medical Report**: Select a medical report from the list and click "Delete" to remove it from the system.
+
+## Medical Device Management
+- **View Medical Device Report**: Navigate to the "Dispositif" section under a patient's profile to view a list of all dispositif's report for that patient.
+- **Delete Medical Device Report**: Select a medical device report from the list and click "Delete" to remove it from the system.
 
 ## Multi-Cabinet Support  
 The frontend of the application is designed to work with multiple medical cabinets. This allows users to manage patient records, appointments, and staff information across different medical facilities seamlessly.  
