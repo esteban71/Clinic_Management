@@ -34,7 +34,7 @@ def create_dispositif_medical(db: Session, patient_id: list[int] | int):
             type=fake.random_element(
                 elements=("Blood Pressure Monitor", "Heart Rate Monitor", "Oxygen Saturation Monitor")),
             interval=fake.random_int(min=1, max=30),
-            status=fake.random_element(elements=("active", "inactive")),
+            status="active",
             manufacturer=fake.company(),
             serial_number=fake.random_int(min=1, max=1000),
             lot_number=fake.random_int(min=1, max=1000),
@@ -49,7 +49,7 @@ def create_dispositif_medical(db: Session, patient_id: list[int] | int):
     return dispositif_ids
 
 
-def add_observation_to_dispositif(db: Session, dispositif_id: list[int] | int):
+def add_observation_to_dispositif_heart(db: Session, dispositif_id: list[int] | int):
     if isinstance(dispositif_id, int):
         dispositif_id = [dispositif_id]
     for i in dispositif_id:
@@ -67,6 +67,46 @@ def add_observation_to_dispositif(db: Session, dispositif_id: list[int] | int):
         db.refresh(ob)
     return dispositif
 
+
+def add_observation_to_dispositif_blood(db: Session, dispositif_id: list[int] | int):
+    if isinstance(dispositif_id, int):
+        dispositif_id = [dispositif_id]
+    for i in dispositif_id:
+        dispositif = db.query(DispositifMedicaux).filter(DispositifMedicaux.id == i).first()
+        ob = Observation(
+            device_id=dispositif_id,
+            date_time=datetime.now() + timedelta(days=fake.random_int(min=-10, max=10)),
+            code="Blood pressure",
+            value=fake.random_int(min=60, max=200),
+            unit="mmHg",
+            component_code=fake.random_element(elements=("systolic", "diastolic")),
+            component_value=fake.random_int(min=60, max=200),
+            component_unit="mmHg",
+            device=dispositif
+        )
+        db.add(ob)
+        db.commit()
+        db.refresh(ob)
+    return dispositif
+
+
+def add_observation_to_dispositif_oxygen(db: Session, dispositif_id: list[int] | int):
+    if isinstance(dispositif_id, int):
+        dispositif_id = [dispositif_id]
+    for i in dispositif_id:
+        dispositif = db.query(DispositifMedicaux).filter(DispositifMedicaux.id == i).first()
+        ob = Observation(
+            device_id=dispositif_id,
+            date_time=datetime.now() + timedelta(days=fake.random_int(min=-10, max=10)),
+            code="Oxygen saturation",
+            value=fake.random_int(min=60, max=100),
+            unit="%",
+            device=dispositif
+        )
+        db.add(ob)
+        db.commit()
+        db.refresh(ob)
+    return dispositif
 
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
