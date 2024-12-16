@@ -31,7 +31,8 @@ def create_dispositif_medical(db: Session, patient_id: list[int] | int):
         dispositif = DispositifMedicaux(
             patient_id=i,
             name=fake.name(),
-            type=fake.random_element(elements=("type1", "type2", "type3")),
+            type=fake.random_element(
+                elements=("Blood Pressure Monitor", "Heart Rate Monitor", "Oxygen Saturation Monitor")),
             interval=fake.random_int(min=1, max=30),
             status=fake.random_element(elements=("active", "inactive")),
             manufacturer=fake.company(),

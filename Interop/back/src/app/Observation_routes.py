@@ -7,7 +7,6 @@ from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model.DispositifMedicaux import DispositifMedicaux
 from src.model.Observation import Observation
-from src.schemas.DispositifMedicauxSchema import DispositifMedicauxSchema
 from src.schemas.ObservationSchema import CreateObservationSchema, ObservationSchema
 
 logger = logging.getLogger('uvicorn.error')
@@ -65,8 +64,3 @@ async def delete_observations(patient_id: int, report_id: int, db: Session = Dep
     return {"message": "Medical report deleted successfully"}
 
 
-# Route pour obtenir tous les dossiers médicaux d'un patient
-@router.get("/{patient_id}/dispositifs", response_model=List[DispositifMedicauxSchema])
-async def get_dispositifs(patient_id: int, db: Session = Depends(get_db)):
-    dispositifs = db.query(DispositifMedicaux).filter(DispositifMedicaux.patient_id == patient_id).all()
-    return dispositifs

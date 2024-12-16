@@ -7,7 +7,10 @@ import searchBarTwo from '../../images/searchBarTwo.png';
 import CircularLoader from '../../pageLoader/CircularLoader';
 import {useSelector} from 'react-redux';
 import {selectPatientById} from '../patients/patientsApiSlice';
+import CreateDispositifMedical from '../DispositifMedical/CreateDispositifMedical.jsx';
+import {useGetDispositifMedicalQuery} from '../DispositifMedical/DispositifMedicalApiSlice.jsx';
 import '../../css/userList.css';
+import {MenuItem, Select} from "@mui/material";
 
 const ObservationReportList = () => {
     const url = window.location.href;
@@ -16,35 +19,53 @@ const ObservationReportList = () => {
     const {pathname} = useLocation();
     const navigate = useNavigate();
 
-    // Recherche par mot-clé
     const [q, setQ] = useState('');
+    const [showCreateForm, setShowCreateForm] = useState(false);
+    const [selectedDevice, setSelectedDevice] = useState(null);
 
-    // Récupérer les rapports médicaux pour le patient actuel
     const {data: Observation, isLoading, isSuccess, isError, error} = useGetObservationQuery(patientID, {
         pollingInterval: 15000,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
     });
 
-    // Récupérer les informations du patient
+
+    const {
+        data: medicalDevices,
+        isLoading: isLoadingDevices,
+        isSuccess: isSuccessDevices,
+        isError: isErrorDevices,
+        error: errorDevices
+    } = useGetDispositifMedicalQuery(
+        patientID,
+        {
+            pollingInterval: 15000,
+            refetchOnFocus: true,
+            refetchOnMountOrArgChange: true,
+        }
+    );
+
     const patient = useSelector((state) => selectPatientById(state, patientID));
 
     let content;
 
-    // Affichage d'un loader si la requête est en cours
     if (isLoading) {
         content = <CircularLoader/>;
     }
 
-    // Affichage d'un message d'erreur si la requête échoue
     if (isError) {
-        content = <p className="errmsg">{error?.data?.message ?? 'Failed to load observation reports'}</p>;
+        console.log('error:', error?.data);
+        if (error?.data?.detail === 'dispositif médical not found') {
+            content = <button onClick={() => setShowCreateForm(true)}>Add Medical Device</button>
+        } else {
+            content = <p className="errmsg">{error?.data?.detail ?? 'Failed to load observation reports'}</p>;
+        }
     }
 
-    if (isSuccess) {
+    if (isSuccess && isSuccessDevices) {
         const {ids, entities} = Observation;
+        const {ids: deviceIds, entities: deviceEntities} = medicalDevices;
 
-        // Fonction de recherche
         const searchReports = () => {
             for (let i = 0; i < ids?.length; i++) {
                 if (entities[ids[i]].id === Number(q)) {
@@ -53,7 +74,6 @@ const ObservationReportList = () => {
             }
         };
 
-        // Barre de recherche
         let searchBar;
         if (pathname.includes(`/dash/patients/${patientID}/dispositifs`)) {
             searchBar = (
@@ -78,7 +98,6 @@ const ObservationReportList = () => {
             );
         }
 
-        // Contenu du tableau de rapports médicaux
         const tableContent = ids?.length
             ? ids.map((reportID) => {
                 const report = entities[reportID];
@@ -92,28 +111,64 @@ const ObservationReportList = () => {
                 </tr>
             );
 
+        const deviceOptions = deviceIds?.length
+            ? deviceIds.map((deviceId) => {
+                const device = deviceEntities[deviceId];
+                return (
+                    <MenuItem key={deviceId} value={deviceId}>
+                        {device.name}
+                    </MenuItem>
+                );
+            })
+            : <MenuItem value="">No medical devices found</MenuItem>;
+
         content = (
             <>
-
                 {searchBar}
-
-                <table className="table_observationlist">
-                    <thead className="table__thead">
-                    <tr className="table_patientlist--header">
-                        <th scope="col" className="table__th table__Uppercase">Report ID</th>
-                        <th scope="col" className="table__th table__Uppercase">Date</th>
-                        <th scope="col" className="table__th table__Uppercase">Code</th>
-                        <th scope="col" className="table__th table__Uppercase">Value</th>
-                        <th scope="col" className="table__th table__Uppercase">Unit</th>
-                        <th scope="col" className="table__th table__Uppercase">Status</th>
-                        <th scope="col" className="table__th table__Uppercase">Component Code</th>
-                        <th scope="col" className="table__th table__Uppercase">Component Value</th>
-                        <th scope="col" className="table__th table__Uppercase">Component Unit</th>
-                        <th scope="col" className="table__th table__Uppercase">View</th>
-                    </tr>
-                    </thead>
-                    <tbody>{tableContent}</tbody>
-                </table>
+                {!showCreateForm && (
+                    <div className="device-section">
+                        <button onClick={() => setShowCreateForm(true)}>Add Medical Device</button>
+                        <div className="form__row">
+                            <div className="form__divider">
+                                <label className="form__label form__checkbox-container" htmlFor="note-username">
+                                    Select a Medical Device if you want to modify it:</label>
+                                <Select
+                                    value={selectedDevice?.id || ''}
+                                    onChange={(e) => {
+                                        const device = deviceEntities[e.target.value];
+                                        setSelectedDevice(device);
+                                        setShowCreateForm(true);
+                                    }}
+                                    displayEmpty
+                                    fullWidth
+                                    defaultValue=""
+                                >
+                                    <MenuItem value="" disabled>Select a Medical Device</MenuItem>
+                                    {deviceOptions}
+                                </Select>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {!showCreateForm && (
+                    <table className="table_observationlist">
+                        <thead className="table__thead">
+                        <tr className="table_patientlist--header">
+                            <th scope="col" className="table__th table__Uppercase">Report ID</th>
+                            <th scope="col" className="table__th table__Uppercase">Date</th>
+                            <th scope="col" className="table__th table__Uppercase">Code</th>
+                            <th scope="col" className="table__th table__Uppercase">Value</th>
+                            <th scope="col" className="table__th table__Uppercase">Unit</th>
+                            <th scope="col" className="table__th table__Uppercase">Status</th>
+                            <th scope="col" className="table__th table__Uppercase">Component Code</th>
+                            <th scope="col" className="table__th table__Uppercase">Component Value</th>
+                            <th scope="col" className="table__th table__Uppercase">Component Unit</th>
+                            <th scope="col" className="table__th table__Uppercase">View</th>
+                        </tr>
+                        </thead>
+                        <tbody>{tableContent}</tbody>
+                    </table>
+                )}
             </>
         );
     }
@@ -122,6 +177,18 @@ const ObservationReportList = () => {
         <div className="medical-report-list">
             <h2>{patient ? `Observation Reports for ${patient.name}` : 'Observation Reports'}</h2>
             {content}
+            {showCreateForm && (
+                <div className="create-dispositif-medical-form">
+                    <CreateDispositifMedical existingDevice={selectedDevice} patient_id={patientID}
+                                             onClose={() => {
+                                                 setSelectedDevice(null);
+                                                 setShowCreateForm(false);
+                                                 window.location.reload();
+
+                                             }}
+                    />
+                </div>
+            )}
         </div>
     );
 };

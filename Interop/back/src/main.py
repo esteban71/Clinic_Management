@@ -2,6 +2,7 @@ import os
 
 from fastapi import FastAPI, Security
 from fastapi.middleware.cors import CORSMiddleware
+from src.app.Dispositifs_routes import router as Dispositif_router
 from src.app.Dossier_routes import router as Dossier_router
 from src.app.Medecin_routes import router as Medecin_router
 from src.app.Observation_routes import router as Observation_router
@@ -44,6 +45,9 @@ app.include_router(Dossier_router, prefix="/dossier",
                    dependencies=[Security(protected_route(["admin", "Doctor"]))])
 
 app.include_router(Observation_router, prefix="/dispositifs",
+                   dependencies=[Security(protected_route(["admin", "Doctor", "Dispositif"]))])
+
+app.include_router(Dispositif_router, prefix="/dispositifs",
                    dependencies=[Security(protected_route(["admin", "Doctor", "Dispositif"]))])
 
 app.include_router(Cabinet_router, prefix="/cabinets",

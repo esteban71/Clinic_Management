@@ -22,3 +22,19 @@ class DispositifMedicauxSchema(BaseModel):
     class Config:
         orm_mode = True
         from_attributes = True
+
+
+class CreateDispositifMedicauxSchema(BaseModel):
+    name: Optional[str] = None
+    type: Optional[str] = None
+    interval: Optional[int] = None
+    status: Optional[str] = None
+    manufacturer: Optional[str] = None
+    serial_number: Optional[str] = None
+    lot_number: Optional[str] = None
+    manufacture_date: Optional[datetime] = None
+    expiration_date: Optional[datetime] = None
+
+    class Config:
+        orm_mode = True
+        from_attributes = True
