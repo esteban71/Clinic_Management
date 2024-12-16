@@ -60,6 +60,9 @@ class CreatePatientSchema(BaseModel):
     address: str
     email: str
     medecin_id: int
+    gender: Optional[str] = None
+    birth_date: Optional[date] = None
+    marital_status: Optional[str] = None
 
     class Config:
         orm_mode = True

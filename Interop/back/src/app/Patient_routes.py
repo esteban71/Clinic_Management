@@ -1,12 +1,18 @@
 import logging
 from typing import Dict, List
 
+import fhirclient.models.patient as fhir_patient
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fhirclient.models.address import Address
+from fhirclient.models.codeableconcept import CodeableConcept
+from fhirclient.models.contactpoint import ContactPoint
+from fhirclient.models.humanname import HumanName
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model import Patient, Medecin, DossierMedical
 from src.schemas import PatientSchema
 from src.schemas.PatientSchema import CreatePatientSchema
+from src.utils.FHIR import smart_request as smart
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -59,6 +65,49 @@ async def create_patient(patient: CreatePatientSchema,
     db.commit()
     db.refresh(db_patient)
     db.refresh(db_dossier_medical)
+
+    # Create FHIR Patient resource
+    fhir_patient_resource = fhir_patient.Patient()
+    name = HumanName()
+    name.given = [str(patient.name)]  # Ensure it is a string
+    name.family = ""  # Add family name for completeness (modify as needed)
+
+    # Assign name to Patient resource
+    fhir_patient_resource.name = [name]
+
+    # Construct telecom (phone)
+    contact_point = ContactPoint()
+    contact_point.system = "phone"  # Specify the telecom system (e.g., phone, email)
+    contact_point.value = patient.telecom  # Ensure it's a string
+    contact_point.use = "home"  # Optional, but good practice
+
+    fhir_patient_resource.telecom = [contact_point]
+
+    # Construct address
+    address = Address()
+    address.line = [str(patient.address)]  # Use line instead of text for better structure
+    address.city = ""  # Add city, postal code, country (modify as needed)
+    address.postalCode = ""
+    address.country = ""
+
+    fhir_patient_resource.address = [address]
+
+    # Assign gender and birthDate
+    fhir_patient_resource.gender = patient.gender if patient.gender else None
+    fhir_patient_resource.birthDate = patient.birth_date.isoformat() if patient.birth_date else None
+
+    # Add marital status (if available)
+    if patient.marital_status:
+        codeable_concept = CodeableConcept()
+        codeable_concept.text = patient.marital_status
+        fhir_patient_resource.maritalStatus = codeable_concept
+
+    # Convert to JSON and log for debugging
+    fhir_patient_json = fhir_patient_resource.as_json()
+    logger.error(f"FHIR Patient JSON: {fhir_patient_json}")
+
+    fhir_patient_resource.create(smart().server)
+
     return db_patient
 
 
@@ -77,6 +126,49 @@ async def update_patient(patient: PatientSchema, db: Session = Depends(get_db)):
         db_patient.cabinet_medical_id = cabinet_id
     db.commit()
     db.refresh(db_patient)
+
+    # Update FHIR Patient resource
+    fhir_patient_resource = fhir_patient.Patient.read(patient.id, smart.server)
+    name = HumanName()
+    name.given = [str(patient.name)]  # Ensure it is a string
+    name.family = ""  # Add family name for completeness (modify as needed)
+
+    # Assign name to Patient resource
+    fhir_patient_resource.name = [name]
+
+    # Construct telecom (phone)
+    contact_point = ContactPoint()
+    contact_point.system = "phone"  # Specify the telecom system (e.g., phone, email)
+    contact_point.value = patient.telecom  # Ensure it's a string
+    contact_point.use = "home"  # Optional, but good practice
+
+    fhir_patient_resource.telecom = [contact_point]
+
+    # Construct address
+    address = Address()
+    address.line = [str(patient.address)]  # Use line instead of text for better structure
+    address.city = ""  # Add city, postal code, country (modify as needed)
+    address.postalCode = ""
+    address.country = ""
+
+    fhir_patient_resource.address = [address]
+
+    # Assign gender and birthDate
+    fhir_patient_resource.gender = patient.gender if patient.gender else None
+    fhir_patient_resource.birthDate = patient.birth_date.isoformat() if patient.birth_date else None
+
+    # Add marital status (if available)
+    if patient.marital_status:
+        codeable_concept = CodeableConcept()
+        codeable_concept.text = patient.marital_status
+        fhir_patient_resource.maritalStatus = codeable_concept
+
+    # Convert to JSON and log for debugging
+    fhir_patient_json = fhir_patient_resource.as_json()
+    logger.error(f"FHIR Patient JSON: {fhir_patient_json}")
+
+    fhir_patient_resource.update(smart().server)
+
     return db_patient
 
 
@@ -87,4 +179,9 @@ def delete_patient(patient_id: Dict[str, int], db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Patient not found")
     db.delete(db_patient)
     db.commit()
+
+    # Delete FHIR Patient resource
+    fhir_patient_resource = fhir_patient.Patient.read(patient_id['id'], smart.server)
+    fhir_patient_resource.delete(smart.server)
+
     return {"message": "Patient deleted successfully"}

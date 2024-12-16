@@ -10,3 +10,4 @@ watchdog==6.0.0
 faker==33.0.0
 numpy==2.1.3
 python-keycloak==4.7.2
+fhirclient==4.3.0
