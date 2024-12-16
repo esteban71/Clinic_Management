@@ -4,7 +4,7 @@ from typing import Dict, List
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from src.database import get_db
-from src.model import Patient, Medecin, DossierMedical, DispositifMedicaux
+from src.model import Patient, Medecin, DossierMedical
 from src.schemas import PatientSchema
 from src.schemas.PatientSchema import CreatePatientSchema
 
@@ -55,15 +55,10 @@ async def create_patient(patient: CreatePatientSchema,
     db_dossier_medical = DossierMedical(
         patient_id=db_patient.id,
     )
-    db_dispositif_medical = DispositifMedicaux(
-        patient_id=db_patient.id,
-    )
     db.add(db_dossier_medical)
-    db.add(db_dispositif_medical)
     db.commit()
     db.refresh(db_patient)
     db.refresh(db_dossier_medical)
-    db.refresh(db_dispositif_medical)
     return db_patient
 
 

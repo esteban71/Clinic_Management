@@ -1,8 +1,8 @@
 import {createEntityAdapter} from "@reduxjs/toolkit";
 import {apiSlice} from '../../app/api/apiSlice';
 
-const medicalReportAdapter = createEntityAdapter({});
-const initialState = medicalReportAdapter.getInitialState();
+const ObservationAdapter = createEntityAdapter({});
+const initialState = ObservationAdapter.getInitialState();
 
 export const ObservationApiSlice = apiSlice.injectEndpoints({
     endpoints: builder => ({
@@ -12,7 +12,7 @@ export const ObservationApiSlice = apiSlice.injectEndpoints({
                 return response.status === 200 && !result.isError
             },
             transformResponse: responseData => {
-                return medicalReportAdapter.setAll(initialState, responseData)
+                return ObservationAdapter.setAll(initialState, responseData)
             },
             providesTags: (result, error, arg) => {
                 if (result?.ids) {
@@ -20,7 +20,7 @@ export const ObservationApiSlice = apiSlice.injectEndpoints({
                         {type: 'MedicalReport', id: 'LIST'},
                         ...result.ids.map(id => ({type: 'MedicalReport', id}))
                     ];
-                } else return [{type: 'MedicalReport', id: 'LIST'}];
+                } else return [{type: 'Observation', id: 'LIST'}];
             },
             refetchOnMountOrArgChange: true,
         }),
@@ -30,7 +30,7 @@ export const ObservationApiSlice = apiSlice.injectEndpoints({
                 method: 'DELETE'
             }),
             invalidatesTags: (result, error, arg) => [
-                {type: 'MedicalReport', id: arg.report_id}
+                {type: 'Observation', id: arg.report_id}
             ]
         })
     })

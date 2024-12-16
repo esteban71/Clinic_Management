@@ -1,5 +1,6 @@
 from .CabinetMedicalSchema import CabinetMedicalSchema
 from .DispositifMedicauxSchema import DispositifMedicauxSchema
+from .DispositifMedicauxSchema import DispositifMedicauxSchema, CreateDispositifMedicauxSchema
 from .MedecinSchema import MedecinSchema, CreateMedecinSchema, UpdateMedecinSchema
 from .ObservationSchema import ObservationSchema
 from .PatientSchema import PatientSchema, ContactSchema, LinkSchema, CreatePatientSchema

@@ -1,3 +1,4 @@
+from .Dispositifs_routes import router as Dispositif_router
 from .Dossier_routes import router as Dossier_router
 from .Dossier_routes import router as Dossier_router
 from .Medecin_routes import router as Medecin_router

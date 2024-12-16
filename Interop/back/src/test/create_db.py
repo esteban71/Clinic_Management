@@ -17,6 +17,7 @@ def drop_all_data(db: Session):
         db.execute(text(f"DELETE FROM {table}"))
     db.commit()
 
+
 def create_db(db: Session):
     patient_ids = create_patient(db, 10);
     medecin_ids = create_medecin(db, 10);
@@ -25,14 +26,14 @@ def create_db(db: Session):
     add_medecin_to_patient(db, medecin_ids, patient_ids)
     add_cabinet_to_patient(db, cabinet_ids, patient_ids)
     dispositif_ids = create_dispositif_medical(db, patient_ids)
-    add_observation_to_dispositif(db, dispositif_ids)
     start_observation_task(db)
 
 
 async def add_observations_periodically(db: Session):
     while True:
         patient_ids = [patient.id for patient in db.query(Patient).all()]
-        dispositif_ids = [dispositif.id for dispositif in db.query(DispositifMedicaux).all()]
+        dispositif_ids = dispositif_ids = [dispositif.id for dispositif in db.query(DispositifMedicaux).all() if
+                                           dispositif.status == "active" and dispositif.type == "Heart Rate Monitor"]
 
         add_observation_to_dispositif(db, dispositif_ids)
         await asyncio.sleep(60)
