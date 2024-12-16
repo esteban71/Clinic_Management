@@ -57,7 +57,7 @@ def add_observation_to_dispositif(db: Session, dispositif_id: list[int] | int):
             device_id=dispositif_id,
             date_time=datetime.now() + timedelta(days=fake.random_int(min=-10, max=10)),
             code="Heart rate",
-            value=fake.random_int(min=1, max=200),
+            value=fake.random_int(min=30, max=200),
             unit="bpm",
             device=dispositif
         )

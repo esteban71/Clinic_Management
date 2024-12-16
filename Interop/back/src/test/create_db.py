@@ -1,5 +1,8 @@
+import asyncio
+
 from sqlalchemy import text
 from sqlalchemy.orm import Session
+from src.model import Patient, DispositifMedicaux
 from src.test.create_cabinet_medical import create_cabinet_medical, add_cabinet_to_medecin, add_cabinet_to_patient
 from src.test.create_medecin import create_medecin
 from src.test.create_patient import create_patient, add_medecin_to_patient, add_observation_to_dispositif, \
@@ -23,3 +26,18 @@ def create_db(db: Session):
     add_cabinet_to_patient(db, cabinet_ids, patient_ids)
     dispositif_ids = create_dispositif_medical(db, patient_ids)
     add_observation_to_dispositif(db, dispositif_ids)
+    start_observation_task(db)
+
+
+async def add_observations_periodically(db: Session):
+    while True:
+        patient_ids = [patient.id for patient in db.query(Patient).all()]
+        dispositif_ids = [dispositif.id for dispositif in db.query(DispositifMedicaux).all()]
+
+        add_observation_to_dispositif(db, dispositif_ids)
+        await asyncio.sleep(60)
+
+
+def start_observation_task(db: Session):
+    loop = asyncio.get_event_loop()
+    loop.create_task(add_observations_periodically(db))
