@@ -1,6 +1,6 @@
 # Interopérabilité Avancée
 
-## Nom des membres du groupe
+## Member's name
 
 - Esteban Arroyo
 - Radhwane Namaoui
@@ -82,14 +82,18 @@ The system supports different user roles, each with specific permissions:
 - **Edit Medical Report**: Select a medical report from the list and click "Edit" to update its information.
 - **Delete Medical Report**: Select a medical report from the list and click "Delete" to remove it from the system.
 
-## Medical Device Management
-- **View Medical Device Report**: Navigate to the "Dispositif" section under a patient's profile to view a list of all dispositif's report for that patient.
-- **Delete Medical Device Report**: Select a medical device report from the list and click "Delete" to remove it from the system.
+## Dispositif Management
+- **View Dispositif Report**: Navigate to the "Dispositif" section under a patient's profile to view a list of all dispositif's report for that patient.
+- **Delete Dispositif Report**: Select a Dispositif report from the list and click "Delete" to remove it from the system.
 
 ## Multi-Cabinet Support  
 The frontend of the application is designed to work with multiple medical cabinets. This allows users to manage patient records, appointments, and staff information across different medical facilities seamlessly.  
 
 As we manage multiple cabinets, you can also switch patients between different cabinets while preserving their data.  
+
+# Additional Feature
+
+We utilize an FHIR server.
 
 # Authentication and Authorization
 
