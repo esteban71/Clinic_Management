@@ -22,10 +22,9 @@ def drop_all_data(db: Session):
 
 def create_db(db: Session):
     # verify if smart server is running
-    if not is_fhir_server_running(smart()):
+    while not is_fhir_server_running(smart()):
         print("FHIR server is not running")
         sleep(10)
-        create_db(db)
     patient_ids = create_patient(db, 10);
     medecin_ids = create_medecin(db, 10);
     cabinet_ids = create_cabinet_medical(db, 10);
