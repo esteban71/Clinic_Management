@@ -49,7 +49,7 @@ async def add_observations_periodically(db: Session):
                           dispositif.status == "active" and dispositif.type == "Oxygen Saturation Monitor"]
         add_observation_to_dispositif_oxygen(db, dispositif_ids)
 
-        await asyncio.sleep(60)
+        await asyncio.sleep(120)
 
 
 def start_observation_task(db: Session):
