@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useGetMedicalReportsQuery } from './medicalReportsApiSlice';
+import React, {useState} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {useGetMedicalReportsQuery} from './medicalReportsApiSlice';
 import MedicalReport from './medicalReport.jsx';
 import useAuth from '../../hooks/useAuth';
 import searchBarTwo from '../../images/searchBarTwo.png';
 import CircularLoader from '../../pageLoader/CircularLoader';
-import { useSelector } from 'react-redux';
-import { selectPatientById } from '../patients/patientsApiSlice';
+import {useSelector} from 'react-redux';
+import {selectPatientById} from '../patients/patientsApiSlice';
 import '../../css/userList.css';
 
 const MedicalReportList = () => {
@@ -111,7 +111,7 @@ const MedicalReportList = () => {
 
                 {searchBar}
 
-                <table className="table_patientlist">
+                <table className="table_medicalreportlist">
                     <thead className="table__thead">
                         <tr className="table_patientlist--header">
                             <th scope="col" className="table__th table__Uppercase">Report ID</th>

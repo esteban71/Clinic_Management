@@ -175,7 +175,7 @@ async def delete_medecin(medecin_id: Dict[str, int], db: Session = Depends(get_d
         search_practitioner = Practitioner.where(
             struct={"identifier": f"{identifier_system}|{identifier_value}"}).perform(smart().server)
         practitioner = Practitioner.read(search_practitioner.entry[0].resource.id, smart().server)
-
+        """
         search_references = Bundle.where(
             struct={"reference": f"Practitioner/{practitioner.id}"}).perform(smart().server)
         for entry in search_references.entry:
@@ -184,7 +184,7 @@ async def delete_medecin(medecin_id: Dict[str, int], db: Session = Depends(get_d
             if hasattr(resource, 'practitioner'):
                 resource.practitioner = None
             resource.update(smart().server)
-
+        """
         practitioner.delete(smart().server)
     except Exception as e:
         logger.info(f"Error deleting practitioner: {e}")
