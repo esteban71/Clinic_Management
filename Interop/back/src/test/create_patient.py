@@ -65,7 +65,6 @@ def add_observation_to_dispositif_heart(db: Session, dispositif_id: list[int] | 
         db.add(ob)
         db.commit()
         db.refresh(ob)
-    return dispositif
 
 
 def add_observation_to_dispositif_blood(db: Session, dispositif_id: list[int] | int):
@@ -87,7 +86,6 @@ def add_observation_to_dispositif_blood(db: Session, dispositif_id: list[int] | 
         db.add(ob)
         db.commit()
         db.refresh(ob)
-    return dispositif
 
 
 def add_observation_to_dispositif_oxygen(db: Session, dispositif_id: list[int] | int):
@@ -106,7 +104,7 @@ def add_observation_to_dispositif_oxygen(db: Session, dispositif_id: list[int] |
         db.add(ob)
         db.commit()
         db.refresh(ob)
-    return dispositif
+
 
 def create_patient(db: Session, nb_patient: int):
     patient_ids = []
