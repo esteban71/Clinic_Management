@@ -58,6 +58,7 @@ The system supports different user roles, each with specific permissions:
 - View patient records.
 - View medical device reports.
 - View, add, delete, and update medical reports.
+- View, and delete dispositif reports.
 
 ## Manager/Admin:
 - Full access to all features, including user management and system settings.
