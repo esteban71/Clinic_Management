@@ -11,7 +11,7 @@ from src.app.Secretariat_routes import router as Secretariat_router
 from src.app.auth_routes import router as auth_router
 from src.app.cabinet_routes import router as Cabinet_router
 from src.database import SessionLocal
-from src.test.create_db import create_db
+from src.test.create_db import create_db, drop_all_data
 from src.utils.auth import protected_route
 
 app = FastAPI()
@@ -30,7 +30,7 @@ async def startup_event():
     env = os.getenv("ENV", "dev")
     if env == "dev":
         with SessionLocal() as db:
-            # drop_all_data(db)
+            drop_all_data(db)
             create_db(db)
 
 

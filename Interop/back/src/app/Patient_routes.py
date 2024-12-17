@@ -10,6 +10,7 @@ from fhirclient.models.codeableconcept import CodeableConcept
 from fhirclient.models.contactpoint import ContactPoint
 from fhirclient.models.documentreference import DocumentReference
 from fhirclient.models.documentreference import DocumentReferenceContent
+from fhirclient.models.fhirdate import FHIRDate
 from fhirclient.models.fhirreference import FHIRReference
 from fhirclient.models.humanname import HumanName
 from fhirclient.models.identifier import Identifier
@@ -107,7 +108,7 @@ async def create_patient(patient: CreatePatientSchema,
 
         # Assign gender and birthDate
         fhir_patient_resource.gender = patient.gender if patient.gender else None
-        fhir_patient_resource.birthDate = patient.birth_date.isoformat() if patient.birth_date else None
+        fhir_patient_resource.birthDate = FHIRDate(patient.birth_date.isoformat()) if patient.birth_date else None
 
         # Add marital status (if available)
         if patient.marital_status:
@@ -242,7 +243,7 @@ async def update_patient(patient: PatientSchema, db: Session = Depends(get_db)):
 
         # Assign gender and birthDate
         fhir_patient_resource.gender = patient.gender if patient.gender else None
-        fhir_patient_resource.birthDate = patient.birth_date.isoformat() if patient.birth_date else None
+        fhir_patient_resource.birthDate = FHIRDate(patient.birth_date.isoformat()) if patient.birth_date else None
 
         # Add marital status (if available)
         if patient.marital_status:

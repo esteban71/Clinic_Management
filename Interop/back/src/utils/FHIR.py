@@ -1,6 +1,7 @@
 import os
 
 import fhirclient.models.patient as fhir_patient
+import requests
 from fhirclient import client
 
 settings = {
@@ -33,3 +34,17 @@ def add_practitioner_to_patient(patient_id, practitioner_id):
 
     # Update the Patient resource on the FHIR server
     fhir_patient_resource.update(smart_request().server)
+
+
+def is_fhir_server_running(smart):
+    try:
+        response = requests.get(os.environ.get("API_BASE_URL") + "Patient")
+        if response.status_code == 200:
+            print("FHIR server is running")
+            return True
+        else:
+            print(f"FHIR server returned status code: {response.status_code}")
+            return False
+    except requests.exceptions.RequestException as e:
+        print(f"Error connecting to FHIR server: {e}")
+        return False
