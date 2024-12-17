@@ -68,7 +68,7 @@ async def create_medical_report(request: Request, patient_id: int, report: Creat
         document_content = DocumentReferenceContent()
         attachment = Attachment()
         attachment.contentType = "text/plain"
-        attachment.data = report.content.encode('utf-8')
+        attachment.data = report.content
         attachment.title = report.title + " - " + str(new_report.id)
         attachment.creation = FHIRDateTime(report.date)
 
@@ -122,7 +122,7 @@ async def update_medical_report(patient_id: int, report_id: int, report: CreateC
         document_content = DocumentReferenceContent()
         attachment = Attachment()
         attachment.contentType = "text/plain"
-        attachment.data = report.content.encode('utf-8')
+        attachment.data = report.content
         attachment.title = report.title + " - " + str(db_report.id)
         attachment.creation = FHIRDateTime(report.date)
 
