@@ -93,7 +93,7 @@ As we manage multiple cabinets, you can also switch patients between different c
 
 # Additional Feature
 
-We utilize an FHIR server.
+We utilize an FHIR server. You can access it to [http://localhost:8082](http://localhost:8082).
 
 # Authentication and Authorization
 
