@@ -2,6 +2,7 @@ import logging
 from datetime import datetime, timedelta
 
 import fhirclient.models.patient as fhir_patient
+import fhirclient.models.practitioner as fhir_practitioner
 import numpy as np
 from faker import Faker
 from fhirclient.models.address import Address
@@ -22,7 +23,7 @@ from src.model.DispositifMedicaux import DispositifMedicaux
 from src.model.Dossier import DossierMedical
 from src.model.Observation import Observation
 from src.model.Patient import Patient
-from src.utils.FHIR import smart_request as smart
+from src.utils.FHIR import smart_request as smart, add_practitioner_to_patient
 
 fake = Faker()
 
@@ -408,5 +409,20 @@ def add_medecin_to_patient(db: Session, medecin_id: list[int] | int, patient_id:
         else:
             random_medecin_id = int(np.random.choice(medecin_id))
             patient.medecin_id = random_medecin_id
+        try:
+            identifier_system = "backend"
+            identifier_value_medecin = str(patient.medecin_id)
+            search_resource_medecin = fhir_practitioner.Practitioner.where(
+                struct={"identifier": f"{identifier_system}|{identifier_value_medecin}"}).perform(
+                smart().server)
+            identifier_system = "backend"
+            identifier_value = str(patient.id)
+            search_resource_patient = fhir_patient.Patient.where(
+                struct={"identifier": f"{identifier_system}|{identifier_value}"}).perform(
+                smart().server)
+            add_practitioner_to_patient(search_resource_patient, search_resource_medecin.entry[0].resource.id)
+        except Exception as e:
+            logger.info(f"Error adding practitioner to patient: {e}")
+            continue
     db.commit()
     db.refresh(patient)
