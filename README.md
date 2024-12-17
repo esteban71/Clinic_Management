@@ -97,7 +97,9 @@ We utilize an FHIR server. You can access it to [http://localhost:8082](http://l
 
 # Data Simulation at App Launch
 
-At the launch of the application, we create fictitious data. Observations are updated every 2 minutes with new data to mimic real-time updates from medical devices.
+At the launch of the application, we create fictitious data. Observations are updated every 2 minutes with new data to mimic real-time updates from medical devices. 
+
+However, some parts of the interface do not work with the simulated data. To ensure full functionality, new data must be created manually using the admin interface.
 
 # Authentication and Authorization
 
