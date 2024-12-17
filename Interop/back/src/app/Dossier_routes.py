@@ -3,10 +3,16 @@ from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fhirclient.models.attachment import Attachment
+from fhirclient.models.documentreference import DocumentReference
+from fhirclient.models.documentreference import DocumentReferenceContent
+from fhirclient.models.fhirdatetime import FHIRDateTime
+from fhirclient.models.fhirreference import FHIRReference
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model.Dossier import DossierMedical, CompteRenduMedical
 from src.schemas.DossierSchema import DossierMedicalSchema, CompteRenduMedicalSchema, CreateCompteRenduMedicalSchema
+from src.utils.FHIR import smart_request as smart
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -49,6 +55,40 @@ async def create_medical_report(request: Request, patient_id: int, report: Creat
     db.add(new_report)
     db.commit()
     db.refresh(new_report)
+    try:
+        # Créer un document FHIR pour le rapport médical
+        identifier_system = "backend"
+        indentifier_value = dossier_medical.id
+        document = DocumentReference.where(
+            struct={"identifier": f"{identifier_system}|{indentifier_value}"}).perform(
+            smart().server)
+        if not document:
+            return new_report
+        document_reference = DocumentReference.read(document.entry[0].resource.id, smart().server)
+        document_content = DocumentReferenceContent()
+        attachment = Attachment()
+        attachment.contentType = "text/plain"
+        attachment.data = report.content.encode('utf-8')
+        attachment.title = report.title + " - " + str(new_report.id)
+        attachment.creation = FHIRDateTime(report.date)
+
+        document_content.attachment = attachment
+
+        document_reference.content.append(document_content)
+
+        if document_reference.author and medecin_id:
+            document_reference.author.append(FHIRReference({"reference": f"Practitioner/{medecin_id}"}))
+        elif medecin_id:
+            document_reference.author = [FHIRReference({"reference": f"Practitioner/{medecin_id}"})]
+
+        logger.info(f"Document reference: {document_reference.as_json()}")
+
+        document_reference.update(smart().server)
+
+    except Exception as e:
+        logger.error(f"Error creating FHIR document: {e}")
+        return new_report
+
     return new_report
 
 
@@ -66,6 +106,40 @@ async def update_medical_report(patient_id: int, report_id: int, report: CreateC
     db_report.content = report.content
     db.commit()
     db.refresh(db_report)
+
+    dossier_medical = db.query(DossierMedical).filter(DossierMedical.patient_id == patient_id).first()
+
+    try:
+
+        identifier_system = "backend"
+        indentifier_value = dossier_medical.id
+        document = DocumentReference.where(
+            struct={"identifier": f"{identifier_system}|{indentifier_value}"}).perform(
+            smart().server)
+        if not document:
+            return db_report
+        document_reference = DocumentReference.read(document.entry[0].resource.id, smart().server)
+        document_content = DocumentReferenceContent()
+        attachment = Attachment()
+        attachment.contentType = "text/plain"
+        attachment.data = report.content.encode('utf-8')
+        attachment.title = report.title + " - " + str(db_report.id)
+        attachment.creation = FHIRDateTime(report.date)
+
+        document_content.attachment = attachment
+
+        # find the document content to update
+        for content in document_reference.content:
+            split_title = content.attachment.title.split(" - ")
+            if len(split_title) > 1 and split_title[1] == str(report_id):
+                content.attachment = attachment
+                break
+
+        document_reference.update(smart().server)
+
+    except Exception as e:
+        logger.error(f"Error creating FHIR document: {e}")
+        return db_report
     return db_report
 
 
@@ -81,6 +155,28 @@ async def delete_medical_report(patient_id: int, report_id: int, db: Session = D
 
     db.delete(db_report)
     db.commit()
+    dossier_medical = db.query(DossierMedical).filter(DossierMedical.patient_id == patient_id).first()
+    try:
+        # Supprimer le document FHIR associé au rapport médical
+        identifier_system = "backend"
+        indentifier_value = dossier_medical.id
+        document = DocumentReference.where(
+            struct={"identifier": f"{identifier_system}|{indentifier_value}"}).perform(
+            smart().server)
+        if not document:
+            return {"message": "Medical report deleted successfully"}
+        document_reference = DocumentReference.read(document.entry[0].resource.id, smart().server)
+
+        for content in document_reference.content:
+            split_title = content.attachment.title.split(" - ")
+            if len(split_title) > 1 and split_title[1] == str(report_id):
+                document_reference.content.remove(content)
+                break
+
+        document_reference.update(smart().server)
+    except Exception as e:
+        logger.error(f"Error deleting FHIR document: {e}")
+        return {"message": "Medical report deleted successfully"}
     return {"message": "Medical report deleted successfully"}
 
 

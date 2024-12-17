@@ -65,6 +65,7 @@ const EditPatientForm = ({patient, medecin, cabinet}) => {
     useEffect(() => {
 
         if (isSuccess || isDelSuccess) {
+            console.log("coucou")
             setName('')
             setAddress('')
             setTelecom('')

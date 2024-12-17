@@ -48,6 +48,7 @@ services:
       - db
       - db_keycloak
       - keycloak
+      - fhir
     ports:
       - "8080:8080"
     environment:
@@ -87,9 +88,43 @@ services:
     networks:
       - keycloak_network
 
+  fhir:
+    container_name: fhir
+    image: "hapiproject/hapi:latest"
+    restart: always
+    ports:
+      - "8082:8080"
+    configs:
+      - source: hapi
+        target: ./application.yaml
+    volumes:
+      - ./hapi.data:/var/lib/hapi/data
+    networks:
+      - back_network
+      - front_network
+    depends_on:
+      - dbhapi
+
+
+  dbhapi:
+    image: postgres:17
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_DB: hapi
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    networks:
+      - back_network
+      - front_network
+    volumes:
+      - ./hapi.postgress.data:/var/lib/dbhapi/data
+
 volumes:
   postgres_data:
   keycloak_data:
+  hapi-data:
 
 networks:
   keycloak_network:
@@ -98,3 +133,7 @@ networks:
     driver: bridge
   front_network:
     driver: bridge
+
+configs:
+  hapi:
+    file: ./hapi.application.yaml
