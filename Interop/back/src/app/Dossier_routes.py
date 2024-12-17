@@ -3,20 +3,16 @@ from datetime import datetime
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fhirclient.models.attachment import Attachment
+from fhirclient.models.documentreference import DocumentReference
+from fhirclient.models.documentreference import DocumentReferenceContent
+from fhirclient.models.fhirdatetime import FHIRDateTime
+from fhirclient.models.fhirreference import FHIRReference
 from sqlalchemy.orm import Session
 from src.database import get_db
 from src.model.Dossier import DossierMedical, CompteRenduMedical
 from src.schemas.DossierSchema import DossierMedicalSchema, CompteRenduMedicalSchema, CreateCompteRenduMedicalSchema
-from fhirclient.models.documentreference import DocumentReference
-from fhirclient.models.fhirdate import FHIRDate
-from fhirclient.models.identifier import Identifier
-from fhirclient.models.coding import Coding
-from fhirclient.models.codeableconcept import CodeableConcept
-from fhirclient.models.fhirreference import FHIRReference
-from fhirclient.models.attachment import Attachment
-from fhirclient.models.documentreference import DocumentReferenceContent
 from src.utils.FHIR import smart_request as smart
-from fhirclient.models.fhirdatetime import FHIRDateTime
 
 logger = logging.getLogger('uvicorn.error')
 
@@ -72,7 +68,7 @@ async def create_medical_report(request: Request, patient_id: int, report: Creat
         document_content = DocumentReferenceContent()
         attachment = Attachment()
         attachment.contentType = "text/plain"
-        attachment.data = report.content
+        attachment.data = report.content.encode('utf-8')
         attachment.title = report.title + " - " + str(new_report.id)
         attachment.creation = FHIRDateTime(report.date)
 
@@ -126,7 +122,7 @@ async def update_medical_report(patient_id: int, report_id: int, report: CreateC
         document_content = DocumentReferenceContent()
         attachment = Attachment()
         attachment.contentType = "text/plain"
-        attachment.data = report.content
+        attachment.data = report.content.encode('utf-8')
         attachment.title = report.title + " - " + str(db_report.id)
         attachment.creation = FHIRDateTime(report.date)
 
