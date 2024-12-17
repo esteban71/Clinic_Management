@@ -90,7 +90,7 @@ services:
 
   fhir:
     container_name: fhir
-    image: "hapiproject/hapi:latest"
+    image: "hapiproject/hapi:v7.6.0"
     restart: always
     ports:
       - "8082:8080"
