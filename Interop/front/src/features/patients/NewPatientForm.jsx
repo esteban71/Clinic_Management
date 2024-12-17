@@ -27,7 +27,7 @@ const NewPatientForm = ({medecin, cabinet}) => {
     const [telecom, setTelecom] = useState('')
     const [validtelecom, setValidtelecom] = useState(false)
     const [iserror, setIsError] = useState(false);
-    const [cabinet_id, setCabinetId] = useState([cabinet[0].id]);
+    const [cabinet_id, setCabinetId] = useState([cabinet[0]?.id]);
     const [medecin_id, setMedecin_id] = useState(null);
 
     useEffect(() => {
