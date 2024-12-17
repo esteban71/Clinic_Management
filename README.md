@@ -95,6 +95,10 @@ As we manage multiple cabinets, you can also switch patients between different c
 
 We utilize an FHIR server. You can access it to [http://localhost:8082](http://localhost:8082).
 
+# Data Simulation at App Launch
+
+At the launch of the application, we create fictitious data. Observations are updated every 2 minutes with new data to mimic real-time updates from medical devices.
+
 # Authentication and Authorization
 
 The system uses Keycloak for authentication and authorization. Each user must log in with their credentials to access the system. Depending on their role, users will have access to different features. Keycloak ensures secure and centralized management of user identities and permissions.
